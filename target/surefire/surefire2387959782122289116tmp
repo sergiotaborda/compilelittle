@@ -1,0 +1,25 @@
+#surefire
+#Thu Apr 23 11:54:34 BRT 2015
+testClassesDirectory=D\:\\MyProjects\\Compiler\\target\\test-classes
+classPathUrl.2=C\:\\Users\\sergio.taborda\\.m2\\repository\\junit\\junit\\4.1\\junit-4.1.jar
+useManifestOnlyJar=true
+classPathUrl.1=D\:\\MyProjects\\Compiler\\target\\classes
+reportsDirectory=D\:\\MyProjects\\Compiler\\target\\surefire-reports
+classPathUrl.0=D\:\\MyProjects\\Compiler\\target\\test-classes
+providerConfiguration=org.apache.maven.surefire.junit4.JUnit4Provider
+testSuiteDefinitionTestSourceDirectory=D\:\\MyProjects\\Compiler\\src\\test\\java
+surefireClassPathUrl.1=C\:\\Users\\sergio.taborda\\.m2\\repository\\org\\apache\\maven\\surefire\\surefire-api\\2.12.4\\surefire-api-2.12.4.jar
+surefireClassPathUrl.0=C\:\\Users\\sergio.taborda\\.m2\\repository\\org\\apache\\maven\\surefire\\surefire-junit4\\2.12.4\\surefire-junit4-2.12.4.jar
+runOrder=filesystem
+useSystemClassLoader=true
+excludes0=**/*$*
+isTrimStackTrace=true
+tc.1=compiler.bnf.TestBnf
+tc.0=compiler.bnf.BnfTest
+enableAssertions=true
+includes2=**/*TestCase.java
+failIfNoTests=false
+includes1=**/*Test.java
+runStatisticsFile=D\:\\MyProjects\\Compiler\\.surefire-8266D6B3CC6187B5B1E5178370E8A3027762EB7B
+includes0=**/Test*.java
+childDelegation=false

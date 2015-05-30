@@ -1,0 +1,31 @@
+package packageName.subpackageName;
+
+import java.util.Math;
+
+class SenseProgram extends java.lang.Object{
+
+	Int x = new Int(1);
+	Whole y = 2;
+	
+	void main (Array a){
+	
+		Int f = 8;
+	
+		while (true) {
+
+			other(5,8);
+		}
+		
+		if (true){
+		   doit();
+		}
+		
+		if (!true){
+			arrangeit();
+		} else {
+			dontarrangeit();
+		}
+		method(3, ++4);
+
+	}
+}
