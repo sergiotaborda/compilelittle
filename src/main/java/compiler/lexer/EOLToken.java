@@ -90,7 +90,7 @@ public class EOLToken implements Token {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isNumberLiteralStart() {
+	public boolean isNumberLiteral() {
 		return false;
 	}
 

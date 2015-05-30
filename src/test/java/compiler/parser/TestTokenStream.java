@@ -158,7 +158,7 @@ public class TestTokenStream {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean isNumberLiteralStart() {
+		public boolean isNumberLiteral() {
 			throw new UnsupportedOperationException("Not implememented yet");
 		}
 

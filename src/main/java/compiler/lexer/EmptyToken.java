@@ -84,7 +84,7 @@ public class EmptyToken implements Token {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isNumberLiteralStart() {
+	public boolean isNumberLiteral() {
 		return false;
 	}
 

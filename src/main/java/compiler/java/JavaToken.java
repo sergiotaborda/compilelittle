@@ -90,7 +90,7 @@ public class JavaToken implements Token {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isNumberLiteralStart() {
+	public boolean isNumberLiteral() {
 		return symbol == Symbols.StartNumberLiteral;
 	}
 

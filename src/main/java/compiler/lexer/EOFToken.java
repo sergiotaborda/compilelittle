@@ -83,7 +83,7 @@ public class EOFToken implements Token {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isNumberLiteralStart() {
+	public boolean isNumberLiteral() {
 		return false;
 	}
 
