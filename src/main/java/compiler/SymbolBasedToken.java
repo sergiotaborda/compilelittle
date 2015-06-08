@@ -93,9 +93,19 @@ public class SymbolBasedToken implements Token{
 	 */
 	@Override
 	public boolean isNumberLiteral() {
-		return symbol == TokenSymbol.LiteralWholeNumber || symbol == TokenSymbol.LiteralFloatPointNumber;
+		return symbol == TokenSymbol.LiteralWholeNumber || symbol == TokenSymbol.LiteralDecimalNumber;
 	}
 
+
+	public boolean isWholeNumber() {
+		return symbol == TokenSymbol.LiteralWholeNumber;
+	}
+	
+	public boolean isDecimalNumber() {
+		return symbol == TokenSymbol.LiteralDecimalNumber;
+	}
+
+	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -3,21 +3,20 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class ImportNode extends AstNode {
+public class ImportNode extends SenseAstNode {
 
 	
-	private QualifiedName name;
+	private QualifiedNameNode name;
 
-	public QualifiedName getName() {
+	public QualifiedNameNode getName() {
 		return name;
 	}
 
-	public void setName(QualifiedName name) {
+	public void setName(QualifiedNameNode name) {
 		this.name = name;
 	}
 }

@@ -4,28 +4,38 @@
 package compiler.sense;
 
 
+
+
 /**
  * 
  */
-public class ArithmeticNode extends ExpressionNode {
+public class ArithmeticNode extends NeedTypeCalculationNode {
 
-	
-	private Operation operation;
+	private ArithmeticOperation operation;
 
 	/**
 	 * Constructor.
 	 * @param resolveOperation
 	 */
-	public ArithmeticNode(Operation operation) {
+	public ArithmeticNode(ArithmeticOperation operation) {
 		this.operation = operation;
 	}
 
-	public enum Operation {
-		Multiplication,
-		Addition,
-		Subtraction,
-		Division,
-		Remainder,
-		FractionDivision, RightShift, RightPositiveShift, LeftShift, Increment, Decrement,
+	
+	public ExpressionNode getLeft(){
+		return (ExpressionNode) this.getChildren().get(0);
 	}
+	
+	public ExpressionNode getRight(){
+		return (ExpressionNode) this.getChildren().get(1);
+	}
+
+
+	/**
+	 * @return
+	 */
+	public ArithmeticOperation getOperation() {
+		return operation;
+	}
+
 }

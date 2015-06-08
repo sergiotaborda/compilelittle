@@ -8,7 +8,7 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class Literal extends AstNode {
+public class Literal extends BnfAstNode {
 
 	private String name;
 

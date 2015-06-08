@@ -9,6 +9,6 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class ExpressionNode extends AstNode  {
+public class MathExpressionNode extends AstNode  {
 
 }

@@ -25,7 +25,13 @@ public class SenseLanguage extends Language{
 	 */
 	@Override
 	public AstNode transform(ParserTreeNode root) {
-		return root.getProperty("node", AstNode.class).orElse(null);
+		UnitTypes t = root.getProperty("node", UnitTypes.class).orElse(null);
+		
+		SenseSemantic semantic = new SenseSemantic();
+		
+		semantic.analise(t);
+		
+		return t;
 	}
 
 }

@@ -29,10 +29,12 @@ import compiler.parser.LookupTableAction;
 import compiler.parser.LookupTableRow;
 import compiler.parser.MatchableProduction;
 import compiler.parser.NonTerminal;
+import compiler.parser.Numeric;
 import compiler.parser.Production;
 import compiler.parser.SLRAutomatonFactory;
 import compiler.parser.SplitAction;
 import compiler.parser.Terminal;
+import compiler.parser.Text;
 
 /**
  * 
@@ -41,7 +43,7 @@ public class TestSenseGrammar {
 
 	
 
-	@Test  @Ignore
+	@Test   @Ignore
 	public void testFirstAndFollow()  {
 	
 		SenseGrammar g = new SenseGrammar();
@@ -62,24 +64,31 @@ public class TestSenseGrammar {
 		
 		final PromisseSet<MatchableProduction> firstOf = new RealizedPromisseSet<MatchableProduction>(
 				Identifier.instance(),
+				Text.instance(),
+				Numeric.instance(),
 				Terminal.of("this"),
 				Terminal.of("super"),
+				Terminal.of("null"),
+				Terminal.of("new"),
+				Terminal.of("true"),
+				Terminal.of("false"),
 				Terminal.of("("),
 				Terminal.of("++"),
 				Terminal.of("--"),
 				Terminal.of("+"),
 				Terminal.of("-"),
 				Terminal.of("~"),
-				Terminal.of("!"),
-				Terminal.of(".")
+				Terminal.of("!")
 		);
 		
 		assertEquals(firstOf , firstFollowTable.firstOf(new NonTerminal("expression")));
 		
 		final PromisseSet<MatchableProduction> followOf = new RealizedPromisseSet<MatchableProduction>(
-				Terminal.of(")"),
-				Terminal.of(":"),
-				Terminal.of("]")
+				Terminal.of(")"), // grouping , if, while, other control structures
+				Terminal.of("]"), // indexed access
+				Terminal.of(":"), // ternary
+				Terminal.of(";"), // inicialization
+				Terminal.of(",") // argument list
 		);
 		
 		assertEquals(followOf , firstFollowTable.followOf(new NonTerminal("expression")));
@@ -157,8 +166,8 @@ public class TestSenseGrammar {
 	}
 	
 	@Test 
-	public void testCompiler() throws IOException {
-		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.sense");
+	public void testCompileExpression() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.sense");
 
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new FileCompilationUnit(file));
@@ -166,6 +175,36 @@ public class TestSenseGrammar {
  
 		final Compiler compiler = new Compiler(new SenseLanguage());
 		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.compile(unitSet);
+
+	}
+	
+	@Test @Ignore
+	public void testCompileForEach() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/foreach.sense");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new Compiler(new SenseLanguage());
+		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.compile(unitSet);
+
+	}
+	
+	@Test  @Ignore
+	public void testCompilerProgram() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new Compiler(new SenseLanguage());
+		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.addBackEnd(new PrintToJava(out));
 		compiler.compile(unitSet);
 	}
 }

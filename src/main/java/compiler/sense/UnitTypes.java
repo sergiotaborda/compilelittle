@@ -8,6 +8,6 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class UnitTypes extends AstNode {
+public class UnitTypes extends SenseAstNode {
 
 }

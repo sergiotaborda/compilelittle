@@ -2,30 +2,57 @@ package packageName.subpackageName;
 
 import java.util.Math;
 
-class SenseProgram extends java.lang.Object{
+class SenseProgram extends Application <SenseProgram> {
 
 	Int x = new Int(1);
 	Whole y = 2;
+	String s;
 	
-	void main (Array a){
-	
-		Int f = 8;
-	
-		while (true) {
-
-			other(5,8);
-		}
+	void main (Array<String> a){
+		 try {
+			Int f = 8;
 		
-		if (true){
-		   doit();
-		}
-		
-		if (!true){
-			arrangeit();
-		} else {
-			dontarrangeit();
-		}
-		method(3, ++4);
-
+			while (true) {
+	
+				other(5,8);
+				continue;
+			}
+			
+			for (Int i in collection){
+				continue;
+			}
+			
+			if (true){
+			   doit();
+			}
+			
+			if (!true){
+				arrangeit();
+			} else {
+				dontarrangeit();
+			}
+			method(3, ++4);
+			
+			switch(a){
+				case (1) {
+					arrangeit();
+				}
+				case (2){
+					Decimal c = 8;
+					break;
+				}
+				default {
+					somemore();
+				}
+			}
+		 } catch (Exception e){
+			 method(3, 4 % 8);
+		 } finally {
+		     return 9;
+		 }
+	}
+	
+	Int addIt (){
+	 return 8 +  6 * 2 % 4;
 	}
 }

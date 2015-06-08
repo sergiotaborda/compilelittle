@@ -185,6 +185,22 @@ public class TestTokenStream {
 		public Optional<String> getText() {
 			throw new UnsupportedOperationException("Not implememented yet");
 		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isWholeNumber() {
+			throw new UnsupportedOperationException("Not implememented yet");
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isDecimalNumber() {
+			throw new UnsupportedOperationException("Not implememented yet");
+		}
 		
 	}
 }

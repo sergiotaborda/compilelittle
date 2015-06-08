@@ -134,4 +134,19 @@ public class JavaToken implements Token {
 		throw new UnsupportedOperationException("Not implememented yet");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isWholeNumber() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDecimalNumber() {
+		return false;
+	}
 }

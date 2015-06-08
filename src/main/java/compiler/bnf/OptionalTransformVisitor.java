@@ -32,7 +32,7 @@ public class OptionalTransformVisitor implements Visitor<AstNode> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(Node<AstNode> node) {
+	public void visitBeforeChildren(AstNode node) {
 		ListIterator<AstNode> it =  node.getChildren().listIterator();
 		
 		while(it.hasNext()){
@@ -91,7 +91,7 @@ public class OptionalTransformVisitor implements Visitor<AstNode> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitAfterChildren(Node<AstNode> node) {
+	public void visitAfterChildren(AstNode node) {
 	
 	}
 

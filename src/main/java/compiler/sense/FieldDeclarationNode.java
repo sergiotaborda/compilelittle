@@ -3,16 +3,19 @@
  */
 package compiler.sense;
 
+import compiler.parser.IdentifierNode;
+import compiler.sense.typesystem.Type;
 import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class FieldDeclarationNode extends AstNode{
+public class FieldDeclarationNode extends SenseAstNode implements ScopedVariableDefinitionNode{
 
 	private TypeNode typeNode;
-	private VariableNameNode variableNameNode;
-
+	private String name;
+	private ExpressionNode inicializer;
+	
 	/**
 	 * @param typeNode
 	 */
@@ -24,9 +27,39 @@ public class FieldDeclarationNode extends AstNode{
 	/**
 	 * @param variableNameNode
 	 */
-	public void setVariableName(VariableNameNode variableNameNode) {
-		this.variableNameNode = variableNameNode;
+	public void setName(IdentifierNode variableNameNode) {
+		this.name = variableNameNode.getId();
 		this.add(variableNameNode);
 	}
 
+	public void setInicializer(ExpressionNode inicializer) {
+		this.inicializer = inicializer;
+		this.add(inicializer);
+	}
+
+	public Type getType() {
+		return typeNode.getType();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Atributes {@link String}.
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Obtains {@link ExpressionNode}.
+	 * @return the inicializer
+	 */
+	public ExpressionNode getInicializer() {
+		return inicializer;
+	}
+	
+	
 }

@@ -7,7 +7,7 @@ package compiler.math.ast;
 /**
  * 
  */
-public class VariableNode extends ExpressionNode{
+public class VariableNode extends MathExpressionNode{
 
 	private String id;
 

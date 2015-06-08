@@ -3,12 +3,11 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class WhileNode extends AstNode {
+public class WhileNode extends StatementNode {
 
 	private BlockNode block;
 	private ExpressionNode condition;

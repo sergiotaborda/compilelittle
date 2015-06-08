@@ -3,12 +3,13 @@
  */
 package compiler.sense;
 
+import compiler.sense.typesystem.Type;
 import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class AssignmentNode extends AstNode {
+public class AssignmentNode extends ExpressionNode {
 
 	enum Operation {
 		SimpleAssign, 
@@ -26,6 +27,8 @@ public class AssignmentNode extends AstNode {
 	}
 
 	private Operation operation;
+	private AstNode left;
+	private ExpressionNode right;
 	
 	/**
 	 * Constructor.
@@ -35,19 +38,38 @@ public class AssignmentNode extends AstNode {
 		this.operation = operation;
 	}
 	
-
+	public Type getType() {
+		return right.getType();
+	}
+	
 	/**
 	 * @param astNode
 	 */
 	public void setLeft(AstNode left) {
+		this.left = left;
 		this.add(left);
 	}
 
 	/**
 	 * @param astNode
 	 */
-	public void setRight(AstNode right) {
+	public void setRight(ExpressionNode right) {
+		this.right = right;
 		this.add(right);
+	}
+
+	/**
+	 * @return
+	 */
+	public TypedNode getLeft() {
+		return (TypedNode)this.left;
+	}
+
+	/**
+	 * @return
+	 */
+	public ExpressionNode getRight() {
+		return this.right;
 	}
 
 }

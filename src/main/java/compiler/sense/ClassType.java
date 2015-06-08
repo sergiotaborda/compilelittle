@@ -3,16 +3,15 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class ClassType extends AstNode {
+public class ClassType extends SenseAstNode {
 
 	private String name;
 	private ClassBody body;
-	private QualifiedName upperType;
+	private TypeNode superType;
 	
 	public String getName() {
 		return name;
@@ -31,12 +30,9 @@ public class ClassType extends AstNode {
 		this.add(body);
 	}
 
-	public QualifiedName getUpperType() {
-		return upperType;
-	}
-
-	public void setUpperType(QualifiedName upperType) {
-		this.upperType = upperType;
+	public void setSuperType(TypeNode upperType) {
+		this.superType = upperType;
+		this.add(upperType);
 	}
 
 

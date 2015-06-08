@@ -3,12 +3,11 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class DecisionNode extends AstNode {
+public class DecisionNode extends StatementNode {
 
 	private ExpressionNode condition;
 	private BlockNode trueBlock;

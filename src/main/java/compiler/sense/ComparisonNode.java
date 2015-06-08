@@ -3,12 +3,21 @@
  */
 package compiler.sense;
 
+import compiler.sense.typesystem.Type;
+
 
 /**
  * 
  */
-public class ComparisonNode extends ExpressionNode {
+public class ComparisonNode extends BooleanExpressionNode {
 
+	enum Operation {
+		LessThan,
+		GreaterThan,
+		LessOrEqualTo,
+		GreaterOrEqualTo, EqualTo, Different, ReferenceEquals
+	}
+	
 	private Operation operation;
 
 	/**
@@ -22,11 +31,10 @@ public class ComparisonNode extends ExpressionNode {
 	public Operation getOperation() {
 		return operation;
 	}
-
-	enum Operation {
-		LessThan,
-		GreaterThan,
-		LessOrEqualTo,
-		GreaterOrEqualTo, EqualTo, Different, ReferenceEquals
+	
+	public Type getType() {
+		return Type.Boolean;
 	}
+
+
 }

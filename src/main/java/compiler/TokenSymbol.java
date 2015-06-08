@@ -14,5 +14,5 @@ public enum TokenSymbol {
 	Operator, 
 	KeyWord, 
 	LiteralWholeNumber,
-	LiteralFloatPointNumber
+	LiteralDecimalNumber
 }

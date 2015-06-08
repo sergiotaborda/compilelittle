@@ -8,13 +8,13 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class QualifiedName extends AstNode {
+public class QualifiedNameNode extends SenseAstNode {
 
 	private StringBuilder name = new StringBuilder();
 
 	
-	public QualifiedName (){}
-	public QualifiedName (String name){
+	public QualifiedNameNode (){}
+	public QualifiedNameNode (String name){
 		this.name= new StringBuilder(name);
 	}
 	

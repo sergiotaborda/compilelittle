@@ -76,7 +76,11 @@ public abstract class Grammar {
 	}
 	
 	public boolean isDigit(char c) {
-		return isNumberStarter(c) || c == '0' || c == '_' || c == '.' || c == 'e' || c=='E' || c == 'x' || c == 'L' || c == 'F' || c == 'D';
+		return isNumberStarter(c) || c == '0' || c == '_' || c == '.' || c == 'e' || c=='E';
 	}
 	
+
+	public boolean isAlphabetic(char c) {
+		return Character.isAlphabetic(c);
+	}
 }

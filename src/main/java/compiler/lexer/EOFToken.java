@@ -133,4 +133,19 @@ public class EOFToken implements Token {
 	public int hashCode (){
 		return -1;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isWholeNumber() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDecimalNumber() {
+		return false;
+	}
 }

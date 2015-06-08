@@ -5,62 +5,68 @@ package compiler.lexer;
 
 import java.util.Optional;
 
+import compiler.TokenSymbol;
+
 /**
  * 
  */
 public interface Token {
 
 	public ScanPosition getPosition();
-	
-	/**
-	 * @return
-	 */
-	 boolean isStartLineComment();
 
 	/**
 	 * @return
 	 */
-	 boolean isStartMultiLineComment();
+	boolean isStartLineComment();
 
 	/**
 	 * @return
 	 */
-	 boolean isId();
+	boolean isStartMultiLineComment();
 
 	/**
 	 * @return
 	 */
-	 boolean isEndMultiLineComment();
-
-	 boolean isEndOfFile();
-
-	 boolean isEndOfLine();
-	/**
-	 * @return
-	 */
-	 boolean isStringLiteralStart();
-
-		/**
-		 * @return
-		 */
-	 boolean  isStringLiteral();
-		
-	/**
-	 * @return
-	 */
-	 boolean isNumberLiteral();
+	boolean isId();
 
 	/**
 	 * @return
 	 */
-	 boolean isOperator();
+	boolean isEndMultiLineComment();
+
+	boolean isEndOfFile();
+
+	boolean isEndOfLine();
+	/**
+	 * @return
+	 */
+	boolean isStringLiteralStart();
+
+	/**
+	 * @return
+	 */
+	boolean  isStringLiteral();
+
+	/**
+	 * @return
+	 */
+	boolean isNumberLiteral();
+
+	public boolean isWholeNumber();
+
+	public boolean isDecimalNumber();
+
+	/**
+	 * @return
+	 */
+	boolean isOperator();
 
 	/**
 	 * @param text
 	 * @return
 	 */
 	boolean match(String text);
-	
+
 	Optional<String> getText();
 
 

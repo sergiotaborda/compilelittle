@@ -3,11 +3,10 @@
  */
 package compiler.bnf;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class RulesSequence extends AstNode {
+public class RulesSequence extends BnfAstNode {
 
 }

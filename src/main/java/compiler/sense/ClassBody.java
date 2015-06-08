@@ -8,6 +8,6 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class ClassBody extends AstNode {
+public class ClassBody extends SenseAstNode {
 
 }

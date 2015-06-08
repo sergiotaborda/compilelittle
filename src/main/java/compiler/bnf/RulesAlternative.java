@@ -8,6 +8,6 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class RulesAlternative extends AstNode {
+public class RulesAlternative extends BnfAstNode {
 
 }

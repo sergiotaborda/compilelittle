@@ -3,13 +3,12 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 
 /**
  * 
  */
-public class MethodCallNode extends AstNode {
+public class MethodCallNode extends SenseAstNode {
 
 	private String name;
 	private ArgumentListNode arguments;
@@ -26,6 +25,13 @@ public class MethodCallNode extends AstNode {
 	 */
 	public void setArgumentList(ArgumentListNode arguments) {
 		this.arguments = arguments;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getName() {
+		return name;
 	}
 
 }

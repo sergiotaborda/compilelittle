@@ -7,7 +7,7 @@ package compiler.math.ast;
 /**
  * 
  */
-public class Value extends ExpressionNode {
+public class Value extends MathExpressionNode {
 
 	private long value;
 

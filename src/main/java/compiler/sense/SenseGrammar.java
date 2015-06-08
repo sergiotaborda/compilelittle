@@ -3,6 +3,7 @@
  */
 package compiler.sense;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.Parser;
 import compiler.parser.SemanticAction;
 import compiler.parser.Symbol;
+import compiler.sense.typesystem.Type;
 import compiler.syntax.AstNode;
 
 
@@ -28,7 +30,6 @@ public class SenseGrammar extends AbstractSenseGrammar{
 	public Parser parser() {
 		return new BottomUpParser(this, new LALRAutomatonFactory());
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -57,7 +58,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 	public boolean isStringLiteralDelimiter(char c) {
 		return c == '"';
 	}
-	
+
 
 	/**
 	 * {@inheritDoc}
@@ -69,17 +70,74 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		}
 		if (text.length() > 1 && text.startsWith("\"") && text.endsWith("\"")){
 			return  Optional.of(new SymbolBasedToken(pos, text.substring(1,text.length()-1), TokenSymbol.LiteralString));
-		} else if (text.matches("^\\d+$")){
+		} else if (text.matches("^\\d+[NILDFMJQ]?$")){
 			return  Optional.of(new SymbolBasedToken(pos, text, TokenSymbol.LiteralWholeNumber));
-		} else if (text.matches("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?")){
-			return  Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.LiteralFloatPointNumber));
+		} else if (text.matches("[0-9]+\\.?[0-9]+([eE][-+]?[0-9]+)?[NILDFMJQ]?")){
+			return  Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.LiteralDecimalNumber));
 		} 
-//		else if (text.equals("do")){
-//			return  Optional.of(new SymbolBasedToken(pos,"do", TokenSymbol.KeyWord));
-//		}
-		
+		//		else if (text.equals("do")){
+		//			return  Optional.of(new SymbolBasedToken(pos,"do", TokenSymbol.KeyWord));
+		//		}
+
 		return super.terminalMatch(pos, text);
 	}
+	
+	public boolean isDigit(char c) {
+		return isNumberStarter(c) || c == '0' || c == '_' || c == '.' || c == 'e' || c=='E' || c == 'x' 
+				|| c == 'N'	|| c == 'I' || c == 'L' || c == 'D' || c == 'F'  || c == 'M' || c == 'J' || c == 'Q' ;
+	}
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	private Type determineType(String literalNumber) {
+		char end = literalNumber.charAt(literalNumber.length()- 1);
+		if (literalNumber.contains(".") && literalNumber.matches("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?[NILDFMJQ]?")){
+			// decimal
+			if (Character.isDigit(end) || end == 'M'){
+				return Type.Decimal;
+			} else if (end == 'N'){
+				throw new SyntaxError("A decimal number cannot end with N");
+			} else if (end == 'I'){
+				throw new SyntaxError("A decimal number cannot end with I");
+			} else if (end == 'L'){
+				throw new SyntaxError("A decimal number cannot end with L");
+			} else if (end == 'D'){
+				return Type.Double;
+			}else if (end == 'F'){
+				return Type.Float;
+			}else if (end == 'J'){
+				return Type.Imaginary;
+			}else if (end == 'Q'){
+				throw new SyntaxError("A decimal number cannot end with Q. Use n.over(m) or the n\\m notation");
+			} 
+		} else if (literalNumber.matches("^\\d+[NILDFMJQ]?$")){
+			// whole
+			if (Character.isDigit(end) || end == 'N'){
+				return Type.Natural;
+			} else if (end == 'I'){
+				return Type.Int;
+			} else if (end == 'L'){
+				return Type.Long;
+			} else if (end == 'D'){
+				return Type.Double;
+			}else if (end == 'F'){
+				return Type.Float;
+			}else if (end == 'M'){
+				return Type.Decimal;
+			}else if (end == 'J'){
+				return Type.Imaginary;
+			}else if (end == 'Q'){
+				return Type.Rational;
+			} 
+		} 
+			
+		throw new SyntaxError("'" + literalNumber + "' is not reconized as a Number");
+		
+	}
+	
+
 
 	/**
 	 * {@inheritDoc}
@@ -97,13 +155,13 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 		getNonTerminal("qualifiedName").addSemanticAction((p,r)->{
 
-			QualifiedName name = new QualifiedName();
+			QualifiedNameNode name = new QualifiedNameNode();
 
 			for (int i = 0; i< r.size(); i+=2){
 				if (r.get(i).getAstNode().isPresent()){
 					AstNode node = r.get(i).getAstNode().get();
-					if (node instanceof QualifiedName){
-						name =  (QualifiedName)node;
+					if (node instanceof QualifiedNameNode){
+						name =  (QualifiedNameNode)node;
 					} else if (node instanceof IdentifierNode){
 						name.append(((IdentifierNode)node).getId());
 					}
@@ -123,7 +181,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 			if (r.size() == 1){
 				p.setSemanticAttribute("node",r.get(0).getSemanticAttribute("node").get());
 			} else if (r.size() == 3){
-				QualifiedName packageName = (QualifiedName)r.get(0).getSemanticAttribute("node").get();
+				QualifiedNameNode packageName = ensureQualifiedName(r.get(0).getAstNode().get());
 
 				AstNode node = (AstNode) r.get(2).getSemanticAttribute("node").get();
 				if (node instanceof ClassType){
@@ -174,7 +232,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				p.setSemanticAttribute("node", q);
 			} else {
 				ImportNode q = new ImportNode();
-				q.setName(r.get(1).getAstNode(QualifiedName.class).get());
+				q.setName(r.get(1).getAstNode(QualifiedNameNode.class).get());
 				p.setSemanticAttribute("node", q);
 			}
 
@@ -211,13 +269,22 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				ClassType n = new ClassType();
 				n.setName((String)r.get(1).getSemanticAttribute("lexicalValue").get());
 
-				Optional<Object> ext = r.get(2).getSemanticAttribute("node");
+				Optional<AstNode> ext = r.get(2).getAstNode();
 
 				if (ext.isPresent()){
-					n.setUpperType((QualifiedName)ext.get());
+					n.setSuperType(ensureTypeNode(ext.get()));
 				}
 
-				n.setBody((ClassBody)r.get(3).getSemanticAttribute("node").get());
+				AstNode b = r.get(3).getAstNode().get();
+
+				if (b instanceof ClassBody){
+					n.setBody((ClassBody)b);
+				} else {
+					ClassBody c = new ClassBody();
+					c.add(b);
+					n.setBody(c);
+				}
+
 				p.setSemanticAttribute("node", n);
 			} else {
 				p.setSemanticAttribute("node",r.get(0).getSemanticAttribute("node").get());
@@ -266,8 +333,19 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
 				FieldDeclarationNode n = new FieldDeclarationNode();
-				n.setType(r.get(0).getAstNode(TypeNode.class).get());
-				n.setVariableName(r.get(1).getAstNode(VariableNameNode.class).get());
+				
+				n.setType (ensureTypeNode(r.get(0).getAstNode().get()));
+				
+				n.setName(r.get(1).getAstNode(IdentifierNode.class).get());
+				
+				if (r.size() > 3){
+					AstNode u = r.get(1).getAstNode().get();
+					if ( u instanceof IdentifierNode) {
+						u = new VariableReadNode(((IdentifierNode)u).getId());
+					}
+					n.setInicializer((ExpressionNode)u);
+					
+				}
 
 				p.setAstNode(n);
 			}
@@ -275,21 +353,63 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 		getNonTerminal("type").addSemanticAction( (p, r) -> {
 
+
 			AstNode node = r.get(0).getAstNode().get();
-			QualifiedName name = null;
-			if (node instanceof QualifiedName){
-				name = (QualifiedName)node;
+			QualifiedNameNode name = null;
+			if (node instanceof QualifiedNameNode){
+				name = (QualifiedNameNode)node;
 			} else if (node instanceof IdentifierNode){
-				name = new QualifiedName();
+				name = new QualifiedNameNode();
 				name.append(((IdentifierNode)node).getId());
 			}
 			TypeNode type = new TypeNode(name);
 
-			p.setSemanticAttribute("node", type);
+			p.setAstNode(type);
+
+			if (r.size() > 1){
+				
+				AstNode n = r.get(2).getAstNode().get();
+				
+				if (n instanceof ParametricTypesNode){
+					type.setParametricTypes((ParametricTypesNode)n);
+				} else {
+					ParametricTypesNode generic = new ParametricTypesNode();
+					generic.add(n);
+	
+					type.setParametricTypes(generic);
+				}
+				
+				
+			}
 
 
 		});
 
+		getNonTerminal("parametricTypes").addSemanticAction( (p, r) -> {
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());
+			} else {
+				AstNode n = r.get(0).getAstNode().get();
+				
+				if (n instanceof ParametricTypesNode){
+					ParametricTypesNode node = (ParametricTypesNode)n;
+					node.add(r.get(2).getAstNode().get());
+					p.setAstNode(node);
+				} else {
+					ParametricTypesNode node = new ParametricTypesNode();
+					node.add(r.get(0).getAstNode().get());
+					node.add(r.get(2).getAstNode().get());
+					p.setAstNode(node);
+				}
+				 
+				
+			}
+			
+
+		});
+
+		
+		
 		getNonTerminal("returnType").addSemanticAction( (p, r) -> {
 
 			AstNode node = r.get(0).getAstNode().get();
@@ -383,33 +503,134 @@ public class SenseGrammar extends AbstractSenseGrammar{
 			p.setAstNode(n);
 		});
 
-		getNonTerminal("statement").addSemanticAction( (p, r) -> {
+		SemanticAction upstream = (p, r) -> {
 			p.setAstNode(r.get(0).getAstNode().get());		
-		});
+		};
 
-		getNonTerminal("statementWithoutTrailingSubstatement").addSemanticAction( (p, r) -> {
-			p.setAstNode(r.get(0).getAstNode().get());		
-		});
-
-		getNonTerminal("expressionStatement").addSemanticAction( (p, r) -> {		
-			p.setAstNode(r.get(0).getAstNode().get());		
-		});
-
-
-		getNonTerminal("statementExpression").addSemanticAction( (p, r) -> {	
-			p.setAstNode(r.get(0).getAstNode().get());		
-		});
+		getNonTerminal("statement").addSemanticAction( upstream);
+		getNonTerminal("statementWithoutTrailingSubstatement").addSemanticAction( upstream);
+		getNonTerminal("conditionalExpression").addSemanticAction( upstream);
+		getNonTerminal("expressionStatement").addSemanticAction( upstream);
+		getNonTerminal("statementExpression").addSemanticAction( upstream);
+		getNonTerminal("constantExpression").addSemanticAction( upstream);
 
 		getNonTerminal("postincrementExpression").addSemanticAction( (p, r) -> {
-			PosExpression exp = new PosExpression(ArithmeticNode.Operation.Addition);
+			PosExpression exp = new PosExpression(ArithmeticOperation.Addition);
 			p.setAstNode(exp);		
 		});
 
 		getNonTerminal("postdecrementExpression").addSemanticAction( (p, r) -> {
-			PosExpression exp = new PosExpression(ArithmeticNode.Operation.Subtraction);
+			PosExpression exp = new PosExpression(ArithmeticOperation.Subtraction);
 			p.setAstNode(exp);		
 		});
 
+		getNonTerminal("returnStatement").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());
+			} else {
+				ReturnNode node = new ReturnNode();
+
+				if (r.size() == 3){
+					node.setValue(r.get(1).getAstNode(ExpressionNode.class).get());
+				}
+
+				p.setAstNode(node);
+			}
+		});
+
+		getNonTerminal("breakStatement").addSemanticAction( (p, r) -> {
+
+			BreakNode node = new BreakNode();
+
+			// TODO add label
+
+			p.setAstNode(node);
+
+		});
+
+		getNonTerminal("continueStatement").addSemanticAction( (p, r) -> {
+
+			ContinueNode node = new ContinueNode();
+
+			// TODO add label
+
+			p.setAstNode(node);
+
+		});
+
+		getNonTerminal("tryStatement").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				TryStatement node = new TryStatement();
+
+				if (r.get(1).getAstNode().isPresent()){
+					node.setResource(r.get(1).getAstNode(ExpressionNode.class).get());
+
+				}
+				node.setInstructions(r.get(2).getAstNode(BlockNode.class).get());
+
+				if (r.get(3).getAstNode().isPresent()){
+					AstNode n = r.get(3).getAstNode().get();
+					if (n instanceof CatchOptionNode){
+						CatchOptionsNode c = new CatchOptionsNode();
+						c.add(n);
+						node.setCatchOptions(c);
+					} else {
+						node.setCatchOptions((CatchOptionsNode) n);
+					}
+
+				}
+
+				if (r.get(4).getAstNode().isPresent()){
+					// finally
+					node.setFinally(r.get(4).getAstNode(BlockNode.class).get());
+				}
+
+				p.setAstNode(node);
+			}
+		});
+
+		getNonTerminal("catches").addSemanticAction( (p, r) -> {
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				AstNode n = r.get(0).getAstNode().get();
+				if (n instanceof CatchOptionsNode){
+					CatchOptionsNode node = (CatchOptionsNode)n;
+					node.add(r.get(1).getAstNode().get());
+					p.setAstNode(node);
+				} else {
+					CatchOptionsNode node = new CatchOptionsNode();
+					node.add(r.get(0).getAstNode().get());
+					node.add(r.get(1).getAstNode().get());
+					p.setAstNode(node);
+				}
+			}
+		});
+
+		getNonTerminal("catchClause").addSemanticAction( (p, r) -> {
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				CatchOptionNode node = new CatchOptionNode();
+
+				node.setExceptions(r.get(2).getAstNode().get());
+				node.setInstructions(r.get(4).getAstNode(BlockNode.class).get());
+
+				p.setAstNode(node);
+			}
+		});
+
+		getNonTerminal("finally").addSemanticAction( (p, r) -> {
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				p.setAstNode(r.get(1).getAstNode().get());
+			}
+		});
 
 		getNonTerminal("ifThenStatement").addSemanticAction( (p, r) -> {
 
@@ -420,12 +641,12 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 				node.setCondition(r.get(2).getAstNode(ExpressionNode.class).get());
 				node.setTruePath(r.get(4).getAstNode(BlockNode.class).get());
-				
+
 				p.setAstNode(node);
 			}
 
 		});
-		
+
 		getNonTerminal("ifThenElseStatement").addSemanticAction( (p, r) -> {
 
 			if (r.size() == 1){
@@ -436,12 +657,12 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				node.setCondition(r.get(2).getAstNode(ExpressionNode.class).get());
 				node.setTruePath(r.get(4).getAstNode(BlockNode.class).get());
 				node.setFalsePath(r.get(6).getAstNode(BlockNode.class).get());
-				
+
 				p.setAstNode(node);
 			}
 
 		});
-		
+
 		getNonTerminal("whileStatement").addSemanticAction( (p, r) -> {
 
 			if (r.size() == 1){
@@ -460,6 +681,102 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 		});
 
+		getNonTerminal("forStatement").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				ForEachNode node = new ForEachNode();
+
+				node.setIterableVariable(r.get(2).getAstNode(VariableDeclarationNode.class).get());
+				node.setContainer(ensureExpression(r.get(4).getAstNode().get()));
+
+				if (r.size() > 4 && r.get(6).getAstNode(BlockNode.class).isPresent()){
+					node.setBlock(r.get(6).getAstNode(BlockNode.class).get());
+				}
+
+				p.setAstNode(node);
+			}
+
+		});
+		
+		getNonTerminal("iterationType").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				VariableDeclarationNode node = new VariableDeclarationNode();
+
+				node.setType(ensureTypeNode(r.get(0).getAstNode().get()));
+				node.setName(r.get(1).getAstNode(IdentifierNode.class).get());
+
+				p.setAstNode(node);
+			}
+
+		});
+		
+		
+		
+		
+		getNonTerminal("switchStatement").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				SwitchNode node = new SwitchNode();
+
+				node.setCandidate(ensureExpression(r.get(2).getAstNode().get()));
+				node.setOptions(r.get(4).getAstNode(SwitchOptions.class).get());
+
+				p.setAstNode(node);
+			}
+
+		});
+
+		getNonTerminal("switchBlock").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				p.setAstNode(r.get(1).getAstNode().get());
+			}
+
+		});
+
+		getNonTerminal("switchLabels").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else {
+				SwitchOptions node = new SwitchOptions();
+				node.add(r.get(0).getAstNode().get());	
+				node.add(r.get(1).getAstNode().get());	
+				p.setAstNode(node);
+			}
+
+		});
+
+		getNonTerminal("switchLabel").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());		
+			} else if (r.size() == 2){
+				SwitchDefaultOption node = new SwitchDefaultOption();
+				node.setActions(r.get(1).getAstNode().get());
+				p.setAstNode(node);
+			} else {
+				SwitchOption node = new SwitchOption();
+
+				node.setValue(r.get(2).getAstNode(ExpressionNode.class).get());
+				node.setActions(r.get(4).getAstNode().get());
+
+				p.setAstNode(node);
+			}
+
+		});
+
+
+
 
 		getNonTerminal("localVariableDeclarationStatement").addSemanticAction( (p, r) -> {
 
@@ -473,76 +790,44 @@ public class SenseGrammar extends AbstractSenseGrammar{
 						TypeNode t = new TypeNode(true);
 						n.setType(t);
 					} else {
-						TypeNode t = new TypeNode(r.get(0).getAstNode(QualifiedName.class).get());
+						TypeNode t = new TypeNode(r.get(0).getAstNode(QualifiedNameNode.class).get());
 						n.setType(t);
 					}
 
 				} else {
-					n.setType((TypeNode) r.get(0).getSemanticAttribute("node").get());
+					n.setType(ensureTypeNode(r.get(0).getAstNode().get()));
 				}
 
-				n.setName((VariableNameNode) r.get(1).getSemanticAttribute("node").get());
+				n.setName(r.get(1).getAstNode(IdentifierNode.class).get());
 
+				if (r.size() > 3){
+					n.setInicializer(r.get(3).getAstNode(ExpressionNode.class).get());
+				}
 
 				p.setSemanticAttribute("node", n);
 			}
 
 
 		});
-
-
-		getNonTerminal("localVariableDeclaration").addSemanticAction( (p, r) -> {
-
-			if (r.get(0).getSemanticAttribute("node").isPresent() && r.get(0).getSemanticAttribute("node").get() instanceof VariableDeclarationNode){
-				p.setSemanticAttribute("node", r.get(0).getSemanticAttribute("node").get() );
-			} else {
-				VariableDeclarationNode n = new VariableDeclarationNode();
-
-				if (r.get(0).getSemanticAttribute("lexicalValue").isPresent()){
-					if (r.get(0).getSemanticAttribute("lexicalValue").get().equals("void")){
-						TypeNode t = new TypeNode(true);
-						n.setType(t);
-					} else {
-						TypeNode t = new TypeNode(r.get(0).getAstNode(QualifiedName.class).get());
-						n.setType(t);
-					}
-
-				} else {
-					n.setType((TypeNode) r.get(0).getSemanticAttribute("node").get());
-				}
-
-
-				if (r.get(1).getSemanticAttribute("lexicalValue").isPresent()){
-					VariableNameNode v = new VariableNameNode();
-					v.setName((String)r.get(1).getSemanticAttribute("lexicalValue").get());
-					n.setName(v);
-
-
-				} else if (r.get(1).getSemanticAttribute("node").isPresent()){
-					n.setName((VariableNameNode) r.get(1).getSemanticAttribute("node").get());
-				} else {
-					n.setName(null); // TODO add actions to variablename production
-				}
-
-				p.setSemanticAttribute("node", n);
-			}
-
-		});
-
+		
 		getNonTerminal("formalParameterList").addSemanticAction( (p, r) -> {
 
 			if (r.size() == 3){
-				VariableNameNode n = new VariableNameNode();
-				n.setName((String)r.get(0).getSemanticAttribute("lexicalValue").get());
-				n.setInitialValue(r.get(2).getAstNode(ExpressionNode.class).get());
+				VariableReadNode n = new VariableReadNode((String)r.get(0).getSemanticAttribute("lexicalValue").get());
+		
 				p.setSemanticAttribute("node", n);
 			}
 
+		});
+		
+		getNonTerminal("variableName").addSemanticAction( (p, r) -> {
+
+			p.setAstNode(r.get(0).getAstNode().get());
 		});
 
 		getNonTerminal("formalParameter").addSemanticAction( (p, r) -> {
 			if (r.get(0).getSemanticAttribute("node").isPresent() && r.get(0).getSemanticAttribute("node").get() instanceof VariableDeclarationNode){
-				p.setSemanticAttribute("node", r.get(0).getSemanticAttribute("node").get() );
+				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
 				VariableDeclarationNode n = new VariableDeclarationNode();
 
@@ -551,40 +836,25 @@ public class SenseGrammar extends AbstractSenseGrammar{
 						TypeNode t = new TypeNode(true);
 						n.setType(t);
 					} else {
-						TypeNode t = new TypeNode(r.get(0).getAstNode(QualifiedName.class).get());
+						TypeNode t = new TypeNode(r.get(0).getAstNode(QualifiedNameNode.class).get());
 						n.setType(t);
 					}
 
 				} else {
-					n.setType((TypeNode) r.get(0).getSemanticAttribute("node").get());
+					n.setType(ensureTypeNode(r.get(0).getAstNode().get()));
 				}
 
 
 				if (r.get(1).getSemanticAttribute("lexicalValue").isPresent()){
-					VariableNameNode v = new VariableNameNode();
-					v.setName((String)r.get(1).getSemanticAttribute("lexicalValue").get());
+					IdentifierNode v = new IdentifierNode((String)r.get(1).getSemanticAttribute("lexicalValue").get());
 					n.setName(v);
-
-
 				} else {
-					n.setName((VariableNameNode) r.get(1).getSemanticAttribute("node").get());
+					n.setName((IdentifierNode) r.get(1).getSemanticAttribute("node").get());
 				}
 
 				p.setSemanticAttribute("node", n);
 			}
 		});
-
-		getNonTerminal("variableDeclarator").addSemanticAction( (p, r) -> {
-
-			if (r.size() == 3){
-				VariableNameNode n = new VariableNameNode();
-				n.setName((String)r.get(0).getSemanticAttribute("lexicalValue").get());
-				n.setInitialValue(r.get(2).getAstNode(ExpressionNode.class).get());
-				p.setSemanticAttribute("node", n);
-			}
-
-		});
-
 
 		getNonTerminal("expression").addSemanticAction( (p, r) -> {
 			p.setAstNode(r.get(0).getAstNode().get());		
@@ -596,7 +866,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 		getNonTerminal("ternaryExpression").addSemanticAction( (p, r) -> {
 
-			ConditionalExpressionNode node = new ConditionalExpressionNode();
+			TernaryConditionalExpressionNode node = new TernaryConditionalExpressionNode();
 
 			node.Condition(r.get(0).getAstNode(ExpressionNode.class).get());
 			node.TruePath(r.get(2).getAstNode(ExpressionNode.class).get());
@@ -655,15 +925,25 @@ public class SenseGrammar extends AbstractSenseGrammar{
 			} else {
 
 				ArithmeticNode exp = new ArithmeticNode(resolveOperation(r.get(1)));
-				exp.add(r.get(0).getAstNode().get());
-				exp.add(r.get(2).getAstNode().get());
+				exp.add(ensureExpression(r.get(0).getAstNode().get()));
+				exp.add(ensureExpression(r.get(2).getAstNode().get()));
 				p.setAstNode(exp);
 			}			
 		};
 		getNonTerminal("shiftExpression").addSemanticAction(arithmetics);
-		getNonTerminal("additiveExpression").addSemanticAction(arithmetics);
 		getNonTerminal("multiplicativeExpression").addSemanticAction(arithmetics);
 
+		getNonTerminal("additiveExpression").addSemanticAction((p, r) -> {
+			if (r.size() == 1){
+				p.setAstNode(r.get(0).getAstNode().get());
+			} else {
+
+				ArithmeticNode exp = new ArithmeticNode(resolveOperation(r.get(1)));
+				exp.add(ensureExpression(r.get(0).getAstNode().get()));
+				exp.add(ensureExpression(r.get(2).getAstNode().get()));
+				p.setAstNode(exp);
+			}			
+		});
 		getNonTerminal("unaryExpression").addSemanticAction( (p, r) -> {
 			if (r.size() == 1){
 				p.setAstNode(r.get(0).getAstNode().get());
@@ -679,7 +959,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
 				PosUnaryExpression exp = new PosUnaryExpression(resolveBooleanOperation(r.get(0)));
-				exp.add(r.get(1).getAstNode().get());
+				exp.add(r.get(1).getAstNode(ExpressionNode.class).get());
 				p.setAstNode(exp);
 			}			
 		});
@@ -698,7 +978,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 			} else {
 				AssignmentNode node= new AssignmentNode(resolveAssignmentOperation(r.get(1)));
 				node.setLeft (r.get(0).getAstNode().get());
-				node.setRight (r.get(2).getAstNode().get());
+				node.setRight (ensureExpression(r.get(2).getAstNode().get()));
 
 				p.setAstNode(node);
 			}
@@ -713,6 +993,15 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		getNonTerminal("leftHandSide").addSemanticAction( (p, r) -> {
 			p.setAstNode(r.get(0).getAstNode().get());
 		});
+		
+		getNonTerminal("variableWrite").addSemanticAction( (p, r) -> {
+			if (r.size() == 1 && r.get(0).getAstNode().get() instanceof VariableReadNode){
+				p.setAstNode(r.get(0).getAstNode().get());
+			} else {
+				VariableWriteNode v = new VariableWriteNode((String)r.get(0).getSemanticAttribute("lexicalValue").get());
+				p.setAstNode(v);
+			}
+		});
 
 		getNonTerminal("assignmentOperator").addSemanticAction( (p, r) -> {
 			p.setSemanticAttribute("lexicalValue",r.get(0).getSemanticAttribute("lexicalValue").get());
@@ -726,9 +1015,13 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
 				ClassInstanceCreation node = new ClassInstanceCreation();
-				node.setType (r.get(1).getAstNode(TypeNode.class).get());
+				
+				AstNode t = r.get(1).getAstNode().get();
+				
+				node.setType (ensureTypeNode(t));
+				
 
-				if (r.size() > 3){
+				if (r.size() > 4){
 					AstNode n = r.get(3).getAstNode().get();
 					if (n instanceof ArgumentListNode){
 						node.setArguments ((ArgumentListNode)n);
@@ -760,7 +1053,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				p.setAstNode(node);
 			}
 
-			
+
 		});
 
 		getNonTerminal("methodInvocation").addSemanticAction( (p, r) -> {
@@ -777,21 +1070,21 @@ public class SenseGrammar extends AbstractSenseGrammar{
 					} else {
 						// explicit self access
 					}
-					
+
 					node.setCall(r.get(2).getAstNode(MethodCallNode.class).get());
 				}
 				p.setAstNode(node);
 			}
-			
+
 		});
-		
+
 		getNonTerminal("methodCall").addSemanticAction( (p, r) -> {
 			if (r.size() == 1){
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
 				MethodCallNode node = new MethodCallNode();
 				node.setName((String)r.get(0).getSemanticAttribute("lexicalValue").get());
-				
+
 				if (r.size() > 3){
 					AstNode n = r.get(2).getAstNode().get();
 					if (n instanceof ArgumentListNode){
@@ -801,11 +1094,11 @@ public class SenseGrammar extends AbstractSenseGrammar{
 						args.add(n);
 						node.setArgumentList(args);
 					}
-					
+
 				}
 				p.setAstNode(node);
 			}
-		
+
 		});
 
 
@@ -813,7 +1106,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 			if (r.size()==1){
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
-				FieldAcessNode node = new FieldAcessNode();
+				FieldAccessNode node = new FieldAccessNode();
 				node.setName((String)r.get(2).getSemanticAttribute("lexicalValue").get());
 				p.setAstNode(node);
 			}
@@ -825,7 +1118,12 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		});
 
 		getNonTerminal("primary").addSemanticAction( (p, r) -> {
-			p.setAstNode(r.get(0).getAstNode().get());
+			if (r.size() == 3){
+				p.setAstNode(r.get(0).getAstNode().get());
+			} else {
+				p.setAstNode(r.get(0).getAstNode().get());
+			}
+		
 		});
 
 		getNonTerminal("literal").addSemanticAction( (p, r) -> {
@@ -833,13 +1131,20 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		});
 
 		getNonTerminal("numberLiteral").addSemanticAction( (p, r) -> {
-			
-			String number = (String)((Symbol)r.get(0).getParserTreeNode().getChildren().get(0)).getSemanticAttribute("lexicalValue").get();
 
-			Number n = 0;
+			Symbol s = (Symbol)r.get(0).getParserTreeNode().getChildren().get(0);
+
+			String number = (String)s.getSemanticAttribute("lexicalValue").get();
+
 			NumericValue v = new NumericValue();
-			v.setType(new TypeNode(new QualifiedName("Whole")));
-			v.setValue(n);
+			if (!Character.isDigit(number.charAt(number.length()-1))){
+				final BigDecimal n = new BigDecimal(number.substring(0, number.length() - 1));
+				v.setValue( n, determineType(number)); 
+			} else {
+				final BigDecimal n = new BigDecimal(number);
+				v.setValue( n, determineType(number)); 
+			}
+			
 			p.setAstNode(v);
 
 		});
@@ -847,7 +1152,6 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		getNonTerminal("booleanLiteral").addSemanticAction( (p, r) -> {
 
 			BooleanValue n = new BooleanValue();
-			n.setType(new TypeNode(new QualifiedName("Boolean")));
 			p.setAstNode(n);
 
 		});
@@ -855,7 +1159,6 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		getNonTerminal("stringLiteral").addSemanticAction( (p, r) -> {
 
 			StringValue n = new StringValue();
-			n.setType(new TypeNode(new QualifiedName("String")));
 			p.setAstNode(n);
 
 		});
@@ -863,16 +1166,15 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		getNonTerminal("nullLiteral").addSemanticAction( (p, r) -> {
 
 			NullValue n = new NullValue();
-			n.setType(new TypeNode(new QualifiedName("Any")));
 
 			p.setAstNode(n);
-			
+
 		});
 
 
 		getNonTerminal("superDeclaration").addSemanticAction( (p, r) -> {
 			if (r.get(1).getSemanticAttribute("lexicalValue").isPresent()){
-				QualifiedName n = new QualifiedName();
+				QualifiedNameNode n = new QualifiedNameNode();
 
 				n.append((String)r.get(1).getSemanticAttribute("lexicalValue").get());
 
@@ -905,6 +1207,46 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 		// TODO make alternative auto-merge with other alternatives . implemente GLR splitstak parsing
 
+	}
+
+
+	/**
+	 * @param astNode
+	 * @return
+	 */
+	private ExpressionNode ensureExpression(AstNode node) {
+		if (node instanceof  IdentifierNode){
+			return new VariableReadNode(((IdentifierNode)node).getId());
+		} else {
+			return (ExpressionNode)node;
+		}
+	}
+	
+
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	private QualifiedNameNode ensureQualifiedName(AstNode node) {
+		if (node instanceof QualifiedNameNode){
+			return (QualifiedNameNode)node;
+		} else if (node instanceof IdentifierNode){
+			QualifiedNameNode q = new QualifiedNameNode();
+			q.append(((IdentifierNode)node).getId());
+			return q;
+		} else {
+			throw new RuntimeException();
+		}
+	}
+
+
+	private TypeNode ensureTypeNode(AstNode t) {
+		if (t instanceof TypeNode){
+			return (TypeNode) t;
+		} else {
+			return new TypeNode((QualifiedNameNode)t);
+		}
 	}
 
 
@@ -1007,33 +1349,37 @@ public class SenseGrammar extends AbstractSenseGrammar{
 	}
 
 
-	public static ArithmeticNode.Operation resolveOperation(Symbol symbol){
-
-		String op = (String)((Symbol)symbol.getParserTreeNode().getChildren().get(0)).getSemanticAttribute("lexicalValue").get();
+	public static ArithmeticOperation resolveOperation(Symbol symbol){
+		String op;
+		if (symbol.getSemanticAttribute("lexicalValue").isPresent()){
+			op = (String)symbol.getSemanticAttribute("lexicalValue").get();
+		} else {
+			op = (String)((Symbol)symbol.getParserTreeNode().getChildren().get(0)).getSemanticAttribute("lexicalValue").get();
+		}
 
 		switch (op) {
 		case "+":
-			return ArithmeticNode.Operation.Addition;
+			return ArithmeticOperation.Addition;
 		case "++":
-			return ArithmeticNode.Operation.Increment;
+			return ArithmeticOperation.Increment;
 		case "--":
-			return ArithmeticNode.Operation.Decrement;
+			return ArithmeticOperation.Decrement;
 		case "-":
-			return ArithmeticNode.Operation.Subtraction;
+			return ArithmeticOperation.Subtraction;
 		case "*":
-			return ArithmeticNode.Operation.Multiplication;
+			return ArithmeticOperation.Multiplication;
 		case "/":
-			return ArithmeticNode.Operation.Division;
+			return ArithmeticOperation.Division;
 		case "%":
-			return ArithmeticNode.Operation.Remainder;
+			return ArithmeticOperation.Remainder;
 		case "//":
-			return ArithmeticNode.Operation.FractionDivision;
+			return ArithmeticOperation.FractionDivision;
 		case ">>":
-			return ArithmeticNode.Operation.RightShift;
+			return ArithmeticOperation.RightShift;
 		case "<<":
-			return ArithmeticNode.Operation.LeftShift;
+			return ArithmeticOperation.LeftShift;
 		case ">>>":
-			return ArithmeticNode.Operation.RightPositiveShift;
+			return ArithmeticOperation.SignedRightShift;
 		default:
 			throw new RuntimeException(op + "is not a recognized operator");
 		}

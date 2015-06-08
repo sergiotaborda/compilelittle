@@ -8,6 +8,6 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class ParametersListNode extends AstNode {
+public class ParametersListNode extends SenseAstNode {
 
 }

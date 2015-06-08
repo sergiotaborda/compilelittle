@@ -4,20 +4,19 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
+import compiler.sense.typesystem.Type;
+
 
 /**
  * 
  */
-public class ExpressionNode extends AstNode {
+public class ExpressionNode extends SenseAstNode implements TypedNode {
 
-	private TypeNode type;
+	protected Type type;
 
-	public TypeNode getType() {
+	public Type getType() {
 		return type;
 	}
 
-	public void setType(TypeNode type) {
-		this.type = type;
-	}
+
 }

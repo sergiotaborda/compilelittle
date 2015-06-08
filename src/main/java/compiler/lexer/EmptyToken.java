@@ -135,5 +135,21 @@ public class EmptyToken implements Token {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isWholeNumber() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDecimalNumber() {
+		return false;
+	}
+
 
 }

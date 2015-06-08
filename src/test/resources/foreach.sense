@@ -1,0 +1,10 @@
+package packageName;
+
+class SenseProgram {
+
+	void forEach (){
+	 	for (Int i in a){
+			continue;
+		}	
+	}
+}

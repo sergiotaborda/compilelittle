@@ -49,6 +49,6 @@ public class ListTokenStream implements TokenStream {
 	}
 
 	public String toString(){
-		return this.tokens.subList(position, this.tokens.size()).toString();
+		return this.tokens.subList(position + 1, this.tokens.size()).toString();
 	}
 }

@@ -64,14 +64,16 @@ public class BottomUpParser implements Parser{
 			    		
 			    		StringBuilder s = new StringBuilder();
 			    		for (Map.Entry<Production, LookupTableAction> m : row){
-			    			if (!(m.getValue() instanceof ExceptionAction) && m.getKey().isTerminal()){
+			    			if (!(m.getValue() instanceof ExceptionAction) && (m.getKey().isTerminal() || m.getKey().isAutoNonTerminal())){
 			    				s.append(m.getKey());
 			    				s.append(", ");
 			    			}
 			    			
 			    		}
-			    		s.deleteCharAt(s.length()-1);
-			    		s.deleteCharAt(s.length()-1);
+			    		if (s.length() > 0){
+			    			s.deleteCharAt(s.length()-1);
+			    			s.deleteCharAt(s.length()-1);
+			    		}
 			    		throw new RuntimeException("Token: '" +  token.getText().get() + "' is not excepted at position " + token.getPosition().getLineNumber() + ":" + token.getPosition().getColumnNumber() + " expected one of " + s + "(state " + stateItem + " )");
 
 			    	}

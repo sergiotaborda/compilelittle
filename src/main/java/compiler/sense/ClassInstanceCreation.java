@@ -3,6 +3,8 @@
  */
 package compiler.sense;
 
+import compiler.sense.typesystem.Type;
+
 
 /**
  * 
@@ -24,6 +26,10 @@ public class ClassInstanceCreation extends ExpressionNode{
 	 */
 	public void setArguments(ArgumentListNode argumentList) {
 		this.argumentList = argumentList;
+	}
+	
+	public Type getType() {
+		return new Type(type.getName());
 	}
 
 }

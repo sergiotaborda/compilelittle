@@ -158,7 +158,8 @@ public class ProductionItem {
 	}
 
 	private boolean equals(ProductionItem other){
-		return this.nextReadablePosition == other.nextReadablePosition 
+		return this.root.equals(other.root) 
+				&& this.nextReadablePosition == other.nextReadablePosition 
 				&& this.productions.size() == other.productions.size()
 				&& this.lookAhead.size() == other.lookAhead.size()
 				&& this.lookAhead.equals(other.lookAhead)
@@ -167,7 +168,8 @@ public class ProductionItem {
 	}
 
 	public boolean equalsIgnoreLookAhead(ProductionItem other) {
-		return this.nextReadablePosition == other.nextReadablePosition 
+		return this.root.equals(other.root) 
+				&& this.nextReadablePosition == other.nextReadablePosition 
 				&& this.productions.size() == other.productions.size()
 				&& Arrays.equals(this.productions.toArray(), ((ProductionItem)other).productions.toArray());
 	}

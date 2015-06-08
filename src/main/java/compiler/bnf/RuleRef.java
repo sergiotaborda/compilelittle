@@ -8,7 +8,7 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class RuleRef extends AstNode {
+public class RuleRef extends BnfAstNode {
 
 	private String name;
 

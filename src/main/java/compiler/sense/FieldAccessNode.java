@@ -3,12 +3,11 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class FieldAcessNode extends AstNode {
+public class FieldAccessNode extends NeedTypeCalculationNode {
 
 	private String name;
 

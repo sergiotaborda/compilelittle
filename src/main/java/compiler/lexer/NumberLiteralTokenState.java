@@ -24,9 +24,22 @@ public class NumberLiteralTokenState extends TokenState {
 	 * @return
 	 */
 	public ParseState recieve(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
-		if ( grammar.isDigit(c)){
+		if ( c == '.' && builder.toString().contains(".")){
+			tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+			return new TokenState(grammar).recieve(pos, c, tokensQueue);
+		} else if ( grammar.isDigit(c)){
 			builder.append(c);
-		} else if (grammar.isStopCharacter(c)){
+		} else if (grammar.isAlphabetic(c)){
+			if (builder.charAt(builder.length() - 1) == '.'){
+				builder.deleteCharAt(builder.length() - 1);
+				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+				tokensQueue.accept(grammar.terminalMatch(pos,".").get());
+			} else {
+				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+			}
+			
+			return new TokenState(grammar).recieve(pos, c, tokensQueue);
+		} else if (grammar.isStopCharacter(c) ){
 			tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
 			return new TokenState(grammar).recieve(pos, c, tokensQueue);
 		 } else {

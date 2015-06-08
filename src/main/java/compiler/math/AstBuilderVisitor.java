@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.parser.nodes.ParserTreeVisitor;
 import compiler.syntax.AstNode;
-import compiler.trees.Node;
 
 /**
  * 
@@ -45,7 +44,7 @@ public class AstBuilderVisitor implements ParserTreeVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(Node<ParserTreeNode> node) {
+	public void visitBeforeChildren(ParserTreeNode node) {
 		AstNode astNode = new AstNode();
 		astNode.setProperty("parsed", node);
 		stack.push(astNode);
@@ -55,7 +54,7 @@ public class AstBuilderVisitor implements ParserTreeVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitAfterChildren(Node<ParserTreeNode> node) {
+	public void visitAfterChildren(ParserTreeNode node) {
 //		ParserTreeNode me = (ParserTreeNode)node;
 //		
 //		int size = node.getChildren().size();

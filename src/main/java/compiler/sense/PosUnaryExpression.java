@@ -4,6 +4,7 @@
 package compiler.sense;
 
 import compiler.sense.BooleanOperatorNode.Operation;
+import compiler.sense.typesystem.Type;
 
 /**
  * 
@@ -18,6 +19,10 @@ public class PosUnaryExpression extends ExpressionNode {
 	 */
 	public PosUnaryExpression(Operation operation) {
 		this.operation = operation;
+	}
+	
+	public Type getType(){
+		return ((ExpressionNode)this.getChildren().get(0)).getType();
 	}
 
 }

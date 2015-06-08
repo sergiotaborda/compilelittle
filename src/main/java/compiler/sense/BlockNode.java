@@ -3,11 +3,12 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class BlockNode extends AstNode {
+public class BlockNode extends SenseAstNode {
 
+	
+	public BlockNode(){}
 }

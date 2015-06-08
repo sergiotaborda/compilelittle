@@ -3,12 +3,11 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
  */
-public class MethodNode extends AstNode {
+public class MethodNode extends SenseAstNode {
 
 	private TypeNode returnType;
 	private String name;
@@ -20,6 +19,7 @@ public class MethodNode extends AstNode {
 	}
 	public void setReturnType(TypeNode returnType) {
 		this.returnType = returnType;
+		this.add(returnType);
 	}
 	public String getName() {
 		return name;
@@ -32,6 +32,7 @@ public class MethodNode extends AstNode {
 	}
 	public void setParameters(ParametersListNode parameters) {
 		this.parameters = parameters;
+		this.add(parameters);
 	}
 	public BlockNode getBlock() {
 		return block;

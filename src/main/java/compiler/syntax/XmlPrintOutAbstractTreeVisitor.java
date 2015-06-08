@@ -34,7 +34,7 @@ public class XmlPrintOutAbstractTreeVisitor implements Visitor<AstNode> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(Node<AstNode> node) {
+	public void visitBeforeChildren(AstNode node) {
 		tabs++;
 		printTabs();
 		if (node !=null){
@@ -58,7 +58,7 @@ public class XmlPrintOutAbstractTreeVisitor implements Visitor<AstNode> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitAfterChildren(Node<AstNode> node) {
+	public void visitAfterChildren(AstNode node) {
 		
 		if (!node.getChildren().isEmpty()){
 			printTabs();
