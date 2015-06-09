@@ -12,7 +12,7 @@ class TokenStreamStackInputStreamAdapter implements StackInputStream {
 
 	private TokenStream stream;
 	TokenStackItem current;
-	
+
 	/**
 	 * Constructor.
 	 * @param tokens
@@ -20,7 +20,7 @@ class TokenStreamStackInputStreamAdapter implements StackInputStream {
 	public TokenStreamStackInputStreamAdapter(TokenStream tokens) {
 		stream = tokens;
 	}
-	
+
 
 	/**
 	 * Constructor.
@@ -65,5 +65,16 @@ class TokenStreamStackInputStreamAdapter implements StackInputStream {
 
 	public String toString(){
 		return current + "#" + stream;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof TokenStreamStackInputStreamAdapter) && equalsTokenStreamStackInputStreamAdapter((TokenStreamStackInputStreamAdapter)obj); 
+	}
+
+
+	private boolean equalsTokenStreamStackInputStreamAdapter(TokenStreamStackInputStreamAdapter other) {
+		return this.current.equals(other.current) && this.stream.equals(other.stream);
 	}
 }

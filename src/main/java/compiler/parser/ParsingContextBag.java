@@ -4,8 +4,10 @@
 package compiler.parser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import compiler.lexer.TokenStream;
 
@@ -43,12 +45,20 @@ public class ParsingContextBag implements Iterable<ParsingContext>{
 	}
 
 	void reset(){
+		Set<ParsingContext> visited = new HashSet<>();
 		for (Iterator<ParsingContext> it = contexts.iterator();it.hasNext();){
-			if (!it.next().isValid()){
+			final ParsingContext next = it.next();
+			if (!next.isValid()){
+				it.remove();
+			}
+			if (!visited.add(next)){
 				it.remove();
 			}
 		}
 		count = contexts.size();
+		if (count > 1000){
+			throw new RuntimeException("Infinite loop");
+		}
 	}
 	
 	void clear(){
@@ -65,7 +75,7 @@ public class ParsingContextBag implements Iterable<ParsingContext>{
 	public void replace(BackedParsingContext remove,List<ParsingContext> add) {
 		 remove.invalidate();
 		 for (ParsingContext ctx : add){
-			 contexts.add(ctx);
+			contexts.add(ctx);	
 		 }
 	}
 

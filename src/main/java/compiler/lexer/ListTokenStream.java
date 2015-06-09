@@ -3,6 +3,7 @@
  */
 package compiler.lexer;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,19 +11,19 @@ import java.util.List;
  */
 public class ListTokenStream implements TokenStream {
 
-	
+
 	private List<Token> tokens;
 	private int position;
-	
+
 	public ListTokenStream(List<Token> tokens){
 		this(tokens, -1);
 	}
-	
-	 ListTokenStream(List<Token> tokens, int startPosition){
+
+	ListTokenStream(List<Token> tokens, int startPosition){
 		this.tokens = tokens;
 		this.position = startPosition;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -50,5 +51,15 @@ public class ListTokenStream implements TokenStream {
 
 	public String toString(){
 		return this.tokens.subList(position + 1, this.tokens.size()).toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof ListTokenStream) && equalsListTokenStream((ListTokenStream)obj); 
+	}
+
+
+	private boolean equalsListTokenStream(ListTokenStream other) {
+		return this.position == other.position && this.tokens == other.tokens;
 	}
 }

@@ -48,13 +48,21 @@ public class BackedParsingContext implements ParsingContext {
 	}
 	
 	public int hashCode() {
-		return id;
+		return deferredSemanticActions.size();
 	};
 	
 	public boolean equals(Object other){
-		return other instanceof BackedParsingContext && ((BackedParsingContext)other).id == this.id;
+		return other instanceof BackedParsingContext && equals((BackedParsingContext)other);
 	}
-
+	
+	private boolean equals(BackedParsingContext other){
+		return other.id == this.id || 
+				(deferredSemanticActions.size() == other.deferredSemanticActions.size() 
+				&& input.equals(other.input)
+				&& stack.equals(other.stack)
+				);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

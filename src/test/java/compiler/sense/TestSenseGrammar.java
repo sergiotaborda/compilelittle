@@ -193,7 +193,7 @@ public class TestSenseGrammar {
 
 	}
 	
-	@Test  @Ignore
+	@Test  
 	public void testCompilerProgram() throws IOException {
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.sense");
 		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.java");

@@ -32,6 +32,20 @@ public class TokenStackItem extends SemanticStackItem  {
 		return token.getText().orElse("");
 	}
 
-
-
+		
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof TokenStackItem) && equalsTokenStackItem((TokenStackItem)obj); 
+	}
+	
+	
+	private boolean equalsTokenStackItem(TokenStackItem other) {
+		return this.token.equals(other.token);
+	}
+	
+	public int hashCode(){
+		return token.hashCode();
+	}
 }
+
+
