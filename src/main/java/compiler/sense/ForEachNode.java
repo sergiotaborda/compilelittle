@@ -19,6 +19,7 @@ public class ForEachNode extends StatementNode {
 	public void setIterableVariable(
 			VariableDeclarationNode variableDeclarationNode) {
 		this.variableDeclarationNode = variableDeclarationNode;
+		this.add(variableDeclarationNode);
 	}
 
 	/**
@@ -26,6 +27,7 @@ public class ForEachNode extends StatementNode {
 	 */
 	public void setContainer(ExpressionNode expressionNode) {
 		this.container = expressionNode;
+		this.add(container);
 	}
 
 	/**
@@ -33,6 +35,32 @@ public class ForEachNode extends StatementNode {
 	 */
 	public void setBlock(BlockNode blockNode) {
 		this.blockNode = blockNode; 
+		this.add(blockNode);
 	}
 
+	/**
+	 * Obtains {@link VariableDeclarationNode}.
+	 * @return the variableDeclarationNode
+	 */
+	public VariableDeclarationNode getVariableDeclarationNode() {
+		return variableDeclarationNode;
+	}
+
+	/**
+	 * Obtains {@link ExpressionNode}.
+	 * @return the container
+	 */
+	public ExpressionNode getContainer() {
+		return container;
+	}
+
+	/**
+	 * Obtains {@link BlockNode}.
+	 * @return the blockNode
+	 */
+	public BlockNode getBlockNode() {
+		return blockNode;
+	}
+
+	
 }

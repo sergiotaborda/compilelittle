@@ -4,7 +4,6 @@
 package compiler.sense;
 
 import compiler.sense.typesystem.Type;
-import compiler.syntax.AstNode;
 
 /**
  * 
@@ -42,7 +41,7 @@ public class TypeNode extends SenseAstNode implements TypedNode{
 	 * @return
 	 */
 	public String getName() {
-		return name.toString();
+		return isVoid ? "sense.Void" : name.toString();
 	}
 
 	/**

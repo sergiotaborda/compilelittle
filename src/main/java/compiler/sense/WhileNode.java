@@ -7,10 +7,10 @@ package compiler.sense;
 /**
  * 
  */
-public class WhileNode extends StatementNode {
+public class WhileNode extends StatementNode implements ConditionalStatement {
 
 	private BlockNode block;
-	private ExpressionNode condition;
+	private ExpressionNode conditional;
 
 	/**
 	 * @param astNode
@@ -24,8 +24,24 @@ public class WhileNode extends StatementNode {
 	 * @param blockNode
 	 */
 	public void setCondition(ExpressionNode exp) {
-		condition = exp;
+		conditional = exp;
 		this.add(exp);
+	}
+
+	/**
+	 * Obtains {@link BlockNode}.
+	 * @return the block
+	 */
+	public BlockNode getBlock() {
+		return block;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ExpressionNode getCondition() {
+		return conditional;
 	}
 
 }

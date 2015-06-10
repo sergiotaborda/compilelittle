@@ -3,6 +3,7 @@
  */
 package compiler.sense;
 
+
 /**
  * 
  */
@@ -16,6 +17,8 @@ public interface ScopedVariableDefinitionNode extends TypedNode {
 	/**
 	 * @return
 	 */
-	TypedNode getInicializer();
+	TypedNode getInitializer();
 
+	
+	void setInitializer(ExpressionNode node);
 }

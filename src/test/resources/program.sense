@@ -2,57 +2,62 @@ package packageName.subpackageName;
 
 import java.util.Math;
 
-class SenseProgram extends Application <SenseProgram> {
+class SenseProgram extends Any {
 
 	Int x = new Int(1);
-	Whole y = 2;
+	Long y = 2;
 	String s;
 	
-	void main (Array<String> a){
+	void main (Array<String> args){
 		 try {
-			Int f = 8;
+			Int f = -8;
 		
-			while (true) {
+		
+			while (false ^ true) {
 	
 				other(5,8);
 				continue;
 			}
 			
-			for (Int i in collection){
+			for (String arg in args){
 				continue;
 			}
-			
+
 			if (true){
+			   Decimal c = 8;
 			   doit();
 			}
 			
-			if (!true){
+			if (f == y){
 				arrangeit();
 			} else {
+				Real c = 8;
 				dontarrangeit();
 			}
 			method(3, ++4);
 			
-			switch(a){
+			switch(args){
 				case (1) {
 					arrangeit();
 				}
 				case (2){
-					Decimal c = 8;
+					Float c = 8;
 					break;
 				}
 				default {
 					somemore();
 				}
 			}
+			
 		 } catch (Exception e){
 			 method(3, 4 % 8);
 		 } finally {
-		     return 9;
+		     s = "Error";
+		     String g = s[9];
 		 }
 	}
 	
-	Int addIt (){
-	 return 8 +  6 * 2 % 4;
+	Long other (Int u , Int h){
+	   return u +  6 * y % h;
 	}
 }

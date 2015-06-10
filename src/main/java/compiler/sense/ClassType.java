@@ -35,6 +35,14 @@ public class ClassType extends SenseAstNode {
 		this.add(upperType);
 	}
 
+	/**
+	 * Obtains {@link TypeNode}.
+	 * @return the superType
+	 */
+	public TypeNode getSuperType() {
+		return superType;
+	}
+
 
 
 }

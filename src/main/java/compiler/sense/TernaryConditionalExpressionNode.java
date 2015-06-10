@@ -9,16 +9,18 @@ import compiler.sense.typesystem.Type;
 /**
  * 
  */
-public class TernaryConditionalExpressionNode extends ExpressionNode {
+public class TernaryConditionalExpressionNode extends ExpressionNode implements ConditionalStatement{
 	
 	ExpressionNode thenExpression;
 	ExpressionNode elseExpression;
+	private ExpressionNode conditional;
 	
 	/**
 	 * @param astNode
 	 */
-	public void Condition(ExpressionNode exp) {
-		this.add(exp);
+	public void Condition(ExpressionNode conditional) {
+		this.conditional = conditional;
+		this.add(conditional);
 	}
 
 	/**
@@ -39,5 +41,13 @@ public class TernaryConditionalExpressionNode extends ExpressionNode {
 
 	public Type getType() {
 		return thenExpression.getType().or(elseExpression.getType());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ExpressionNode getCondition() {
+		return conditional;
 	}
 }

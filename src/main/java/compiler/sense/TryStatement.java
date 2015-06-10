@@ -20,6 +20,7 @@ public class TryStatement extends SenseAstNode {
 	 */
 	public void setInstructions(BlockNode blockNode) {
 		this.instructions = blockNode;
+		this.add(blockNode);
 	}
 
 	/**
@@ -27,6 +28,7 @@ public class TryStatement extends SenseAstNode {
 	 */
 	public void setResource(ExpressionNode expressionNode) {
 		this.resource = expressionNode;
+		this.add(expressionNode);
 	}
 
 	/**
@@ -34,6 +36,7 @@ public class TryStatement extends SenseAstNode {
 	 */
 	public void setFinally(BlockNode blockNode) {
 		this.finalInstructions = blockNode;
+		this.add(finalInstructions);
 	}
 
 	/**
@@ -41,6 +44,7 @@ public class TryStatement extends SenseAstNode {
 	 */
 	public void setCatchOptions(CatchOptionsNode catchOptionsNode) {
 		this.catchOptions = catchOptionsNode;
+		this.add(catchOptionsNode);
 	}
 
 }

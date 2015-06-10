@@ -20,7 +20,20 @@ public class PosArithmeticUnaryExpression extends ExpressionNode {
 		this.operation = operation;
 	}
 
-	public Type getType(){
-		return ((ExpressionNode)this.getChildren().get(0)).getType();
+	/**
+	 * Obtains {@link ArithmeticOperation}.
+	 * @return the operation
+	 */
+	public ArithmeticOperation getOperation() {
+		return operation;
 	}
+
+	/**
+	 * @param returningType
+	 */
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
+	
 }

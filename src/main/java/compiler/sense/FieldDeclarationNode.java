@@ -5,7 +5,6 @@ package compiler.sense;
 
 import compiler.parser.IdentifierNode;
 import compiler.sense.typesystem.Type;
-import compiler.syntax.AstNode;
 
 /**
  * 
@@ -57,8 +56,16 @@ public class FieldDeclarationNode extends SenseAstNode implements ScopedVariable
 	 * Obtains {@link ExpressionNode}.
 	 * @return the inicializer
 	 */
-	public ExpressionNode getInicializer() {
+	public ExpressionNode getInitializer() {
 		return inicializer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setInitializer(ExpressionNode node) {
+		this.inicializer = node;
 	}
 	
 	

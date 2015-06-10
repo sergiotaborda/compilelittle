@@ -34,18 +34,20 @@ public class VariableDeclarationNode extends SenseAstNode implements ScopedVaria
 		this.name = name.getId();
 	}
 
-	/**
-	 * @param expressionNode
-	 */
-	public void setInicializer(ExpressionNode expressionNode) {
-		this.inicializer = expressionNode;
-		this.add(expressionNode);
-	}
 
 	/**
 	 * 
 	 */
-	public ExpressionNode getInicializer() {
+	public ExpressionNode getInitializer() {
 		return inicializer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setInitializer(ExpressionNode node) {
+		this.inicializer = node;
+		this.add(node);
 	}
 }

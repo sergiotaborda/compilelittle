@@ -3,7 +3,6 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
@@ -18,6 +17,7 @@ public class SwitchNode extends SenseAstNode {
 	 */
 	public void setCandidate(ExpressionNode exp) {
 		this.candidate = exp;
+		this.add(exp);
 	}
 
 	/**
@@ -25,6 +25,23 @@ public class SwitchNode extends SenseAstNode {
 	 */
 	public void setOptions(SwitchOptions switchOptions) {
 		this.switchOptions = switchOptions;
+		this.add(switchOptions);
+	}
+
+	/**
+	 * Obtains {@link ExpressionNode}.
+	 * @return the candidate
+	 */
+	public ExpressionNode getCandidate() {
+		return candidate;
+	}
+
+	/**
+	 * Obtains {@link SwitchOptions}.
+	 * @return the switchOptions
+	 */
+	public SwitchOptions getSwitchOptions() {
+		return switchOptions;
 	}
 
 }

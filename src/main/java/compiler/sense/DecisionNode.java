@@ -7,7 +7,7 @@ package compiler.sense;
 /**
  * 
  */
-public class DecisionNode extends StatementNode {
+public class DecisionNode extends StatementNode implements ConditionalStatement {
 
 	private ExpressionNode condition;
 	private BlockNode trueBlock;
@@ -26,6 +26,7 @@ public class DecisionNode extends StatementNode {
 	 */
 	public void setTruePath(BlockNode trueBlock) {
 		this.trueBlock = trueBlock;
+		this.add(trueBlock);
 	}
 
 	/**
@@ -33,6 +34,14 @@ public class DecisionNode extends StatementNode {
 	 */
 	public void setFalsePath(BlockNode falseBlock) {
 		this.falseBlock = falseBlock;
+		this.add(falseBlock);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ExpressionNode getCondition() {
+		return condition;
+	}
 }
