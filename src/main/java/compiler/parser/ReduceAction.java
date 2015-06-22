@@ -6,22 +6,25 @@ import compiler.parser.nodes.ParserTreeNode;
 
 public class ReduceAction implements LookupTableAction {
 
-	private ProductionItem target;
+	private int targetId;
 	private LookupTable table;
 
-	public ReduceAction(ProductionItem target, LookupTable table) { 
-		this.target = target;
+	public ReduceAction(int targetId, LookupTable table) { 
+		this.targetId = targetId;
 		this.table = table;
 	}
 
 	public String toString(){
-		return "R[" + target.toString() + "]";
+		return "R" + targetId;
 	}
 
 	@Override
 	public LookupTableActionResult operate(ParsingContext ctx) {
 
 		try {
+			
+			ProductionItem target = table.getFinalProductionItem(targetId);
+			
 			ProductionStackItem left = new ProductionStackItem(target.root);
 
 			ParserStack stack = ctx.stack();

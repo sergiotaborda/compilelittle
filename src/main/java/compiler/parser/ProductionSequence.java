@@ -4,6 +4,7 @@
 package compiler.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,25 +41,6 @@ public class ProductionSequence extends AbstractProduction implements Iterable<P
 	public Production get(int index){
 		return sequence.get(index);
 	}
-//
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	@Override
-//	public void execute(ParserContext ctx, Consumer<ParserContext> tail) {
-//		for(int i =0; i < sequence.size();i++){
-//			Production currentProduction = sequence.get(i);
-//			ParserContext newCtx = ctx.duplicate(currentProduction);
-//			currentProduction.execute(newCtx, tail);
-//			if (!newCtx.isDerivationComplete()){
-//				return;
-//			} else {
-//				ctx.merge(newCtx);
-//				ctx.attach(newCtx.popRule());
-//			}
-//		}
-//		tail.accept(ctx);
-//	}
 
 	public String toString(){
 		return this.getLabel();
@@ -99,5 +81,18 @@ public class ProductionSequence extends AbstractProduction implements Iterable<P
 		return sequence.get(0);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof ProductionSequence) && equalsNonTerminal((ProductionSequence)obj); 
+	}
+
+
+	private boolean equalsNonTerminal(ProductionSequence other) {
+		return Arrays.equals(this.sequence.toArray(), other.sequence.toArray());
+	}
+
+	public int hashCode (){
+		return this.sequence.size();
+	}
 
 }

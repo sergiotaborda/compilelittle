@@ -1,17 +1,36 @@
+/**
+* This is a test program file
+*/
 package packageName.subpackageName;
 
 import java.util.Math;
 
 class SenseProgram extends Any {
 
+
 	Int x = new Int(1);
 	Long y = 2;
 	String s;
 	
+	// intervals
+	// operador !==  not reference equals
+	// interfaces
+	// var modifiers
+	// metadata read from .class
+	// definition of classpath
+	// define simple primitive classes in sense
+	// identify dead code
+	// identify out of range literals
 	void main (Array<String> args){
+
 		 try {
+		 
+		 	for (Natural i in 2 .. 3){
+				continue;
+			}
+			
 			Int f = -8;
-		
+			// Natural f = -8; is an error because naturals cannot be negative
 		
 			while (false ^ true) {
 	
@@ -34,6 +53,25 @@ class SenseProgram extends Any {
 				Real c = 8;
 				dontarrangeit();
 			}
+			
+			if (f == y){
+				arrangeit();
+			} else if (x != y) {
+				Real c = 8;
+				dontarrangeit();
+			} else if (7 != 6) {
+				Real c = 8;
+				dontarrangeit();
+			} else {
+				dontarrangeit();
+			}
+			
+			if ("s" == "u"){
+				arrangeit();
+			} else if (x != y) {
+				dontarrangeit();
+			}
+			
 			method(3, ++4);
 			
 			switch(args){
@@ -55,9 +93,10 @@ class SenseProgram extends Any {
 		     s = "Error";
 		     String g = s[9];
 		 }
+		 
 	}
 	
-	Long other (Int u , Int h){
+	public Long other (Int u , Int h){
 	   return u +  6 * y % h;
 	}
 }

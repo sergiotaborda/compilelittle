@@ -13,6 +13,7 @@ import java.util.List;
 public class Method {
 
 	private final String name;
+	private boolean isStatic = false;
 	private final Type declaringType;
 	private final Type returningType;
 	private final List<MethodParameter> parameters;
@@ -24,6 +25,29 @@ public class Method {
 		this.parameters = Arrays.asList(parameters);
 	}
 	
+	
+	public String toString(){
+		return declaringType.getName() + "." + name;
+	}
+	
+	/**
+	 * Obtains {@link boolean}.
+	 * @return the isStatic
+	 */
+	public boolean isStatic() {
+		return isStatic;
+	}
+
+
+	/**
+	 * Atributes {@link boolean}.
+	 * @param isStatic the isStatic to set
+	 */
+	public void setStatic(boolean isStatic) {
+		this.isStatic = isStatic;
+	}
+
+
 	/**
 	 * @return
 	 */

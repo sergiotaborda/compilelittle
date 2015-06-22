@@ -13,7 +13,7 @@ public class MethodNode extends SenseAstNode {
 	private String name;
 	private ParametersListNode parameters;
 	private BlockNode block;
-	
+	private AnnotationListNode annotationListNode;
 	public TypeNode getReturnType() {
 		return returnType;
 	}
@@ -21,6 +21,7 @@ public class MethodNode extends SenseAstNode {
 		this.returnType = returnType;
 		this.add(returnType);
 	}
+	
 	public String getName() {
 		return name;
 	}
@@ -41,6 +42,14 @@ public class MethodNode extends SenseAstNode {
 		this.block = block;
 		this.add(block);
 	}
+	public AnnotationListNode getAnnotationListNode() {
+		return annotationListNode;
+	}
+	public void setAnnotationListNode(AnnotationListNode annotationListNode) {
+		this.annotationListNode = annotationListNode;
+		this.add(annotationListNode);
+	}
+
 	
 	
 }

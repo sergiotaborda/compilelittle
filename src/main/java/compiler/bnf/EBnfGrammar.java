@@ -7,11 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import compiler.AbstractGrammar;
-import compiler.parser.BottomUpParser;
 import compiler.parser.Identifier;
-import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.NonTerminal;
-import compiler.parser.Parser;
 import compiler.parser.Text;
 import compiler.syntax.AstNode;
 
@@ -24,10 +21,6 @@ public class EBnfGrammar extends AbstractGrammar {
 		super();
 	}
 
-	public Parser parser() {
-		return new BottomUpParser(this, new LALRAutomatonFactory());
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */

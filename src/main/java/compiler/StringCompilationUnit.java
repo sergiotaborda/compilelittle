@@ -18,4 +18,12 @@ public class StringCompilationUnit  implements CompilationUnit{
 		return new StringReader(unit);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getName() {
+		return  unit;
+	}
+
 }

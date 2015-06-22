@@ -6,6 +6,8 @@ package compiler.parser;
 import java.util.HashSet;
 import java.util.Set;
 
+import compiler.trees.VisitorNext;
+
 /**
  * 
  */

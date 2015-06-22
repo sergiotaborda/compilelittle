@@ -6,6 +6,7 @@ package compiler.lexer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import compiler.CompilationUnit;
 import compiler.CompilationUnitSet;
@@ -29,6 +30,14 @@ public class ListCompilationUnitSet implements CompilationUnitSet {
 	
 	public void add(CompilationUnit unit){
 		list.add(unit);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Stream<CompilationUnit> stream() {
+		return list.stream();
 	}
 
 }

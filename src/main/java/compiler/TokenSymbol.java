@@ -14,5 +14,8 @@ public enum TokenSymbol {
 	Operator, 
 	KeyWord, 
 	LiteralWholeNumber,
-	LiteralDecimalNumber
+	LiteralDecimalNumber,
+	StartMultilineComment,
+	EndMultilineComment,
+	StartInlineComment, 
 }

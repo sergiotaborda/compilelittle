@@ -3,7 +3,6 @@
  */
 package compiler.parser;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import compiler.FirstFollowTable;
 import compiler.FirstFollowTableCalculator;
@@ -29,8 +27,8 @@ public abstract class AbstractAutomaton implements ItemStateAutomaton {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public LookupTable produceLookupTable(Grammar grammar) {
-
+	public ItemStatesLookupTable produceLookupTable(Grammar grammar) {
+		long mark = System.currentTimeMillis();
 		FirstFollowTable firstFollowTable = new FirstFollowTableCalculator().calculateFrom(grammar.getStartProduction());
 
 		ClosureCalculator closureCalculator = new CachedClosureCalculator();
@@ -38,13 +36,18 @@ public abstract class AbstractAutomaton implements ItemStateAutomaton {
 
 		recountStates(states);
 
+		long time = System.currentTimeMillis() - mark;
+		
+		System.out.println("Produce Table " + time + " ms");
 		return createTable( grammar,firstFollowTable,states);
 	}
 
 
-	private LookupTable createTable(Grammar grammar,FirstFollowTable firstFollowTable, List<ItemState> states) {
-		LookupTable table = new LookupTable(states);
-
+	private ItemStatesLookupTable createTable(Grammar grammar,FirstFollowTable firstFollowTable, List<ItemState> states) {
+		
+		ItemStatesLookupTable table = new ItemStatesLookupTable(grammar, states);
+		long mark = System.currentTimeMillis();
+		
 		for(ItemState current : states){
 			Set<Entry<Production, ItemState>> transformations = current.getTransformations();
 
@@ -78,11 +81,14 @@ public abstract class AbstractAutomaton implements ItemStateAutomaton {
 
 
 		}
+		long time = System.currentTimeMillis() - mark;
+		
+		System.out.println("Creation of Table " + time + " ms");
 		return table;
 	}
 
 
-	protected void createReduceActions(Grammar grammar,FirstFollowTable firstFollowTable, LookupTable table, ItemState current) {
+	protected void createReduceActions(Grammar grammar,FirstFollowTable firstFollowTable, ItemStatesLookupTable table, ItemState current) {
 		for (ProductionItem item : current){
 			if (item.isFinal()){
 

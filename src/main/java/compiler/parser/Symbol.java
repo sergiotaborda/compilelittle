@@ -16,4 +16,9 @@ public interface Symbol {
 	public void setAstNode(AstNode node);
 	
 	public ParserTreeNode getParserTreeNode();
+
+	/**
+	 * @return
+	 */
+	public String getLexicalValue();
 }

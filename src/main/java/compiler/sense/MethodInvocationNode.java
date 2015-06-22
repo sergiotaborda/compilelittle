@@ -18,6 +18,7 @@ public class MethodInvocationNode extends NeedTypeCalculationNode {
 	 */
 	public void setCall(MethodCallNode call) {
 		this.call = call;
+		this.add(call);
 	}
 
 	/**
@@ -25,6 +26,7 @@ public class MethodInvocationNode extends NeedTypeCalculationNode {
 	 */
 	public void setAccess(AstNode node) {
 		this.access = node;
+		this.add(node);
 	}
 
 	/**

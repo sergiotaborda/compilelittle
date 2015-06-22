@@ -44,7 +44,7 @@ public class SplitAction  implements LookupTableAction{
 	
 	public String toString()
 	{
-		return "SPLIT <|>" + list.toString();
+		return "T" + list.toString();
 	}
 	
 

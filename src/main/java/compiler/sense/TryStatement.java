@@ -15,6 +15,22 @@ public class TryStatement extends SenseAstNode {
 	private BlockNode finalInstructions;
 	private CatchOptionsNode catchOptions;
 
+	public BlockNode getInstructions(){
+		return instructions;
+	}
+	
+	public ExpressionNode getResource(){
+		return resource;
+	}
+	
+	public BlockNode getfinalInstructions(){
+		return finalInstructions;
+	}
+	
+	public CatchOptionsNode getCatchOptions(){
+		return catchOptions;
+	}
+	
 	/**
 	 * @param blockNode
 	 */

@@ -3,6 +3,8 @@
  */
 package compiler.sense;
 
+import compiler.syntax.AstNode;
+
 
 /**
  * 
@@ -11,7 +13,7 @@ public class DecisionNode extends StatementNode implements ConditionalStatement 
 
 	private ExpressionNode condition;
 	private BlockNode trueBlock;
-	private BlockNode falseBlock;
+	private AstNode falseBlock;
 
 	/**
 	 * @param expressionNode
@@ -32,7 +34,7 @@ public class DecisionNode extends StatementNode implements ConditionalStatement 
 	/**
 	 * @param blockNode
 	 */
-	public void setFalsePath(BlockNode falseBlock) {
+	public void setFalsePath(AstNode falseBlock) {
 		this.falseBlock = falseBlock;
 		this.add(falseBlock);
 	}
@@ -44,4 +46,22 @@ public class DecisionNode extends StatementNode implements ConditionalStatement 
 	public ExpressionNode getCondition() {
 		return condition;
 	}
+
+	/**
+	 * Obtains {@link BlockNode}.
+	 * @return the trueBlock
+	 */
+	public BlockNode getTrueBlock() {
+		return trueBlock;
+	}
+
+	/**
+	 * Obtains {@link AstNode}.
+	 * @return the falseBlock
+	 */
+	public AstNode getFalseBlock() {
+		return falseBlock;
+	}
+	
+	
 }

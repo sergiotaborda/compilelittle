@@ -18,6 +18,8 @@ import compiler.StringCompilationUnit;
 import compiler.lexer.ListCompilationUnitSet;
 import compiler.parser.BottomUpParser;
 import compiler.parser.EOFTerminal;
+import compiler.parser.ItemStatesLookupTable;
+import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LookupTable;
 import compiler.parser.MatchableProduction;
 import compiler.parser.Production;
@@ -61,7 +63,7 @@ public class TestReferenceGrammar {
 
 		ReferenceGrammar g = new ReferenceGrammar();
 		
-		LookupTable table = ((BottomUpParser)g.parser()).getLookupTable();
+		LookupTable table = new LALRAutomatonFactory().create().produceLookupTable(g);
 		
 		System.out.println(table);
 		

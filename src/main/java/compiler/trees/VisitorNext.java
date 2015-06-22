@@ -1,7 +1,7 @@
 /**
  * 
  */
-package compiler.parser;
+package compiler.trees;
 
 /**
  * 

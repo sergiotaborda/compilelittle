@@ -56,14 +56,8 @@ public class ParsingContextBag implements Iterable<ParsingContext>{
 			}
 		}
 		count = contexts.size();
-		if (count > 1000){
-			throw new RuntimeException("Infinite loop");
-		}
 	}
-	
-	void clear(){
-		
-	}
+
 	void add(ParsingContext ctx){
 		contexts.add(ctx);
 	}

@@ -5,6 +5,7 @@ package compiler.syntax;
 
 import compiler.trees.Node;
 import compiler.trees.Visitor;
+import compiler.trees.VisitorNext;
 
 /**
  * 
@@ -34,7 +35,7 @@ public class XmlPrintOutAbstractTreeVisitor implements Visitor<AstNode> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(AstNode node) {
+	public VisitorNext visitBeforeChildren(AstNode node) {
 		tabs++;
 		printTabs();
 		if (node !=null){
@@ -44,7 +45,7 @@ public class XmlPrintOutAbstractTreeVisitor implements Visitor<AstNode> {
 				System.out.println("<" + node.toString() + ">");
 			}
 		}
-
+		return VisitorNext.Children;
 		
 	}
 	

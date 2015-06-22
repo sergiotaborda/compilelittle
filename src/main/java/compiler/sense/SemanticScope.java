@@ -18,7 +18,9 @@ public class SemanticScope {
 	private SemanticScope parent;
 	private List<SemanticScope> scopes = new ArrayList<SemanticScope>();
 	private Map<String, VariableInfo > variables= new HashMap<String, VariableInfo>();
+	private String name;
 
+	
 	/**
 	 * Constructor.
 	 * @param scope
@@ -27,7 +29,29 @@ public class SemanticScope {
 		this.parent = scope;
 		scope.addChild(this);
 	}
+	
+	/**
+	 * Constructor.
+	 * @param scope 
+	 * @param name 
+	 */
+	public SemanticScope(String name, SemanticScope scope) {
+		this.name = name;
+		this.parent = scope;
+		scope.addChild(this);
+	}
 
+	/**
+	 * Constructor.
+	 * @param name2
+	 */
+	public SemanticScope(String name) {
+		this.name = name;
+	}
+
+	public String toString(){
+		return name;
+	}
 	/**
 	 * @param semanticScope
 	 */
@@ -36,12 +60,7 @@ public class SemanticScope {
 	}
 	
 
-	/**
-	 * Constructor.
-	 */
-	public SemanticScope() {
-	
-	}
+
 
 	/**
 	 * @param id
@@ -52,7 +71,7 @@ public class SemanticScope {
 		if (variables.containsKey(name)){
 			throw new SyntaxError("Varible " + name + " is already defined in this scope.");
 		}
-	   final VariableInfo variableInfo = new VariableInfo(name, type);
+	   final VariableInfo variableInfo = new VariableInfo(name, type, false);
 	   variables.put(name, variableInfo);
 	   return variableInfo;
 	}
@@ -69,6 +88,27 @@ public class SemanticScope {
 		}
 		
 		return info;
+	}
+
+	/**
+	 * @param name
+	 * @param any
+	 */
+	public VariableInfo defineTypeVariable(String name, Type type) {
+		if (variables.containsKey(name)){
+			throw new SyntaxError("Type varible " + name + " is already defined in this scope.");
+		}
+	   final VariableInfo variableInfo = new VariableInfo(name, type, true);
+	   variables.put(name, variableInfo);
+	   
+	   return variableInfo;
+	}
+
+	/**
+	 * @return
+	 */
+	public SemanticScope getParent() {
+		return parent;
 	}
 
 }

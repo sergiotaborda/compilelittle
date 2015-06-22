@@ -2,13 +2,14 @@ package packageName.subpackageName;
 
 import java.util.Math;
 
-class SenseProgram {
+public class SenseProgram {
 
-	Double y;
+	Double y = Math.sin(4D);
 
-	Real addIt (){
+	public Real addIt (){
 		Double x = 34F.toDouble();
 		y = 30D;
-	 	return x + 8D + 6.9D * y % 4D;
+	 	return x + 8D + 6.9D * y % Math.sin(4D);
 	}
+
 }

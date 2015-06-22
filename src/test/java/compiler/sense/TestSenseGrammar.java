@@ -3,9 +3,12 @@
  */
 package compiler.sense;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
@@ -13,15 +16,18 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import compiler.CompilationUnitSet;
 import compiler.Compiler;
 import compiler.FileCompilationUnit;
 import compiler.FirstFollowTable;
 import compiler.FirstFollowTableCalculator;
+import compiler.FolderCompilationUnionSet;
 import compiler.PrintOutBackEnd;
 import compiler.PromisseSet;
 import compiler.RealizedPromisseSet;
 import compiler.lexer.ListCompilationUnitSet;
 import compiler.parser.Identifier;
+import compiler.parser.ItemStatesLookupTable;
 import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LRZeroAutomatonFactory;
 import compiler.parser.LookupTable;
@@ -43,7 +49,7 @@ public class TestSenseGrammar {
 
 	
 
-	@Test   @Ignore
+	@Test @Ignore
 	public void testFirstAndFollow()  {
 	
 		SenseGrammar g = new SenseGrammar();
@@ -101,7 +107,7 @@ public class TestSenseGrammar {
 
 		SenseGrammar g = new SenseGrammar();
 		
-		LookupTable table = new LALRAutomatonFactory().create().produceLookupTable(g);
+		ItemStatesLookupTable table = new LALRAutomatonFactory().create().produceLookupTable(g);
 		
 		assertNotNull(table);
 		
@@ -111,7 +117,44 @@ public class TestSenseGrammar {
 			writer.flush();
 		//	System.out.println(table);
 		}
+		
+		final File out = new File("./table.txt");
+		writeTableToFile(table, out);
+		
+		SenseLookupTable stable = new SenseLookupTable(g, new FileInputStream(out));
+		
+		
+		writeTableToFile(stable,  new File("./tableRef.txt"));
+		assertEquals(table, stable);
+		
+	}
 
+	private void writeTableToFile(LookupTable table,File out ) throws IOException {
+		try(FileWriter writer = new FileWriter(out)){
+			
+			writer.append('\t');
+			for( Production p  : table.columns()){
+				
+				writer.append(p.toString()).append('\t');
+			}
+			
+			writer.append('\n');
+			for( LookupTableRow row : table){
+				
+				writer.append(Integer.toString(row.getId()));
+				writer.append('\t');
+				
+				for( Production p  : table.columns()){
+					LookupTableAction action = row.getActionFor(p);
+					if (action != null){
+						writer.append(action.toString());
+					}
+					writer.append('\t');
+				}
+
+				writer.append('\n');
+			}
+		}
 	}
 	
 
@@ -168,6 +211,22 @@ public class TestSenseGrammar {
 	@Test 
 	public void testCompileExpression() throws IOException {
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new Compiler(new SenseLanguage());
+		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+
+	}
+	
+	@Test @Ignore
+	public void testCompileGenericClass() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/collections/Array.sense");
 
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new FileCompilationUnit(file));
@@ -204,7 +263,19 @@ public class TestSenseGrammar {
  
 		final Compiler compiler = new Compiler(new SenseLanguage());
 		compiler.addBackEnd(new PrintOutBackEnd());
-		compiler.addBackEnd(new PrintToJava(out));
+		compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+	}
+	
+	@Test  
+	public void testCompileLibrary() throws IOException {
+		File folder = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/");
+
+		CompilationUnitSet unitSet = new FolderCompilationUnionSet(folder , name -> name.endsWith(".sense"));
+	
+ 
+		final Compiler compiler = new Compiler(new SenseLanguage());
+		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.compile(unitSet);
 	}
 }

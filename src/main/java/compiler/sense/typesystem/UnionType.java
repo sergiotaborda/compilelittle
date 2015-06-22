@@ -16,5 +16,5 @@ public class UnionType extends Type {
 		super(a.toString() + "|" + b.toString());
 	
 	}
-
+	
 }

@@ -13,16 +13,19 @@ public class VariableInfo {
 	private Type type;
 	private String name;
 	private boolean initialized;
+	private boolean isTypeVariable;
 
 	/**
 	 * Constructor.
 	 * @param name
 	 * @param type
 	 */
-	public VariableInfo(String name, Type type) {
+	public VariableInfo(String name, Type type, boolean isTypeVariable) {
 		this.name = name;
 		this.type = type;
+		this.isTypeVariable= isTypeVariable;
 	}
+
 
 	/**
 	 * Obtains {@link Type}.
@@ -49,6 +52,14 @@ public class VariableInfo {
 	
 	public boolean isInitialized(){
 		return initialized;
+	}
+
+
+	/**
+	 * @return
+	 */
+	public boolean isTypeVariable() {
+		return isTypeVariable;
 	}
 
 	

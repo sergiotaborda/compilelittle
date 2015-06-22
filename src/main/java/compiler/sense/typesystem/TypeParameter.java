@@ -50,5 +50,16 @@ public class TypeParameter {
 		return this.type.isAssignableTo(type);
 	}
 
+	public int hashCode(){
+		return type.hashCode();
+	}
+	
+	public boolean equals(Object other){
+		return other instanceof TypeParameter && this.equals(((TypeParameter)other));
+	}
+	
+	public boolean equals(TypeParameter other){
+		return this.variance == other.variance && this.type.equals(other.type);
+	}
 	
 }

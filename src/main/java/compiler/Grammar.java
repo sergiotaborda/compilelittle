@@ -10,15 +10,22 @@ import compiler.lexer.Scanner;
 import compiler.lexer.Token;
 import compiler.parser.BottomUpParser;
 import compiler.parser.LALRAutomatonFactory;
+import compiler.parser.LookupTable;
 import compiler.parser.Parser;
 import compiler.parser.Production;
+import compiler.parser.ProductionItem;
 
 /**
  * 
  */
 public abstract class Grammar {
 
-	
+	/**
+	 * @param targetId
+	 * @return
+	 */
+	public abstract ProductionItem getFinalProductionItem(int targetId);
+	public abstract int  getFinalProductionItemTargetId(ProductionItem item);
 	/**
 	 * @param c
 	 * @return
@@ -63,10 +70,6 @@ public abstract class Grammar {
 		return new Scanner(this);
 	}
 
-	public Parser parser() {
-		return new BottomUpParser(this, new LALRAutomatonFactory());
-	}
-
 	/**
 	 * @param c
 	 * @return
@@ -83,4 +86,5 @@ public abstract class Grammar {
 	public boolean isAlphabetic(char c) {
 		return Character.isAlphabetic(c);
 	}
+
 }

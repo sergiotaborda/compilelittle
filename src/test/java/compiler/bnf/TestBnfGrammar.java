@@ -101,9 +101,9 @@ public class TestBnfGrammar {
 	public void testLookupTable() throws IOException {
 
 
-		EBnfGrammar g = new EBnfGrammar();
+		EBnfLanguage lang = new EBnfLanguage();
 		
-		LookupTable table = ((BottomUpParser)g.parser()).getLookupTable();
+		LookupTable table = lang.getLookupTable();
 		
 	//	System.out.println(table);
 		

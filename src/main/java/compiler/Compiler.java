@@ -8,10 +8,14 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import javax.management.RuntimeErrorException;
+
 import compiler.lexer.Token;
 import compiler.lexer.TokenStream;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
+import compiler.sense.SyntaxError;
 
 /**
  * 
@@ -36,22 +40,40 @@ public class Compiler {
 		}
 		Grammar grammar = language.getGrammar();
 		
-		Parser p = grammar.parser();
+		long mmark = System.currentTimeMillis();
+		Parser p = language.parser();
+		long mtime = System.currentTimeMillis() - mmark;
 		
-		for(CompilationUnit unit : unitSet){
+		System.out.println("Retrive parser : " + mtime + " ms");
+		
+		
+		unitSet.stream().parallel().forEach(unit -> {
 			try ( Reader reader = unit.read()){
 				
-				
+				long mark = System.currentTimeMillis();
 				TokenStream  input = grammar.scanner().read(reader);  
 				
+				long time = System.currentTimeMillis() - mark;
+				
+				System.out.println("Reading Tokens : " + time + " ms");
+				
+				mark = System.currentTimeMillis();
 				ParserTreeNode node = p.parse(input);
 
+				time = System.currentTimeMillis() - mark;
+				
+				System.out.println("Parsing : " + time + " ms");
+				
 				for (CompilerBackEnd end : ends)
 				{
 					end.use(language.transform(node));
 				}
-			}
-		}
+			} catch (RuntimeException e){
+				throw new RuntimeException("On " + unit.getName() +":" + e.getMessage() , e);
+			} catch (IOException e){
+				// use quueue for each unit to hold errors
+			} 
+		});
 	}
 }
 

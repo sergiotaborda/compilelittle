@@ -23,4 +23,15 @@ public class PosExpression extends ExpressionNode{
 	public Type getType(){
 		return ((ExpressionNode)this.getChildren().get(0)).getType();
 	}
+	
+	public ArithmeticOperation getOperation(){
+		return operation;
+	}
+
+	/**
+	 * @param returningType
+	 */
+	public void setType(Type type) {
+		this.type = type;
+	}
 }

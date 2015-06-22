@@ -3,21 +3,28 @@ package compiler.parser;
 
 public class GotoAction implements LookupTableAction {
 
-	private ItemState state;
+	private int stateId;
 
-	public GotoAction(ItemState state) {
-		this.state = state;
+	public GotoAction(int stateId) {
+		this.stateId = stateId;
 	}
 
 	public String toString(){
-		return "G" + state.getId();
+		return "G" +stateId;
 	}
 
 	@Override
 	public LookupTableActionResult operate(ParsingContext ctx) {
 		
-		ctx.stack().push(new StateStackItem(state.getId()));
+		ctx.stack().push(new StateStackItem(stateId));
 		
 		return LookupTableActionResult.Continue;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getStateId() {
+		return stateId;
 	}
 }

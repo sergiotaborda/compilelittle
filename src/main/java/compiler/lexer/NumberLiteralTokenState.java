@@ -3,6 +3,7 @@
  */
 package compiler.lexer;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -25,8 +26,23 @@ public class NumberLiteralTokenState extends TokenState {
 	 */
 	public ParseState recieve(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
 		if ( c == '.' && builder.toString().contains(".")){
-			tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-			return new TokenState(grammar).recieve(pos, c, tokensQueue);
+			
+			// test together
+			Optional<Token> together = grammar.maybeMatch(pos,"..");
+
+			if (together.isPresent()){
+				
+				builder.deleteCharAt(builder.length() -1);
+				// accept number
+				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+				
+				builder = new StringBuilder("..");
+				
+				return new OperatorTokenState(this);
+			} else {
+				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+				return new TokenState(grammar).recieve(pos, c, tokensQueue);
+			}
 		} else if ( grammar.isDigit(c)){
 			builder.append(c);
 		} else if (grammar.isAlphabetic(c)){

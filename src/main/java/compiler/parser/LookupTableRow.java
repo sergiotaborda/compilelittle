@@ -19,6 +19,11 @@ public class LookupTableRow implements Iterable<Map.Entry<Production, LookupTabl
 		this.table = table;
 	}
 	
+
+	public boolean equals(LookupTableRow other){
+		return this.id == other.id && this.dictionary.size() == other.dictionary.size();
+	}
+	
 	public int getId(){
 		return id;
 	}
@@ -39,7 +44,6 @@ public class LookupTableRow implements Iterable<Map.Entry<Production, LookupTabl
 		if (previousAction != null){
 			SplitAction split = SplitAction.split(previousAction, action);
 			dictionary.put(p, split);
-			//throw new RuntimeException("Conflicts for state " + id + " for production " + p + ": " + list);
 		} else {
 			dictionary.put(p,action);
 		}
@@ -47,16 +51,28 @@ public class LookupTableRow implements Iterable<Map.Entry<Production, LookupTabl
 		
 	}
 
-	public void addReduce(Production p, ProductionItem item) {
-		addAction(p, new ReduceAction(item,table));
+	public void addReduce(Production p, int productionItemTargetId) {
+		
+		addAction(p, new ReduceAction(productionItemTargetId,table));
 	}
 	
+	
 	public void addShift(Production p, ItemState canonical) {
-		addAction(p, new ShiftAction(canonical));
+		addShift(p, canonical.getId());
+	}
+	
+	public LookupTableRow addShift(Production p, int stateId ) {
+		addAction(p, new ShiftAction(stateId));
+		return this;
 	}
 
 	public void addGoto(Production p, ItemState canonical) {
-		addAction(p, new GotoAction(canonical));
+		addGoto(p, canonical.getId());
+	}
+	
+	public LookupTableRow addGoto(Production p, int stateId) {
+		addAction(p, new GotoAction(stateId));
+		return this;
 	}
 
 	public void addAccept(Production p,ItemState canonical) {
@@ -131,7 +147,7 @@ public class LookupTableRow implements Iterable<Map.Entry<Production, LookupTabl
 		}
 	}
 
-	protected LookupTableAction  actionsFor(Production p) {
+	public LookupTableAction  getActionFor(Production p) {
 		LookupTableAction  action = dictionary.get(p);
 		
 		if (action == null){

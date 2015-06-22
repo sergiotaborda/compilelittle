@@ -33,5 +33,9 @@ public class MethodCallNode extends SenseAstNode {
 	public String getName() {
 		return name;
 	}
+	
+	public ArgumentListNode getArgumentListNode(){
+		return arguments;
+	}
 
 }

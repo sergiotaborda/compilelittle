@@ -1,58 +1,102 @@
+/**
+* This is a test program file
+*/
 package packageName.subpackageName;
 
 import java.util.Math;
 
-class SenseProgram extends Application <SenseProgram> {
+class SenseProgram extends Any {
+
 
 	Int x = new Int(1);
-	Whole y = 2;
+	Long y = 2;
 	String s;
 	
-	void main (Array<String> a){
+	// intervals
+	// operador !==  not reference equals
+	// interfaces
+	// var modifiers
+	// metadata read from .class
+	// definition of classpath
+	// define simple primitive classes in sense
+	// identify dead code
+	// identify out of range literals
+	void main (Array<String> args){
+
 		 try {
-			Int f = 8;
+		 
+		 	for (Natural i in 2 .. 3){
+				continue;
+			}
+			
+			Int f = -8;
+			// Natural f = -8; is an error because naturals cannot be negative
 		
-			while (true) {
+			while (false ^ true) {
 	
 				other(5,8);
 				continue;
 			}
 			
-			for (Int i in collection){
+			for (String arg in args){
 				continue;
 			}
-			
+
 			if (true){
+			   Decimal c = 8;
 			   doit();
 			}
 			
-			if (!true){
+			if (f == y){
 				arrangeit();
+			} else {
+				Real c = 8;
+				dontarrangeit();
+			}
+			
+			if (f == y){
+				arrangeit();
+			} else if (x != y) {
+				Real c = 8;
+				dontarrangeit();
+			} else if (7 != 6) {
+				Real c = 8;
+				dontarrangeit();
 			} else {
 				dontarrangeit();
 			}
+			
+			if ("s" == "u"){
+				arrangeit();
+			} else if (x != y) {
+				dontarrangeit();
+			}
+			
 			method(3, ++4);
 			
-			switch(a){
+			switch(args){
 				case (1) {
 					arrangeit();
 				}
 				case (2){
-					Decimal c = 8;
+					Float c = 8;
 					break;
 				}
 				default {
 					somemore();
 				}
 			}
+			
 		 } catch (Exception e){
 			 method(3, 4 % 8);
 		 } finally {
-		     return 9;
+		     s = "Error";
+		     String g = s[9];
 		 }
+		 
 	}
 	
-	Int addIt (){
-	 return 8 +  6 * 2 % 4;
+	public Long other (Int u , Int h){
+	   return u +  6 * y % h;
 	}
 }

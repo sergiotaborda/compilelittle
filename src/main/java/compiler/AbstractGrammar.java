@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +21,7 @@ import compiler.parser.AutoNonTerminal;
 import compiler.parser.MatchableProduction;
 import compiler.parser.NonTerminal;
 import compiler.parser.Production;
-import compiler.parser.ProductionAlternative;
+import compiler.parser.ProductionItem;
 import compiler.parser.ProductionSequence;
 import compiler.parser.ProductionTransversor;
 
@@ -32,12 +33,15 @@ public abstract class AbstractGrammar extends Grammar {
 
 	protected Set<Character> stopCharacters;
 	protected Set<String> keywords;
-	protected Map<String, NonTerminal> nonTerminals = new HashMap<String, NonTerminal>();
+	protected Map<String, NonTerminal> nonTerminals = new HashMap<>();
 	protected Set<String> operators;
 	protected List<NonTerminal> rules;
 	private NonTerminal goal;
 
-
+	
+	protected Map<Integer, ProductionItem> finalitems = new HashMap<>();
+	protected Map<KeyProductionItem, Integer > reversefinalitems = new HashMap<>();
+	protected int previous =0;
 	public AbstractGrammar (){
 		build();
 	}
@@ -46,8 +50,76 @@ public abstract class AbstractGrammar extends Grammar {
 		goal = defineGrammar();
 
 		init();
+		
+		generateTargetIds(goal);
+		
 	}
 
+	/**
+	 * @param goal2
+	 */
+	private void generateTargetIds(NonTerminal goal) {
+
+		Queue<NonTerminal> nonterminals = new LinkedList<>();
+		Set<NonTerminal> visited = new HashSet<NonTerminal>();
+		nonterminals.add(goal);
+		
+		while (!nonterminals.isEmpty()){
+			NonTerminal n = nonterminals.poll();
+			visited.add(n);
+			List<ProductionSequence> sequences = new ArrayList<>();
+			
+			findSequence(n.getRule(), sequences); 
+			
+			
+			for (ProductionSequence s : sequences){
+				ProductionItem item = ProductionItem.produceFinalFrom(n, s, previous++);
+				finalitems.put(item.getId() , item);
+				reversefinalitems.put(new KeyProductionItem(item) , item.getId());
+				
+				for (Production p : s){
+					if (p.isNonTerminal() && visited.add(p.toNonTerminal())){
+						nonterminals.add(p.toNonTerminal());
+					}	
+				}
+			}
+		}
+		
+	
+	}
+	
+
+	/**
+	 * @param n
+	 * @return
+	 */
+	private void findSequence(Production rule, List<ProductionSequence> sequences) {
+		if(rule.isSequence()){
+			sequences.add(rule.toSequence());
+		} else if (rule.isAlternative()){
+			for(Production s : rule.toAlternative()){
+				findSequence(s, sequences);
+			}
+		} else {
+			sequences.add(new ProductionSequence(rule));
+		}
+	}
+
+	/**
+	 * @param targetId
+	 * @return
+	 */
+	public ProductionItem getFinalProductionItem(int targetId) {
+		return finalitems.get(targetId);
+	}
+	
+	public int getFinalProductionItemTargetId(ProductionItem item) {
+		Integer i = reversefinalitems.get(new KeyProductionItem(item));
+		if (i == null){
+			return -1;
+		}
+		return i.intValue();
+	}
 	
 	public NonTerminal addNonTerminal(NonTerminal it){
 		
@@ -63,6 +135,11 @@ public abstract class AbstractGrammar extends Grammar {
 			return new NonTerminal(name);
 		}
 		return a;
+	}
+	
+	public boolean hasNonTerminal(String name){
+		
+		return nonTerminals.containsKey(name);
 	}
 	
 	public Collection<NonTerminal> getNonTerminals(){
@@ -91,11 +168,6 @@ public abstract class AbstractGrammar extends Grammar {
 		operators = new HashSet<>();
 		rules = new ArrayList<>();
 
-//		if (isLeftRecursive(goal, goal)){
-//			throw new RuntimeException("Grammar is left Recursive");
-//			//removeLeftRecursivity(queue);
-//		}
-
 		ProductionTransversor.transverse(goal, new CharactersReaderProductionWalker(this));
 		
 		posInit();
@@ -107,94 +179,12 @@ public abstract class AbstractGrammar extends Grammar {
 	}
 	
 
-	/**
-	 * @param p
-	 * @param n
-	 */
-	private void removeLeftRecursive(Production p, NonTerminal n, List<NonTerminal> newRules) {
-
-		if (p.isSequence()){
-			ProductionSequence s = (ProductionSequence)p;
-			if (s.get(0) != n){
-				return;
-			}
-			
-			s.remove(0);
-
-		} else if (p.isAlternative()){
-			ProductionAlternative a = (ProductionAlternative)p;
-			
-			NonTerminal rightRecursive = new NonTerminal(n.getName() + "'");
-			
-			Production independent= null;
-			for(Production pd : a){
-				if (pd.isSequence()){
-					ProductionSequence spd = (ProductionSequence)pd;
-					if (spd.get(0) != n){
-						continue;
-					}
-					spd.remove(0);
-					spd.add(rightRecursive);
-				} else {
-					if (independent == null){
-						// independent
-						independent = pd.add(rightRecursive);
-					}
-				}
-			}
-			
-			n.setRule(independent);
-			rightRecursive.setRule(a);
-			
-			newRules.add(rightRecursive);
-		}
-		
-	}
 
 	/**
 	 * @param stopCharacters2
 	 */
 	protected void addStopCharacters(Set<Character> stopCharacters) {
 		
-	}
-
-	private boolean isLeftRecursive(Production p, Production test) {
-
-		if (p.isNonTerminal()){
-
-			NonTerminal n = (NonTerminal)p;
-
-			Production rule = n.getRule();
-
-			return isLeftRecursive(rule, p);
-		} else if (p.isAlternative()){
-			ProductionAlternative a = (ProductionAlternative)p;
-
-			for (Production i : a){
-				if (isLeftRecursive(i, test)){
-					return true;
-				}
-			}
-
-			return false;
-
-		} else if (p.isSequence()){
-
-			ProductionSequence s = (ProductionSequence)p;
-			return s.get(0).equals(test);
-
-		} 
-		return false;
-
-	}
-
-	/**
-	 * @param queue
-	 */
-	private void removeLeftRecursivity(Queue<Production> queue) {
-
-		// todo
-
 	}
 
 	/**
@@ -213,7 +203,13 @@ public abstract class AbstractGrammar extends Grammar {
 
 		if (text.length() == 1 && isStringLiteralDelimiter(text.charAt(0))){
 			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.LiteralStringStart));
-		}  else if (operators.contains(text)){
+		} else if (isStartMultilineComment(text)){
+			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.StartMultilineComment));
+		} else if (isEndMultilineComment(text)){
+			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.EndMultilineComment));
+		} else if (isStartInlineComent(text)){
+			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.StartInlineComment));
+		} else if (operators.contains(text)){
 			return Optional.of(new SymbolBasedToken(pos,text,  TokenSymbol.Operator));
 		} else if (text.length() == 1 && stopCharacters.contains(text.charAt(0))){
 			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.ID));			
@@ -222,6 +218,31 @@ public abstract class AbstractGrammar extends Grammar {
 
 		return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.ID));
 	}
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	protected boolean isStartInlineComent(String text) {
+		return false;
+	}
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	protected boolean isEndMultilineComment(String text) {
+		return false;
+	}
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	protected boolean isStartMultilineComment(String text) {
+		return false;
+	}
+	
 
 	/**
 	 * {@inheritDoc}

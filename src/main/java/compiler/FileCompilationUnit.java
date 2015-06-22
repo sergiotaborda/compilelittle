@@ -5,8 +5,10 @@ package compiler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * 
@@ -14,10 +16,14 @@ import java.io.Reader;
 public class FileCompilationUnit implements CompilationUnit {
 
 	
-	private File file;
+	private Path path;
 
 	public FileCompilationUnit(File file){
-		this.file = file;
+		this.path = file.toPath();
+	}
+	
+	public FileCompilationUnit(Path path){
+		this.path = path;
 	}
 	
 	/**
@@ -25,8 +31,16 @@ public class FileCompilationUnit implements CompilationUnit {
 	 * @throws FileNotFoundException 
 	 */
 	@Override
-	public Reader read() throws FileNotFoundException {
-		return new FileReader(file);
+	public Reader read() throws IOException {
+	    return Files.newBufferedReader(path);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getName() {
+		return path.getFileName().toString();
 	}
 
 }

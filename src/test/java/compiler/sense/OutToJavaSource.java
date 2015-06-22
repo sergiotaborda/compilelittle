@@ -10,11 +10,12 @@ import java.io.PrintWriter;
 
 import compiler.CompilerBackEnd;
 import compiler.syntax.AstNode;
+import compiler.trees.TreeTransverser;
 
 /**
  * 
  */
-public class PrintToJava implements CompilerBackEnd {
+public class OutToJavaSource implements CompilerBackEnd {
 
 	PrintWriter writer;
 	
@@ -23,7 +24,7 @@ public class PrintToJava implements CompilerBackEnd {
 	 * @param out
 	 * @throws IOException 
 	 */
-	public PrintToJava(File out) throws IOException {
+	public OutToJavaSource(File out) throws IOException {
 		this.writer = new PrintWriter(new FileWriter(out));
 	}
 
@@ -32,7 +33,9 @@ public class PrintToJava implements CompilerBackEnd {
 	 */
 	@Override
 	public void use(AstNode root) {
-
+		JavaSourceWriterVisitor vv = new JavaSourceWriterVisitor(writer);
+		TreeTransverser.tranverse(root, vv);
+		writer.close();
 	}
 
 }

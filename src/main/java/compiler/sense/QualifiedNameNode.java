@@ -3,7 +3,6 @@
  */
 package compiler.sense;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
@@ -38,5 +37,16 @@ public class QualifiedNameNode extends SenseAstNode {
 	
 	public String toString(){
 		return name.toString();
+	}
+	/**
+	 * @return
+	 */
+	public String getPrevious() {
+		int pos = name.lastIndexOf(".");
+		if (pos < 0){
+			return "";
+		} else {
+			return name.subSequence(0, pos).toString();
+		}
 	}
 }

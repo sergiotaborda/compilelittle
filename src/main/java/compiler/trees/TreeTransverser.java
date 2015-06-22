@@ -28,15 +28,19 @@ public class TreeTransverser {
 	}
 
 	private static <T extends Node<T>> void visit(T node, Visitor<T> visitor) {
-		visitor.visitBeforeChildren(node);
+		VisitorNext next = visitor.visitBeforeChildren(node);
 		
-		LinkedList<T> list = new LinkedList<>(node.getChildren());
-		
-		while(!list.isEmpty()) {
-			visit(list.removeFirst(), visitor);
+		if (next == VisitorNext.Children){
+			LinkedList<T> list = new LinkedList<>(node.getChildren());
+			
+			while(!list.isEmpty()) {
+				visit(list.removeFirst(), visitor);
+			}
+			
+			visitor.visitAfterChildren(node);
 		}
+
 		
-		visitor.visitAfterChildren(node);
 	}
 	
 	public static <T extends Node<T>, R extends Node<R>> R copy(T root , Function<T,R> duplicator){

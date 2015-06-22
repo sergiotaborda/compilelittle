@@ -3,20 +3,24 @@ package compiler.parser;
 
 public class ShiftAction implements LookupTableAction {
 
-	private ItemState state;
+	private int stateId;
 
-	public ShiftAction(ItemState state) {
-		this.state = state;
+	public ShiftAction(int stateId) {
+		this.stateId = stateId;
 	}
 
+	public int getStateId(){
+		return stateId;
+	}
+	
 	public String toString(){
-		return "S" + state.getId();
+		return "S" + stateId;
 	}
 
 	@Override
 	public LookupTableActionResult operate(ParsingContext ctx) {
 		ctx.stack().push(ctx.inputStream().currentItem());
-		ctx.stack().push(new StateStackItem(state.getId()));
+		ctx.stack().push(new StateStackItem(stateId));
 		
 		ctx.inputStream().moveNext();
 		

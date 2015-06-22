@@ -3,7 +3,8 @@
  */
 package compiler.reference4;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,10 +16,8 @@ import compiler.Compiler;
 import compiler.CompilerBackEnd;
 import compiler.StringCompilationUnit;
 import compiler.lexer.ListCompilationUnitSet;
-import compiler.parser.BottomUpParser;
+import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LookupTable;
-import compiler.reference1.ReferenceGrammar;
-import compiler.reference1.ReferenceLanguage;
 import compiler.syntax.AstNode;
 
 /**
@@ -32,8 +31,8 @@ public class TestReference4Grammar {
 
 		Reference4Grammar g = new Reference4Grammar();
 		
-		LookupTable table = ((BottomUpParser)g.parser()).getLookupTable();
-		
+		LookupTable table = new LALRAutomatonFactory().create().produceLookupTable(g);
+	
 		System.out.println(table);
 		
 		assertNotNull(table);

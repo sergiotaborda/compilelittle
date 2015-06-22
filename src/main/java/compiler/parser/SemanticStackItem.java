@@ -50,6 +50,10 @@ public abstract class SemanticStackItem extends ParserTreeNode implements StackI
 	public void setAstNode(AstNode node) {
 		this.setProperty("node", node);
 	}
+	
+	public String getLexicalValue(){
+		return this.getProperty("lexicalValue", String.class).orElse(null);
+	}
 
 
 }

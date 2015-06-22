@@ -45,7 +45,7 @@ public class SymbolBasedToken implements Token{
 	 */
 	@Override
 	public boolean isStartLineComment() {
-		return false;
+		return symbol == TokenSymbol.StartInlineComment;
 	}
 
 	/**
@@ -53,9 +53,18 @@ public class SymbolBasedToken implements Token{
 	 */
 	@Override
 	public boolean isStartMultiLineComment() {
-		return false;
+		return symbol == TokenSymbol.StartMultilineComment;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isEndMultiLineComment() {
+		return symbol == TokenSymbol.EndMultilineComment;
+	}
+
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -64,13 +73,6 @@ public class SymbolBasedToken implements Token{
 		return symbol == TokenSymbol.ID;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isEndMultiLineComment() {
-		return false;
-	}
 
 	/**
 	 * {@inheritDoc}

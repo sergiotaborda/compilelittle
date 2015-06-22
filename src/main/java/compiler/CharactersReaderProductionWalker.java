@@ -7,7 +7,7 @@ import compiler.parser.NonTerminal;
 import compiler.parser.Production;
 import compiler.parser.ProductionVisitor;
 import compiler.parser.Terminal;
-import compiler.parser.VisitorNext;
+import compiler.trees.VisitorNext;
 
 /**
  * 

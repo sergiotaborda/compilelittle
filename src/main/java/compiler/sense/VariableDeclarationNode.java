@@ -21,6 +21,11 @@ public class VariableDeclarationNode extends SenseAstNode implements ScopedVaria
 		return type.getType();
 	}
 
+	public TypeNode getTypeNode() {
+		return type;
+	}
+
+	
 	public void setType(TypeNode type) {
 		this.type = type;
 		this.add(type);

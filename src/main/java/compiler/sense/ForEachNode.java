@@ -58,7 +58,7 @@ public class ForEachNode extends StatementNode {
 	 * Obtains {@link BlockNode}.
 	 * @return the blockNode
 	 */
-	public BlockNode getBlockNode() {
+	public BlockNode getStatements() {
 		return blockNode;
 	}
 

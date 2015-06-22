@@ -4,6 +4,7 @@
 package compiler.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,6 +84,20 @@ public class ProductionAlternative extends AbstractProduction implements Iterabl
 
 	public Production get(int i) {
 		return alternatives.get(i);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof ProductionAlternative) && equalsNonTerminal((ProductionAlternative)obj); 
+	}
+
+
+	private boolean equalsNonTerminal(ProductionAlternative other) {
+		return Arrays.equals(this.alternatives.toArray(), other.alternatives.toArray());
+	}
+
+	public int hashCode (){
+		return this.alternatives.size();
 	}
 
 

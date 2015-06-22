@@ -6,8 +6,8 @@ package compiler.bnf;
 import java.util.ListIterator;
 
 import compiler.syntax.AstNode;
-import compiler.trees.Node;
 import compiler.trees.Visitor;
+import compiler.trees.VisitorNext;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class OptionalTransformVisitor implements Visitor<AstNode> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(AstNode node) {
+	public VisitorNext visitBeforeChildren(AstNode node) {
 		ListIterator<AstNode> it =  node.getChildren().listIterator();
 		
 		while(it.hasNext()){
@@ -72,6 +72,7 @@ public class OptionalTransformVisitor implements Visitor<AstNode> {
 				}
 			}
 		}
+		return VisitorNext.Children;
 	}
 
 	AstNode root;

@@ -32,7 +32,7 @@ public class WhileNode extends StatementNode implements ConditionalStatement {
 	 * Obtains {@link BlockNode}.
 	 * @return the block
 	 */
-	public BlockNode getBlock() {
+	public BlockNode getStatements() {
 		return block;
 	}
 	

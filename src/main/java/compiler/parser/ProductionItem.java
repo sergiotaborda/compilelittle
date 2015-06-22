@@ -15,9 +15,33 @@ public class ProductionItem {
 	private int nextReadablePosition = 0;
 	boolean isAugmented = false;
 	List<SemanticAction> semanticActions = new ArrayList<SemanticAction>(0);
-
+	protected Integer id;
 	private RealizedPromisseSet<MatchableProduction> lookAhead;
 
+	public static ProductionItem produceFinalFrom(NonTerminal n , ProductionSequence s, int id){
+		ProductionItem p = new ProductionItem(new RealizedPromisseSet<>());
+		p.root = n;
+		p.id = id;
+		p.semanticActions = n.actions;
+		if (s.sequence.size() == 1){
+			if (!s.get(0).equals(EmptyTerminal.instance())){
+				p.productions = s.sequence;
+				
+				if (s.get(0).isAutoNonTerminal()){
+					List<SemanticAction> actions = new ArrayList<>(s.get(0).toNonTerminal().actions);
+					actions.addAll(p.semanticActions);
+					p.semanticActions = actions;
+				}
+			}
+		} else {
+			p.productions = s.sequence;
+		}
+
+		p.nextReadablePosition = p.productions.size();
+		
+		return p;
+	}
+	
 	ProductionItem(MatchableProduction p){
 		lookAhead = new RealizedPromisseSet<MatchableProduction>();
 		lookAhead.add(p);
@@ -25,6 +49,10 @@ public class ProductionItem {
 
 	ProductionItem(RealizedPromisseSet<MatchableProduction> set){
 		lookAhead = set;
+	}
+	
+	public int getId(){
+		return id;
 	}
 
 	public boolean isShift(){
@@ -51,6 +79,7 @@ public class ProductionItem {
 	}
 
 	public void executeSemanticActions( Symbol left , List<Symbol> right){
+		
 		for(SemanticAction sa : semanticActions){
 			sa.execute(left, right);
 		}
@@ -148,6 +177,13 @@ public class ProductionItem {
 		result = prime * result + productions.size();
 		return result;
 	}
+	/**
+	 * @return
+	 */
+	public int ignoreLooakAheadHashCode() {
+		return 31 * nextReadablePosition + productions.size();
+	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -196,6 +232,7 @@ public class ProductionItem {
 			return new ProductionItem(this, other);
 		}
 	}
+
 
 
 }

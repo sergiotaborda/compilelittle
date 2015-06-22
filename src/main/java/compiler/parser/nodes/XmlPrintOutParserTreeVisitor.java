@@ -3,6 +3,8 @@
  */
 package compiler.parser.nodes;
 
+import compiler.trees.VisitorNext;
+
 
 /**
  * 
@@ -31,7 +33,7 @@ public class XmlPrintOutParserTreeVisitor implements ParserTreeVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(ParserTreeNode node) {
+	public VisitorNext visitBeforeChildren(ParserTreeNode node) {
 		tabs++;
 		printTabs();
 		if (node.getChildren().isEmpty()){
@@ -39,7 +41,7 @@ public class XmlPrintOutParserTreeVisitor implements ParserTreeVisitor {
 		} else {
 			System.out.println("<" + node.toString() + ">");
 		}
-		
+		return VisitorNext.Children;
 	}
 	
 	private void printTabs(){

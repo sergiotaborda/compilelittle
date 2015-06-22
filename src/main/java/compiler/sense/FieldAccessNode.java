@@ -18,4 +18,11 @@ public class FieldAccessNode extends NeedTypeCalculationNode {
 		this.name= name;
 	}
 
+	/**
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+
 }

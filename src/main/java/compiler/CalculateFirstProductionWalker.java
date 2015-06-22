@@ -12,7 +12,7 @@ import compiler.parser.ProductionMultiple;
 import compiler.parser.ProductionSequence;
 import compiler.parser.ProductionVisitor;
 import compiler.parser.Terminal;
-import compiler.parser.VisitorNext;
+import compiler.trees.VisitorNext;
 
 /**
  * 

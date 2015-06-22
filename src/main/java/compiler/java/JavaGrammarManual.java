@@ -15,6 +15,7 @@ import compiler.lexer.Token;
 import compiler.parser.Identifier;
 import compiler.parser.NonTerminal;
 import compiler.parser.Production;
+import compiler.parser.ProductionItem;
 import compiler.parser.Terminal;
 
 /**
@@ -308,6 +309,22 @@ public class JavaGrammarManual extends Grammar {
 	 */
 	@Override
 	public Production getStartProduction() {
+		throw new UnsupportedOperationException("Not implememented yet");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ProductionItem getFinalProductionItem(int targetId) {
+		throw new UnsupportedOperationException("Not implememented yet");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getFinalProductionItemTargetId(ProductionItem item) {
 		throw new UnsupportedOperationException("Not implememented yet");
 	}
 

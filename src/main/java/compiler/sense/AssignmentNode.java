@@ -12,18 +12,31 @@ import compiler.syntax.AstNode;
 public class AssignmentNode extends ExpressionNode {
 
 	enum Operation {
-		SimpleAssign, 
-		MultiplyAndAssign, 
-		DivideAndAssign, 
-		RemainderAndAssign, 
-		AddAndAssign, 
-		SubtractAndAssign, 
-		LeftShiftAndAssign,
-		RightShiftAndAssign, 
-		PositiveRightShiftAndAssign, 
-		BitAndAndAssign,
-		BitXorAndAssign, 
-		BitOrAndAssign
+		SimpleAssign ("="), 
+		MultiplyAndAssign("*="), 
+		DivideAndAssign ("/="), 
+		RemainderAndAssign ("%="), 
+		AddAndAssign("+="), 
+		SubtractAndAssign ("-="), 
+		LeftShiftAndAssign ("<<="),
+		RightShiftAndAssign(">>="), 
+		PositiveRightShiftAndAssign(">>>="), 
+		BitAndAndAssign ("&="),
+		BitXorAndAssign ("^="), 
+		BitOrAndAssign ("|=");
+
+		private String symbol;
+
+		private Operation (String symbol){
+			this.symbol = symbol;
+		}
+		
+		/**
+		 * @return
+		 */
+		public String symbol() {
+			return symbol;
+		}
 	}
 
 	private Operation operation;
@@ -70,6 +83,13 @@ public class AssignmentNode extends ExpressionNode {
 	 */
 	public ExpressionNode getRight() {
 		return this.right;
+	}
+
+	/**
+	 * @return
+	 */
+	public Operation getOperation() {
+		return operation;
 	}
 
 }

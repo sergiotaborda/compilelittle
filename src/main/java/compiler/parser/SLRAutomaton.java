@@ -21,7 +21,7 @@ public class SLRAutomaton extends AbstractAutomaton {
 		return new RealizedPromisseSet<>();
 	}
 
-	protected void createReduceActions(Grammar grammar,FirstFollowTable firstFollowTable, LookupTable table, ItemState current) {
+	protected void createReduceActions(Grammar grammar,FirstFollowTable firstFollowTable, ItemStatesLookupTable table, ItemState current) {
 		for (ProductionItem item : current){
 			if (item.isFinal()){
 				RealizedPromisseSet<MatchableProduction> followSet;

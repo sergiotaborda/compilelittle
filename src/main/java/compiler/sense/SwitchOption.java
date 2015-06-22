@@ -12,7 +12,15 @@ public class SwitchOption extends SenseAstNode {
 
 	private ExpressionNode value;
 	private BlockNode actions;
+	private boolean isDefault;
 
+	public SwitchOption(){
+		this(false);
+	}
+	
+	public SwitchOption(boolean isDefault){
+		this.isDefault = isDefault;
+	}
 	/**
 	 * @param expressionNode
 	 */
@@ -43,6 +51,13 @@ public class SwitchOption extends SenseAstNode {
 	 */
 	public BlockNode getActions() {
 		return actions;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isDefault() {
+		return isDefault;
 	}
 
 }

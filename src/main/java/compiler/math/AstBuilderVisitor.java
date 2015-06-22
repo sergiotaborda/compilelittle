@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.parser.nodes.ParserTreeVisitor;
 import compiler.syntax.AstNode;
+import compiler.trees.VisitorNext;
 
 /**
  * 
@@ -44,10 +45,11 @@ public class AstBuilderVisitor implements ParserTreeVisitor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void visitBeforeChildren(ParserTreeNode node) {
+	public VisitorNext visitBeforeChildren(ParserTreeNode node) {
 		AstNode astNode = new AstNode();
 		astNode.setProperty("parsed", node);
 		stack.push(astNode);
+		return VisitorNext.Children;
 	}
 
 	/**

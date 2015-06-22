@@ -11,5 +11,5 @@ import compiler.Grammar;
 public interface ItemStateAutomaton {
 
 	
-	LookupTable produceLookupTable(Grammar grammar);
+	ItemStatesLookupTable produceLookupTable(Grammar grammar);
 }

@@ -19,7 +19,7 @@ public interface Visitor<T extends Node<T>> {
 	void endVisit();
 
 	
-	void visitBeforeChildren(T node);
+	VisitorNext visitBeforeChildren(T node);
 	
 	void visitAfterChildren(T node);
 }

@@ -20,5 +20,9 @@ public class NumericValue extends LiteralExpressionNode {
 		this.number = n;
 		this.type = type;
 	}
+	
+	public String toString(){
+		return number.toString();
+	}
 
 }

@@ -42,14 +42,6 @@ public class EmptyTerminal extends Terminal {
 	public boolean isEmpty(){
 		return true;
 	}
-	
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	@Override
-//	public void execute(ParserContext ctx, Consumer<ParserContext> tail) {
-//		tail.accept(ctx);
-//	}
 
 	/**
 	 * {@inheritDoc}
