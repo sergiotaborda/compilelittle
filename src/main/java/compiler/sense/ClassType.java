@@ -14,6 +14,7 @@ public class ClassType extends AnnotadedSenseAstNode {
 	private ClassBodyNode body;
 	private TypeNode superType;
 	private ParametricTypesNode parametricTypesNode;
+	private ImplementedInterfacesNode interfaces;
 	
 	
 	public ClassType (Kind kind){
@@ -66,6 +67,18 @@ public class ClassType extends AnnotadedSenseAstNode {
 
 	public ParametricTypesNode getGenerics() {
 		return parametricTypesNode;
+	}
+
+	/**
+	 * @param implementedInterfacesNode
+	 */
+	public void setInterfaces(ImplementedInterfacesNode implementedInterfacesNode) {
+		this.interfaces = implementedInterfacesNode;
+		this.add(interfaces);
+	}
+	
+	public ImplementedInterfacesNode getInterfaces(){
+		return interfaces;
 	}
 
 

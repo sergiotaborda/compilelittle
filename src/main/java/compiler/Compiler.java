@@ -11,6 +11,7 @@ import java.util.List;
 import compiler.lexer.TokenStream;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
+import compiler.sense.SyntaxError;
 
 /**
  * 
@@ -63,6 +64,8 @@ public class Compiler {
 				{
 					end.use(language.transform(node));
 				}
+			} catch (SyntaxError e){
+				throw e;
 			} catch (RuntimeException e){
 				throw new RuntimeException("On " + unit.getName() +":" + e.getMessage() , e);
 			} catch (IOException e){

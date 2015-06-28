@@ -5,7 +5,7 @@ package packageName.subpackageName;
 
 import java.util.Math;
 
-class SenseProgram extends Any {
+public class SenseProgram extends Any {
 
 
 	Int x = new Int(1);
@@ -22,7 +22,7 @@ class SenseProgram extends Any {
 	// identifiy escape variables (variables that are returned from methods)
 	// identify efectivly final
 	// identify out of range literals
-	void main (Array<String> args){
+	public void main (Array<String> args){
 
 		 try {
 		 

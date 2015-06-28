@@ -23,6 +23,7 @@ public abstract class AbstractSenseGrammar extends AbstractGrammar {
 		NonTerminal typeDeclarations = addNonTerminal(NonTerminal.of("typeDeclarations"));
 		NonTerminal typeDeclaration = addNonTerminal(NonTerminal.of("typeDeclaration"));
 		NonTerminal classDeclaration = addNonTerminal(NonTerminal.of("classDeclaration"));
+		NonTerminal implementsInterfaces = addNonTerminal(NonTerminal.of("implementsInterfaces"));
 		NonTerminal interfaceDeclaration = addNonTerminal(NonTerminal.of("interfaceDeclaration"));
 		NonTerminal extendsInterfaces = addNonTerminal(NonTerminal.of("extendsInterfaces"));
 		NonTerminal interfaceBody = addNonTerminal(NonTerminal.of("interfaceBody"));
@@ -125,13 +126,9 @@ public abstract class AbstractSenseGrammar extends AbstractGrammar {
 		importDeclaration.setRule(Terminal.of("import").add(qualifiedName).add(Terminal.of(";")));
 		typeDeclarations.setRule(typeDeclaration.or(typeDeclarations.add(typeDeclaration)));
 		typeDeclaration.setRule(classDeclaration.or(interfaceDeclaration));
-		classDeclaration.setRule(annotations.add(Terminal.of("class")).add(qualifiedName).add(genericTypesDeclaration).add(superDeclaration).add(classBody).or(Terminal.of("class").add(qualifiedName).add(genericTypesDeclaration).add(superDeclaration).add(classBody)));
-		interfaceDeclaration.setRule(
-				annotations.add(Terminal.of("interface")).add(qualifiedName).add(genericTypesDeclaration).add(extendsInterfaces).add(interfaceBody)
-				.or(annotations.add(Terminal.of("interface")).add(qualifiedName).add(genericTypesDeclaration).add(interfaceBody))
-				.or(Terminal.of("interface").add(qualifiedName).add(genericTypesDeclaration).add(extendsInterfaces).add(interfaceBody))
-				.or(Terminal.of("interface").add(qualifiedName).add(genericTypesDeclaration).add(interfaceBody))
-		);
+		classDeclaration.setRule(annotations.add(Terminal.of("class")).add(qualifiedName).add(genericTypesDeclaration).add(superDeclaration).add(implementsInterfaces).add(classBody).or(annotations.add(Terminal.of("class")).add(qualifiedName).add(genericTypesDeclaration).add(superDeclaration).add(classBody)).or(Terminal.of("class").add(qualifiedName).add(genericTypesDeclaration).add(superDeclaration).add(implementsInterfaces).add(classBody)).or(Terminal.of("class").add(qualifiedName).add(genericTypesDeclaration).add(superDeclaration).add(classBody)));
+		implementsInterfaces.setRule(Terminal.of("implements").add(type).or(implementsInterfaces.add(Terminal.of(",")).add(type)));
+		interfaceDeclaration.setRule(annotations.add(Terminal.of("interface")).add(qualifiedName).add(genericTypesDeclaration).add(extendsInterfaces).add(interfaceBody).or(annotations.add(Terminal.of("interface")).add(qualifiedName).add(genericTypesDeclaration).add(interfaceBody)).or(Terminal.of("interface").add(qualifiedName).add(genericTypesDeclaration).add(extendsInterfaces).add(interfaceBody)).or(Terminal.of("interface").add(qualifiedName).add(genericTypesDeclaration).add(interfaceBody)));
 		extendsInterfaces.setRule(Terminal.of("extends").add(type).or(extendsInterfaces.add(Terminal.of(",")).add(type)));
 		interfaceBody.setRule(Terminal.of("{").add(interfaceMemberDeclarations).add(Terminal.of("}")).or(Terminal.of("{").add(Terminal.of("}"))));
 		interfaceMemberDeclarations.setRule(interfaceMemberDeclaration.or(interfaceMemberDeclarations.add(interfaceMemberDeclaration)));

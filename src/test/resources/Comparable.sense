@@ -2,5 +2,5 @@ package sense;
 
 public interface Comparable<T> {
 
-	public Int Constant = 1;
+	 Int constant = 1;
 }

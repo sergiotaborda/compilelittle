@@ -1,11 +1,11 @@
 package packageName.subpackageName;
 
-class SenseProgram extends Any{
+public class SenseProgram extends Any{
 
 Int x =  new sense.Int (1);
 Long y = 2;
 String s;	
-void  main(Array<String>  args){
+public void  main(Array<String>  args){
 try{
  for (sense.Natural i :  new IntProgressable(2,3))
 {
