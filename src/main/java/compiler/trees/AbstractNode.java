@@ -6,10 +6,13 @@ package compiler.trees;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import compiler.syntax.AstNode;
 
 /**
  * 
@@ -71,13 +74,32 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
 		}
 	}
 
+	public void replace(N node, N newnode){
+		
+		for (ListIterator<N> it = children.listIterator(); it.hasNext();) {
+			N n = it.next();
+			
+			if (n.equals(node)){
+				n.setParent(null);
+				it.remove();
+				it.add(newnode);
+			}
+					
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public <P> Optional<P> getProperty(String name, Class<P> type) {
 		if (properties.containsKey(name)){
-			return Optional.of(type.cast(properties.get(name)));
+			try {
+				P p = type.cast(properties.get(name));
+				return Optional.of(p);
+			} catch (ClassCastException e){
+				return Optional.empty();
+			}
 		} else {
 			return Optional.empty();
 		}

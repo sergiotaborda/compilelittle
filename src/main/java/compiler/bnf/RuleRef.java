@@ -3,7 +3,6 @@
  */
 package compiler.bnf;
 
-import compiler.syntax.AstNode;
 
 /**
  * 
@@ -23,4 +22,7 @@ public class RuleRef extends BnfAstNode {
 		return name;
 	}
 
+	public String toString(){
+		return name;
+	}
 }

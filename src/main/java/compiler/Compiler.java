@@ -8,14 +8,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import javax.management.RuntimeErrorException;
-
-import compiler.lexer.Token;
 import compiler.lexer.TokenStream;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
-import compiler.sense.SyntaxError;
 
 /**
  * 

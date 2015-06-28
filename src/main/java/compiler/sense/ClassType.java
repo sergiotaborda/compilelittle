@@ -7,27 +7,26 @@ package compiler.sense;
 /**
  * 
  */
-public class ClassType extends SenseAstNode {
+public class ClassType extends AnnotadedSenseAstNode {
 
+	private Kind kind;
 	private String name;
 	private ClassBodyNode body;
 	private TypeNode superType;
-	private AnnotationListNode annotationList;
 	private ParametricTypesNode parametricTypesNode;
 	
+	
+	public ClassType (Kind kind){
+		this.kind = kind;
+	}
+	
+	public Kind getKind(){
+		return kind;
+	}
 	public String getName() {
 		return name;
 	}
-	
 
-	public void setAnnotationList(AnnotationListNode annotationListNode) {
-		this.annotationList = annotationListNode;
-		this.add(annotationListNode);
-	}
-	
-	public AnnotationListNode getAnnotationListNode(){
-		return annotationList;
-	}
 	
 	public void setName(String name) {
 		this.name = name;

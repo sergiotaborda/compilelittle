@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import compiler.Compiler;
 import compiler.FileCompilationUnit;
-import compiler.bnf.EBnfLanguage;
+import compiler.bnf.BnfCompiler;
 import compiler.bnf.ToJavaBackEnd;
 import compiler.lexer.ListCompilationUnitSet;
 
@@ -29,7 +29,7 @@ public class Builder {
 		unitSet.add(new FileCompilationUnit(file));
 
 
-		final Compiler compiler = new Compiler(new EBnfLanguage());
+		final Compiler compiler = new BnfCompiler();
 		compiler.addBackEnd(new ToJavaBackEnd(javaOut, "compiler.sense.AbstractSenseGrammar"));
 		compiler.compile(unitSet);
 	}

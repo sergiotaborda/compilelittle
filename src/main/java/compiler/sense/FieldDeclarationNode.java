@@ -9,11 +9,12 @@ import compiler.sense.typesystem.Type;
 /**
  * 
  */
-public class FieldDeclarationNode extends SenseAstNode implements ScopedVariableDefinitionNode{
+public class FieldDeclarationNode extends AnnotadedSenseAstNode implements ScopedVariableDefinitionNode{
 
 	private TypeNode typeNode;
 	private String name;
 	private ExpressionNode inicializer;
+
 	
 	/**
 	 * @param typeNode
@@ -67,6 +68,8 @@ public class FieldDeclarationNode extends SenseAstNode implements ScopedVariable
 	public void setInitializer(ExpressionNode node) {
 		this.inicializer = node;
 	}
+
+
 	
 	
 }

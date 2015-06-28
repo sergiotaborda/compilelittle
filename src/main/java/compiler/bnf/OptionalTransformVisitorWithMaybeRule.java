@@ -12,7 +12,7 @@ import compiler.trees.VisitorNext;
 /**
  * 
  */
-public class OptionalTransformVisitor implements Visitor<AstNode> {
+public class OptionalTransformVisitorWithMaybeRule implements Visitor<AstNode> {
 
 	/**
 	 * {@inheritDoc}

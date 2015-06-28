@@ -268,6 +268,19 @@ public class TestSenseGrammar {
 	}
 	
 	@Test  
+	public void testCompilerInterface() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/Comparable.sense");
+		
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new Compiler(new SenseLanguage());
+		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.compile(unitSet);
+	}
+	
+	@Test  
 	public void testCompileLibrary() throws IOException {
 		File folder = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/");
 

@@ -7,13 +7,13 @@ package compiler.sense;
 /**
  * 
  */
-public class MethodNode extends SenseAstNode {
+public class MethodDeclarationNode extends AnnotadedSenseAstNode {
 
 	private TypeNode returnType;
 	private String name;
 	private ParametersListNode parameters;
 	private BlockNode block;
-	private AnnotationListNode annotationListNode;
+
 	public TypeNode getReturnType() {
 		return returnType;
 	}
@@ -41,13 +41,6 @@ public class MethodNode extends SenseAstNode {
 	public void setBlock(BlockNode block) {
 		this.block = block;
 		this.add(block);
-	}
-	public AnnotationListNode getAnnotationListNode() {
-		return annotationListNode;
-	}
-	public void setAnnotationListNode(AnnotationListNode annotationListNode) {
-		this.annotationListNode = annotationListNode;
-		this.add(annotationListNode);
 	}
 
 	

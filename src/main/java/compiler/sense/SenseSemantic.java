@@ -6,7 +6,6 @@ package compiler.sense;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import compiler.sense.typesystem.Method;
 import compiler.sense.typesystem.MethodParameter;
@@ -97,8 +96,8 @@ public class SenseSemantic {
 		 */
 		@Override
 		public VisitorNext visitBeforeChildren(AstNode node) {
-			if (node instanceof MethodNode){
-				semanticContext.beginScope(((MethodNode)node).getName());
+			if (node instanceof MethodDeclarationNode){
+				semanticContext.beginScope(((MethodDeclarationNode)node).getName());
 			} else if (node instanceof ClassType){
 				ClassType t = (ClassType)node;
 				
@@ -347,9 +346,9 @@ public class SenseSemantic {
 				// define variable in the method scope. the current scope is block
 				semanticContext.currentScope().getParent().defineVariable("@returnOfMethod", n.getType());
 
-			} else if (node instanceof MethodNode){
+			} else if (node instanceof MethodDeclarationNode){
 
-				MethodNode m = (MethodNode)node;
+				MethodDeclarationNode m = (MethodDeclarationNode)node;
 
 				if (m.getReturnType().isVoid()){
 					VariableInfo variable = semanticContext.currentScope().searchVariable("@returnOfMethod");

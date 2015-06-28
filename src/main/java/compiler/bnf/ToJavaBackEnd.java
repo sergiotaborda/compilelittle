@@ -86,7 +86,7 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 	 */
 	private AstNode transformOptionals(AstNode root) {
 	
-		TreeTransverser.tranverse(root, new OptionalTransformVisitor());
+		TreeTransverser.tranverse(root, new OptionalTransformVisitorWithSubstitution());
 		
 		return root;
 	}

@@ -67,8 +67,8 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 
 				writer.println();
 
-				if (t.getAnnotationListNode()!=null){
-					for(AstNode n : t.getAnnotationListNode().getChildren()){
+				if (t.getAnnotations()!=null){
+					for(AstNode n : t.getAnnotations().getChildren()){
 						AnnotationNode anot = (AnnotationNode)n;
 						writer.print(anot.getName());
 						writer.print(" ");
@@ -378,15 +378,15 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 				writer.print("[");
 				TreeTransverser.tranverse(n.getIndexExpression(), new JavaSourceWriterVisitor(writer));
 				writer.print("]");
-			} else if (node instanceof MethodNode ){
+			} else if (node instanceof MethodDeclarationNode ){
 			
-				MethodNode m = (MethodNode)node;
+				MethodDeclarationNode m = (MethodDeclarationNode)node;
 
 		
 				writer.println("\t");
 
-				if ( m.getAnnotationListNode() != null){
-					for(AstNode n : m.getAnnotationListNode().getChildren()){
+				if ( m.getAnnotations() != null){
+					for(AstNode n : m.getAnnotations().getChildren()){
 						AnnotationNode anot = (AnnotationNode)n;
 						writer.print(anot.getName());
 						writer.print(" ");

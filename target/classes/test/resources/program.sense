@@ -18,8 +18,9 @@ class SenseProgram extends Any {
 	// var modifiers
 	// metadata read from .class
 	// definition of classpath
-	// define simple primitive classes in sense
 	// identify dead code
+	// identifiy escape variables (variables that are returned from methods)
+	// identify efectivly final
 	// identify out of range literals
 	void main (Array<String> args){
 
