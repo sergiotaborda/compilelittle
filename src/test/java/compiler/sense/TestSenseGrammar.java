@@ -217,7 +217,7 @@ public class TestSenseGrammar {
 		unitSet.add(new FileCompilationUnit(file));
 
  
-		final Compiler compiler = new Compiler(new SenseLanguage());
+		final Compiler compiler = new SenseCompiler();
 		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.addBackEnd(new OutToJavaSource(out));
 		compiler.compile(unitSet);
@@ -261,7 +261,7 @@ public class TestSenseGrammar {
 		unitSet.add(new FileCompilationUnit(file));
 
  
-		final Compiler compiler = new Compiler(new SenseLanguage());
+		final Compiler compiler = new SenseCompiler();
 		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.addBackEnd(new OutToJavaSource(out));
 		compiler.compile(unitSet);
@@ -287,7 +287,7 @@ public class TestSenseGrammar {
 		CompilationUnitSet unitSet = new FolderCompilationUnionSet(folder , name -> name.endsWith(".sense"));
 	
  
-		final Compiler compiler = new Compiler(new SenseLanguage());
+		final Compiler compiler = new SenseCompiler();
 		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.compile(unitSet);
 	}

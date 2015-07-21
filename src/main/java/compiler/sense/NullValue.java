@@ -3,7 +3,7 @@
  */
 package compiler.sense;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
 
 
 /**
@@ -11,7 +11,7 @@ import compiler.sense.typesystem.Type;
  */
 public class NullValue extends LiteralExpressionNode {
 
-	public Type getType() {
-		return Type.Null;
+	public SenseType getType() {
+		return SenseType.Null;
 	}
 }

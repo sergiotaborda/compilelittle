@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
+import compiler.typesystem.Type;
 
 /**
  * 
@@ -94,7 +95,7 @@ public class SemanticScope {
 	 * @param name
 	 * @param any
 	 */
-	public VariableInfo defineTypeVariable(String name, Type type) {
+	public VariableInfo defineTypeVariable(String name, SenseType type) {
 		if (variables.containsKey(name)){
 			throw new SyntaxError("Type varible " + name + " is already defined in this scope.");
 		}

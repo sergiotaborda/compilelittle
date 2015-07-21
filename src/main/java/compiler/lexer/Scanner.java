@@ -35,7 +35,7 @@ public class Scanner  {
 		ScanPosition pos = new ScanPosition();
 		while ( (c = reader.read()) > -1 ){
 			pos.incrementColumn();
-			state = state.recieve(pos, (char)c,consumer);
+			state = state.receive(pos, (char)c,consumer);
 		
 			if (c == '\n'){
 				pos.incrementLine();

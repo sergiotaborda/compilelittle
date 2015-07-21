@@ -62,4 +62,20 @@ public class ListTokenStream implements TokenStream {
 	private boolean equalsListTokenStream(ListTokenStream other) {
 		return this.position == other.position && this.tokens == other.tokens;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean hasPrevious() {
+		return position  > 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Token peekPrevious() {
+		return tokens.get(position - 1);
+	}
 }

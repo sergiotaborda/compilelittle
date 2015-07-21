@@ -6,7 +6,7 @@ package compiler.sense;
 /**
  * 
  */
-public class SyntaxError extends RuntimeException {
+public class SyntaxError extends compiler.SyntaxError {
 
 	/**
 	 * Constructor.

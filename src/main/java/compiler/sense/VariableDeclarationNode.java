@@ -4,8 +4,7 @@
 package compiler.sense;
 
 import compiler.parser.IdentifierNode;
-import compiler.sense.typesystem.Type;
-import compiler.syntax.AstNode;
+import compiler.typesystem.Type;
 
 /**
  * 
@@ -16,6 +15,8 @@ public class VariableDeclarationNode extends SenseAstNode implements ScopedVaria
 	private TypeNode type;
 	private String name;
 	private ExpressionNode inicializer;
+	private VariableInfo info;
+	private ImutabilityNode imutability;
 	
 	public Type getType() {
 		return type.getType();
@@ -54,5 +55,27 @@ public class VariableDeclarationNode extends SenseAstNode implements ScopedVaria
 	public void setInitializer(ExpressionNode node) {
 		this.inicializer = node;
 		this.add(node);
+	}
+
+	/**
+	 * @param info
+	 */
+	public void setInfo(VariableInfo info) {
+		this.info = info;
+	}
+	
+	public VariableInfo getInfo(){
+		return info;
+	}
+	
+	/**
+	 * @param astNode
+	 */
+	public void setImutability(ImutabilityNode imutability) {
+		this.imutability = imutability;
+	}
+	
+	public Imutability getImutability() {
+		return this.imutability == null ? Imutability.Mutable : imutability.getImutability();
 	}
 }

@@ -13,6 +13,8 @@ import compiler.Grammar;
  */
 public class MultiLineCommentTokenState extends TokenState {
 
+	private int commentsOpen = 1;
+	
 	/**
 	 * Constructor.
 	 * @param table
@@ -22,7 +24,7 @@ public class MultiLineCommentTokenState extends TokenState {
 	}
 
 	@Override
-	public ParseState recieve(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
+	public ParseState receive(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
 		
 		if (grammar.isStopCharacter(c)){
 			if (!grammar.isIgnore(c)){
@@ -31,7 +33,17 @@ public class MultiLineCommentTokenState extends TokenState {
 			// interrupt
 			Optional<Token> test = grammar.maybeMatch( pos,builder.toString());
 			if (test.isPresent() && test.get().isEndMultiLineComment()){
-				return new TokenState(grammar);
+				commentsOpen--;
+				if (commentsOpen==0){
+					return new TokenState(grammar);
+				} else {
+					builder = builder.delete(0, builder.length() - 1);
+					return this;
+				}
+			} else if (test.isPresent() && test.get().isStartMultiLineComment()){
+				commentsOpen++;
+				builder = builder.delete(0, builder.length() - 1);
+				return this;
 			} else if (builder.length() > 0){
 				builder = builder.delete(0, builder.length() - 1);
 			}

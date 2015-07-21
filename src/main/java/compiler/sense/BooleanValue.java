@@ -3,7 +3,7 @@
  */
 package compiler.sense;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
 
 
 /**
@@ -13,8 +13,8 @@ public class BooleanValue extends LiteralExpressionNode {
 
 	
 	private boolean value;
-	public Type getType() {
-		return Type.Boolean;
+	public SenseType getType() {
+		return SenseType.Boolean;
 	}
 	public boolean isValue() {
 		return value;

@@ -69,5 +69,10 @@ public interface Token {
 
 	Optional<String> getText();
 
+	/**
+	 * @return
+	 */
+	public boolean isKeyword();
+
 
 }

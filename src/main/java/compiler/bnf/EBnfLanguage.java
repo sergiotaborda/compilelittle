@@ -6,6 +6,7 @@ package compiler.bnf;
 import compiler.Language;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.syntax.AstNode;
+import compiler.typesystem.TypesRepository;
 /**
  * 
  */
@@ -23,7 +24,7 @@ public class EBnfLanguage extends Language {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AstNode transform(ParserTreeNode root) {
+	public AstNode transform(ParserTreeNode root, TypesRepository repository) {
 
 
 	//	TreeTransverser.tranverse(root, new XmlPrintOutParserTreeVisitor());

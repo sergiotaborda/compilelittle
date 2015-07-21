@@ -41,12 +41,21 @@ public class QualifiedNameNode extends SenseAstNode {
 	/**
 	 * @return
 	 */
-	public String getPrevious() {
+	public QualifiedNameNode getPrevious() {
 		int pos = name.lastIndexOf(".");
 		if (pos < 0){
-			return "";
+			return null;
 		} else {
-			return name.subSequence(0, pos).toString();
+			return new QualifiedNameNode(name.subSequence(0, pos).toString());
+		}
+	}
+	
+	public QualifiedNameNode getLast() {
+		int pos = name.lastIndexOf(".");
+		if (pos < 0){
+			return null;
+		} else {
+			return new QualifiedNameNode(name.substring(pos + 1));
 		}
 	}
 }

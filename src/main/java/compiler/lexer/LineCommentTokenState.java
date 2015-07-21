@@ -22,10 +22,10 @@ public class LineCommentTokenState extends TokenState {
 
 	
 	@Override
-	public ParseState recieve(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
+	public ParseState receive(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
 		
 		if (c == '\n'){
-			return new TokenState(grammar).recieve(pos, c, tokensQueue);
+			return new TokenState(grammar).receive(pos, c, tokensQueue);
 		}
 		return this;
 	}

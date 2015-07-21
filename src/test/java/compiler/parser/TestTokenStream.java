@@ -69,7 +69,13 @@ public class TestTokenStream {
 		public TestToken (String text){
 			this.text = text;
 		}
-		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isKeyword() {
+			return false;
+		}
 		public int hashCode(){
 			 return 0;
 		}

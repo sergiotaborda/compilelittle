@@ -1,15 +1,19 @@
 package packageName.subpackageName;
 
-import java.util.Math;
+import /*native*/ java.lang.Math;
 
 public class SenseProgram {
 
-	Double y = Math.sin(4D);
+	var Double y = Math.sin(4D);
 
 	public Real addIt (){
-		Double x = 34F.toDouble();
-		y = 30D;
-	 	return x + 8D + 6.9D * y % Math.sin(4D);
+		val Double x = 34F.toDouble();
+		y = 30D; // error if y is val
+	 	Real r =  x + 8D + 6.9D * y % Math.sin(4D);
+	 	
+	 	System.out.print("Calculating..");
+	 	Maybe<String> a = System.getProperty("version");
+	 	return r;
 	}
 
 }

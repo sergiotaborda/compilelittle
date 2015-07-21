@@ -3,7 +3,8 @@
  */
 package compiler.sense;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
+import compiler.typesystem.Type;
 
 /**
  * 
@@ -14,6 +15,9 @@ public class VariableInfo {
 	private String name;
 	private boolean initialized;
 	private boolean isTypeVariable;
+	private boolean escapes = false;
+	private int writeCount = 0;
+	private boolean imutable;
 
 	/**
 	 * Constructor.
@@ -24,11 +28,26 @@ public class VariableInfo {
 		this.name = name;
 		this.type = type;
 		this.isTypeVariable= isTypeVariable;
+		this.imutable = false;
 	}
 
+	public void markEscapes(){
+		escapes = true;
+	}
+	
+	public boolean doesEscape(){
+		return escapes;
+	}
+	
+	public void markWrite(){
+		writeCount++;
+	}
 
+	public boolean isEfectivlyFinal(){
+		return writeCount < 2;
+	}
 	/**
-	 * Obtains {@link Type}.
+	 * Obtains {@link SenseType}.
 	 * @return the type
 	 */
 	public Type getType() {
@@ -60,6 +79,14 @@ public class VariableInfo {
 	 */
 	public boolean isTypeVariable() {
 		return isTypeVariable;
+	}
+
+	public boolean isImutable() {
+		return imutable;
+	}
+
+	public void setImutable(boolean imutable) {
+		this.imutable = imutable;
 	}
 
 	

@@ -24,7 +24,7 @@ public class NumberLiteralTokenState extends TokenState {
 	 * @param c
 	 * @return
 	 */
-	public ParseState recieve(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
+	public ParseState receive(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
 		if ( c == '.' && builder.toString().contains(".")){
 			
 			// test together
@@ -41,7 +41,7 @@ public class NumberLiteralTokenState extends TokenState {
 				return new OperatorTokenState(this);
 			} else {
 				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-				return new TokenState(grammar).recieve(pos, c, tokensQueue);
+				return new TokenState(grammar).receive(pos, c, tokensQueue);
 			}
 		} else if ( grammar.isDigit(c)){
 			builder.append(c);
@@ -54,10 +54,10 @@ public class NumberLiteralTokenState extends TokenState {
 				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
 			}
 			
-			return new TokenState(grammar).recieve(pos, c, tokensQueue);
+			return new TokenState(grammar).receive(pos, c, tokensQueue);
 		} else if (grammar.isStopCharacter(c) ){
 			tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-			return new TokenState(grammar).recieve(pos, c, tokensQueue);
+			return new TokenState(grammar).receive(pos, c, tokensQueue);
 		 } else {
 			 builder.append(c);
 		 }

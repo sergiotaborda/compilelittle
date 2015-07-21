@@ -15,7 +15,7 @@ public interface ParseState  {
 	 * @param c
 	 * @return
 	 */
-	public ParseState recieve(ScanPosition pos, char c, Consumer<Token> tokensQueue);
+	public ParseState receive(ScanPosition pos, char c, Consumer<Token> tokensQueue);
 
 	/**
 	 * @param pos 

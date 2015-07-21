@@ -26,6 +26,13 @@ public class EOLToken implements Token {
 		return position;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isKeyword() {
+		return false;
+	}
 	
 	/**
 	 * {@inheritDoc}

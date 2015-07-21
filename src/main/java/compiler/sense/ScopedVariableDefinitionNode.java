@@ -21,4 +21,11 @@ public interface ScopedVariableDefinitionNode extends TypedNode {
 
 	
 	void setInitializer(ExpressionNode node);
+
+	/**
+	 * @param info
+	 */
+	void setInfo(VariableInfo info);
+	
+    Imutability getImutability();
 }

@@ -35,7 +35,7 @@ public class TokenState extends AbstractTokenState implements ParseState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ParseState recieve(ScanPosition pos, char c, Consumer<Token> tokensQueue) {
+	public ParseState receive(ScanPosition pos, char c, Consumer<Token> tokensQueue) {
 
 		Optional<Token> test = Optional.empty();
 

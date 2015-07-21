@@ -6,6 +6,7 @@ package compiler.math;
 import compiler.Language;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.syntax.AstNode;
+import compiler.typesystem.TypesRepository;
 
 /**
  * 
@@ -24,7 +25,7 @@ public class MathLanguage extends Language{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AstNode transform(ParserTreeNode node) {
+	public AstNode transform(ParserTreeNode node,TypesRepository repository) {
 
 		AstNode root = new AstNode();
 

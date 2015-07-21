@@ -5,12 +5,14 @@ package compiler.sense;
 
 import java.io.PrintWriter;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.ComparisonNode.Operation;
+import compiler.sense.typesystem.SenseType;
 import compiler.sense.typesystem.TypeParameter;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
 import compiler.trees.Visitor;
 import compiler.trees.VisitorNext;
+import compiler.typesystem.Type;
 
 /**
  * 
@@ -110,18 +112,18 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 
 						TreeTransverser.tranverse(c.getExceptions(), new JavaSourceWriterVisitor(writer));
 
-						writer.println(") {");
+						writer.println(")");
 
 						TreeTransverser.tranverse(c.getInstructions(), new JavaSourceWriterVisitor(writer));
 
-						writer.println("}");
+						writer.println();
 					}
 				}
 
 				if (t.getfinalInstructions() != null){
-					writer.print(" finally (");
-					TreeTransverser.tranverse(t.getResource(), new JavaSourceWriterVisitor(writer));
-					writer.print(")");
+					writer.print(" finally ");
+					TreeTransverser.tranverse(t.getfinalInstructions(), new JavaSourceWriterVisitor(writer));
+				
 				}
 
 				return VisitorNext.Siblings;
@@ -174,13 +176,13 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 					if (op.isDefault()){
 						writer.print(" default");
 					} else {
-						writer.print(" case (");
+						writer.print(" case ");
 						TreeTransverser.tranverse(op.getValue(), new JavaSourceWriterVisitor(writer));
-						writer.println(")");
+						writer.println(":");
 					}
 	
 					TreeTransverser.tranverse(op.getActions(), new JavaSourceWriterVisitor(writer));
-					
+					writer.println("break;");
 				}
 			
 				writer.println("}");
@@ -286,9 +288,21 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 					TreeTransverser.tranverse(t.getInitializer(), new JavaSourceWriterVisitor(writer));
 				}
 
+				if (t.getInfo() !=null){
+					writer.print(" /*");
+					if (t.getInfo().isEfectivlyFinal()){
+						writer.print(" isEfectivlyFinal ");
+					}
+					if (t.getInfo().doesEscape()){
+						writer.print(" doesEscape ");
+					}
+					writer.print("*/");
+				}
+				
 				if (node.getParent() instanceof BlockNode){
 					writer.println(";");
 				}
+
 				return VisitorNext.Siblings;
 			} else if (node instanceof VariableWriteNode ){
 				VariableWriteNode t = (VariableWriteNode)node;
@@ -357,13 +371,37 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 			} else if (node instanceof ComparisonNode ){
 				ComparisonNode n = (ComparisonNode)node;
 
-				TreeTransverser.tranverse(n.getLeft(), new JavaSourceWriterVisitor(writer));
+				
+				if (n.getOperation() == Operation.EqualTo){
+					TreeTransverser.tranverse(n.getLeft(), new JavaSourceWriterVisitor(writer));
+					writer.print(".equals(");
+					TreeTransverser.tranverse(n.getRight(), new JavaSourceWriterVisitor(writer));
+					writer.print(")");
+				} else if (n.getOperation() == Operation.Different){
+					writer.print("!");
+					TreeTransverser.tranverse(n.getLeft(), new JavaSourceWriterVisitor(writer));
+					writer.print(".equals(");
+					TreeTransverser.tranverse(n.getRight(), new JavaSourceWriterVisitor(writer));
+					writer.print(")");
+				} else if (n.getOperation() == Operation.ReferenceEquals){
+					TreeTransverser.tranverse(n.getLeft(), new JavaSourceWriterVisitor(writer));
+					writer.print(" == ");
+					TreeTransverser.tranverse(n.getRight(), new JavaSourceWriterVisitor(writer));
+				} else if (n.getOperation() == Operation.ReferenceDifferent){
+					TreeTransverser.tranverse(n.getLeft(), new JavaSourceWriterVisitor(writer));
+					writer.print(" != ");
+					TreeTransverser.tranverse(n.getRight(), new JavaSourceWriterVisitor(writer));
+				}else {
+					TreeTransverser.tranverse(n.getLeft(), new JavaSourceWriterVisitor(writer));
+					writer.print(" ");
+					writer.print(n.getOperation().symbol());
+					writer.print(" ");
+					TreeTransverser.tranverse(n.getRight(), new JavaSourceWriterVisitor(writer));
+				}
+					
+				
 
-				writer.print(" ");
-				writer.print(n.getOperation().symbol());
-				writer.print(" ");
-
-				TreeTransverser.tranverse(n.getRight(), new JavaSourceWriterVisitor(writer));
+				
 	
 				return VisitorNext.Siblings;
 			} else if (node instanceof FieldAccessNode ){
@@ -459,8 +497,15 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 				} else {
 					writer.print(",");
 				}
-				writer.print(p.getType().getSimpleName());
-				writeGenerics(p.getType());
+				writer.print(p.getName());
+				if (!p.getUpperbound().equals(SenseType.Any)){
+					writer.print(" extends ");
+					writeGenerics(p.getUpperbound());
+				} else {
+					writer.print(" super ");
+					writeGenerics(p.getLowerBound());
+				}
+				
 			}
 			writer.print(">");
 		}

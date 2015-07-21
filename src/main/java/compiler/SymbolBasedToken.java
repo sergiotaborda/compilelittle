@@ -28,6 +28,14 @@ public class SymbolBasedToken implements Token{
 	 * {@inheritDoc}
 	 */
 	@Override
+	public boolean isKeyword() {
+		return symbol == TokenSymbol.KeyWord;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public ScanPosition getPosition() {
 		return position;
 	}

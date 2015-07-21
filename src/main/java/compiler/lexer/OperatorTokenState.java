@@ -20,7 +20,7 @@ public class OperatorTokenState extends TokenState {
 		this.builder = other.builder;
 	}
 
-	public ParseState recieve(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
+	public ParseState receive(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
 
 		Optional<Token> test = grammar.maybeMatch(pos,new StringBuilder().append(c).toString());
 
@@ -64,7 +64,7 @@ public class OperatorTokenState extends TokenState {
 		if (grammar.isIgnore(c)){
 			return new TokenState(grammar);
 		}
-		return new TokenState(grammar).recieve(pos,c, tokensQueue);
+		return new TokenState(grammar).receive(pos,c, tokensQueue);
 
 	}
 }

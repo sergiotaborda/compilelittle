@@ -30,6 +30,14 @@ public class JavaToken implements Token {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public boolean isKeyword() {
+		return symbol == Symbols.Keywork;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isStringLiteral() {
 		return symbol == Symbols.LiteralString;
 	}

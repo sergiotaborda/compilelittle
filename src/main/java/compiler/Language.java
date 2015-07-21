@@ -9,6 +9,7 @@ import compiler.parser.LookupTable;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.syntax.AstNode;
+import compiler.typesystem.TypesRepository;
 
 /**
  * 
@@ -27,7 +28,7 @@ public abstract class Language {
 	}
 	
 
-	public abstract AstNode transform(ParserTreeNode root);
+	public abstract AstNode transform(ParserTreeNode root, TypesRepository repository);
 
 
 	/**

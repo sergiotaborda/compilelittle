@@ -1,9 +1,8 @@
 /**
  * 
  */
-package compiler.sense;
+package compiler.typesystem;
 
-import compiler.sense.typesystem.Type;
 
 /**
  * 

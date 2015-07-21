@@ -12,6 +12,7 @@ import compiler.math.ast.VariableNode;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.parser.nodes.TerminalNode;
 import compiler.syntax.AstNode;
+import compiler.typesystem.TypesRepository;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class MathLanguage2 extends Language{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AstNode transform(ParserTreeNode node) {
+	public AstNode transform(ParserTreeNode node,TypesRepository repository) {
 
 //		if (node.isEmpty()){
 //			return null;
@@ -79,7 +80,7 @@ public class MathLanguage2 extends Language{
 
 	}
 
-	private OperatorNode parseOperator(ParserTreeNode node, AstNode vn) {
+	private OperatorNode parseOperator(ParserTreeNode node, AstNode vn,TypesRepository repository) {
 		TerminalNode t = (TerminalNode)node.getChildren().get(1).getChildren().get(0);
 
 		OperatorNode op;
@@ -91,7 +92,7 @@ public class MathLanguage2 extends Language{
 			op = new SumNode();
 		}
 		op.add(vn);
-		AstNode p = transform(node.getChildren().get(2));
+		AstNode p = transform(node.getChildren().get(2),repository);
 		if (p instanceof Value || p instanceof VariableNode){
 			op.add(p);
 		} else if (p instanceof OperatorNode){

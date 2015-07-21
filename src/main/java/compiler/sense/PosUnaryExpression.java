@@ -4,7 +4,8 @@
 package compiler.sense;
 
 import compiler.sense.BooleanOperatorNode.BooleanOperation;
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
+import compiler.typesystem.Type;
 
 /**
  * 

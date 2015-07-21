@@ -3,10 +3,12 @@
  */
 package compiler.sense.typesystem;
 
+import compiler.typesystem.Type;
+
 /**
  * 
  */
-public class UnionType extends Type {
+public class UnionType extends SenseType {
 
 	/**
 	 * Constructor.

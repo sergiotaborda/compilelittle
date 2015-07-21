@@ -3,7 +3,7 @@
  */
 package compiler.sense;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
 
 
 /**
@@ -18,8 +18,8 @@ public class ComparisonNode extends BooleanExpressionNode {
 		GreaterOrEqualTo(">="), 
 		EqualTo ("=="), 
 		Different ("!="),
-		ReferenceEquals ("===");
-		
+		ReferenceEquals ("==="),
+		ReferenceDifferent ("!==");
 		private String symbol;
 
 		Operation(String symbol){
@@ -48,8 +48,8 @@ public class ComparisonNode extends BooleanExpressionNode {
 		return operation;
 	}
 	
-	public Type getType() {
-		return Type.Boolean;
+	public SenseType getType() {
+		return SenseType.Boolean;
 	}
 
 	public ExpressionNode getLeft(){

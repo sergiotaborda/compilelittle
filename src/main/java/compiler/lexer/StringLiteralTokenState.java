@@ -25,7 +25,7 @@ public class StringLiteralTokenState extends TokenState {
 	 * @param c
 	 * @return
 	 */
-	public ParseState recieve(ScanPosition pos, char c, Consumer<Token> tokensQueue) {
+	public ParseState receive(ScanPosition pos, char c, Consumer<Token> tokensQueue) {
 		
 		 if (grammar.isStringLiteralDelimiter(c)){
 			 Optional<Token> token = grammar.stringLiteralMath(pos, builder.toString());

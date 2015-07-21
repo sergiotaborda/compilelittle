@@ -25,6 +25,7 @@ public class MethodCallNode extends SenseAstNode {
 	 */
 	public void setArgumentList(ArgumentListNode arguments) {
 		this.arguments = arguments;
+		this.add(arguments);
 	}
 
 	/**

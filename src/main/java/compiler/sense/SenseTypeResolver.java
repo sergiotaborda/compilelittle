@@ -6,7 +6,8 @@ package compiler.sense;
 import java.util.HashMap;
 import java.util.Map;
 
-import compiler.sense.typesystem.Type;
+import compiler.sense.typesystem.SenseType;
+import compiler.typesystem.TypeResolver;
 
 /**
  * 
@@ -15,7 +16,7 @@ public class SenseTypeResolver implements TypeResolver {
 
 	
 	private static SenseTypeResolver me = new SenseTypeResolver();
-	private Map<String, Type> types = new HashMap<>();
+	private Map<String, SenseType> types = new HashMap<>();
 	
 	/**
 	 * @return
@@ -29,11 +30,11 @@ public class SenseTypeResolver implements TypeResolver {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type resolveTypeByName(String name) {
+	public SenseType resolveTypeByName(String name) {
 		return types.get(name);
 	}
 	
-	public void registerType(String name , Type type){
+	public void registerType(String name , SenseType type){
 		types.put(name, type);
 	}
 

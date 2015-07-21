@@ -11,7 +11,7 @@ import java.util.List;
 import compiler.lexer.TokenStream;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
-import compiler.sense.SyntaxError;
+import compiler.typesystem.TypeResolver;
 
 /**
  * 
@@ -20,13 +20,20 @@ public class Compiler {
 	
 	private Language language;
 	private List<CompilerBackEnd> ends = new ArrayList<>();
+	private CompositeTypesRepository repository;
 
 	public Compiler(Language language){
 		this.language = language;
+		this.repository = new CompositeTypesRepository();
 	}
+	
 	
 	public void addBackEnd(CompilerBackEnd end){
 		this.ends.add(end);
+	}
+	
+	public void addTypeResolver(TypeResolver resolver){
+		this.repository.addTypeResolver(resolver);
 	}
 	
 	public void compile(CompilationUnitSet unitSet) throws IOException{
@@ -62,7 +69,7 @@ public class Compiler {
 				
 				for (CompilerBackEnd end : ends)
 				{
-					end.use(language.transform(node));
+					end.use(language.transform(node, repository));
 				}
 			} catch (SyntaxError e){
 				throw e;

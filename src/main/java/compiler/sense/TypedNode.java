@@ -3,7 +3,7 @@
  */
 package compiler.sense;
 
-import compiler.sense.typesystem.Type;
+import compiler.typesystem.Type;
 
 /**
  * 
