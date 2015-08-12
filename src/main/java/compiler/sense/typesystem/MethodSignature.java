@@ -75,6 +75,12 @@ public class MethodSignature {
 		return false;
 	}
 	
+	public int hashCode (){
+		return name.hashCode() + 31 * parameters.size();
+	}
+
+
+	
 	public boolean isAssignableTo(MethodSignature other){
 		if ( this.name.equals(other.name) && this.parameters.size() == other.parameters.size()){
 			
@@ -88,8 +94,22 @@ public class MethodSignature {
 		return false;
 	}
 	
-	public int hashCode (){
-		return name.hashCode() + 31 * parameters.size();
+
+	/**
+	 * @param s
+	 * @return
+	 */
+	public boolean isPromotableTo(MethodSignature other) {
+		if ( this.name.equals(other.name) && this.parameters.size() == other.parameters.size()){
+			
+			for (int i = 0; i < parameters.size(); i++ ){
+				if (!this.parameters.get(i).getType().isPromotableTo(other.parameters.get(i).getType())){
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

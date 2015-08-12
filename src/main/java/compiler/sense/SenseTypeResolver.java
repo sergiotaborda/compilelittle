@@ -31,6 +31,9 @@ public class SenseTypeResolver implements TypeResolver {
 	 */
 	@Override
 	public SenseType resolveTypeByName(String name) {
+		if (!name.contains(".")){
+			name = "sense." + name;
+		}
 		return types.get(name);
 	}
 	

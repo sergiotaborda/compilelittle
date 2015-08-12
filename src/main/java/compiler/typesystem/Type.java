@@ -11,7 +11,6 @@ import compiler.sense.Kind;
 import compiler.sense.typesystem.Method;
 import compiler.sense.typesystem.MethodSignature;
 import compiler.sense.typesystem.TypeMatch;
-import compiler.sense.typesystem.TypeParameter;
 
 /**
  * 

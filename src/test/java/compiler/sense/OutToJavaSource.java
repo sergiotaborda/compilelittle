@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import compiler.CompilerBackEnd;
+import compiler.java.JavaSourceWriterVisitor;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
 
@@ -17,15 +18,15 @@ import compiler.trees.TreeTransverser;
  */
 public class OutToJavaSource implements CompilerBackEnd {
 
-	PrintWriter writer;
+	File out;
 	
 	/**
 	 * Constructor.
 	 * @param out
 	 * @throws IOException 
 	 */
-	public OutToJavaSource(File out) throws IOException {
-		this.writer = new PrintWriter(new FileWriter(out));
+	public OutToJavaSource(File out) {
+		this.out = out; 
 	}
 
 	/**
@@ -33,9 +34,15 @@ public class OutToJavaSource implements CompilerBackEnd {
 	 */
 	@Override
 	public void use(AstNode root) {
-		JavaSourceWriterVisitor vv = new JavaSourceWriterVisitor(writer);
-		TreeTransverser.tranverse(root, vv);
-		writer.close();
+		
+
+		AstNode javaRoot = TreeTransverser.transform(root, new Sense2JavaTransformer());
+		
+		try(PrintWriter writer = new PrintWriter(new FileWriter(out))){
+			TreeTransverser.tranverse(javaRoot, new JavaSourceWriterVisitor(writer));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -209,6 +209,38 @@ public class TestSenseGrammar {
 	}
 	
 	@Test 
+	public void testStringInterpolation() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/interpolation.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/interpolation.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new SenseCompiler();
+		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+
+	}
+	
+	@Test 
+	public void testMaybeAssingment() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/maybeTest.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/maybeTest.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new SenseCompiler();
+		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+
+	}
+	
+	@Test 
 	public void testCompileExpression() throws IOException {
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.sense");
 		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.java");
@@ -232,7 +264,7 @@ public class TestSenseGrammar {
 		unitSet.add(new FileCompilationUnit(file));
 
  
-		final Compiler compiler = new Compiler(new SenseLanguage());
+		final Compiler compiler = new SenseCompiler();
 		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.compile(unitSet);
 
@@ -246,7 +278,7 @@ public class TestSenseGrammar {
 		unitSet.add(new FileCompilationUnit(file));
 
  
-		final Compiler compiler = new Compiler(new SenseLanguage());
+		final Compiler compiler = new SenseCompiler();
 		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.compile(unitSet);
 
@@ -275,7 +307,7 @@ public class TestSenseGrammar {
 		unitSet.add(new FileCompilationUnit(file));
 
  
-		final Compiler compiler = new Compiler(new SenseLanguage());
+		final Compiler compiler = new SenseCompiler();
 		compiler.addBackEnd(new PrintOutBackEnd());
 		compiler.compile(unitSet);
 	}

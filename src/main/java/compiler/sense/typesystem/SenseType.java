@@ -9,24 +9,31 @@ import java.util.stream.Collectors;
 
 import compiler.sense.Kind;
 import compiler.sense.SenseTypeResolver;
-import compiler.sense.typesystem.TypeParameter.Variance;
 import compiler.typesystem.Field;
 import compiler.typesystem.Type;
+import compiler.typesystem.TypeParameter;
+import compiler.typesystem.TypeParameter.Variance;
 
 /**
  * 
  */
 public class SenseType implements Type {
 
-	public static final SenseType Any = new SenseType("sense.Any");
+
+	public static final Type Nothing = new NothingType();
+	public static final SenseType Any = new SenseType("sense.Any", null);
 	public static final SenseType Exception = new SenseType("sense.Exception", Any);
 	public static final Type Void = new SenseType("sense.Void", Any);
-	public static final SenseType Null = new SenseType("sense.Null", Any);
+
+	public static final Type Function1 = new SenseType("sense.Function", Any).withGenericParameter(Variance.Invariant,"R").withGenericParameter(Variance.Invariant,"T");
+	
+	
 	public static final SenseType Boolean = new SenseType("sense.Boolean", Any);
 	public static final SenseType Number = new SenseType("sense.Number", Any);
 	public static final SenseType Whole = new SenseType("sense.Whole", Number);
 	public static final SenseType Int = new SenseType("sense.Int", Whole);
 	public static final SenseType Natural = new SenseType("sense.Natural", Whole).addMethod("toInt", Int);
+	public static final SenseType Short = new SenseType("sense.Short", Whole).addMethod("toInt", Int);
 
 	public static final SenseType String = new SenseType("sense.String", Any);
 	
@@ -54,16 +61,21 @@ public class SenseType implements Type {
 	public static final SenseType Character =  new SenseType("sense.Character", Any);
 	public static final SenseType Maybe = new SenseType("sense.Maybe", Any).withGenericParameter(Variance.Invariant,"T");
 	public static final SenseType Some = new SenseType("sense.Some", Maybe).withGenericParameter(Variance.Invariant,"T");	
-	public static final SenseType None = new SenseType("sense.None", Maybe);	
+	public static final SenseType None = new SenseType("sense.None", Maybe.of(Nothing));	
 	
 	public static final SenseType Interval = new SenseType("sense.Interval", Any).withGenericParameter(Variance.Invariant,"T");
 			
-	
-	public static final Type Nothing = new NothingType();
+
 	
 	static {
+		 Any.addMethod("toString", String);
+		 
+		 Maybe.addMethod("map", Maybe.of(String), new ConcreteMethodParameter(Function1.of(String,Maybe.of(Natural))) );
+		 
 		 String.addMethod("get", String, new ConcreteMethodParameter(Natural) );
-
+		 String.addMethod("toMaybe", Maybe.of(String));
+		 String.addMethod("size", Natural);
+		 
 		 Natural.addMethod("multiply", Int, new ConcreteMethodParameter(Int) );
 		 Natural.addMethod("multiply", Long, new ConcreteMethodParameter(Long) );
 		 Natural.addMethod("toLong", Long );
@@ -71,6 +83,8 @@ public class SenseType implements Type {
 		 Natural.addMethod("toReal", Real );
 		 Natural.addMethod("toFloat", Float );
 		 Natural.addMethod("negative", Int );
+		 Natural.addMethod("plus", Complex ,  new ConcreteMethodParameter(Imaginary) );
+		 Natural.addMethod("minus", Complex ,  new ConcreteMethodParameter(Imaginary) );
 		 
 		 Long.addMethod("remainder", Long, new ConcreteMethodParameter(Int) );
 		 Double.addMethod("remainder", Double, new ConcreteMethodParameter(Double) );
@@ -78,6 +92,20 @@ public class SenseType implements Type {
 		 Int.addMethod("plus", Long, new ConcreteMethodParameter(Long) );
 		 
 		 Interval.addMethod("contains", Boolean, new GenericVariantMethodParameter("candidade",Interval, 0));
+		 
+		 for(java.lang.reflect.Field f : SenseType.class.getFields()){
+			try {
+				SenseType t = (SenseType) f.get(null);
+				SenseTypeResolver.getInstance().registerType(t.getName(), t);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
+		 }
 	}
 	
 	private String name;
@@ -93,13 +121,7 @@ public class SenseType implements Type {
 	 */
 	public SenseType(String name) {
 		this.name = name;
-		if (name.contains(".")){
-			String[] s = name.split("\\.");
-			simpleName = s[s.length - 1];
-		} else {
-			simpleName = name;
-		}
-		SenseTypeResolver.getInstance().registerType(name, this);
+		
 	}
 	/**
 	 * Constructor.
@@ -130,6 +152,13 @@ public class SenseType implements Type {
 		for(TypeParameter t : other.parameters){
 			this.parameters.add(new TypeParameter(t));
 		}
+	}
+	
+	/**
+	 * @param superType2
+	 */
+	public void setSuperType(Type superType) {
+		this.superType = superType;
 	}
 	/**
 	 * {@inheritDoc}
@@ -172,7 +201,7 @@ public class SenseType implements Type {
 	 * @param string2
 	 * @return
 	 */
-	public SenseType addMethod(java.lang.String name, SenseType returningType, MethodParameter ... parameters) {
+	public SenseType addMethod(java.lang.String name,Type returningType, MethodParameter ... parameters) {
 		
 		this.methods.add(new Method(this, name , returningType, parameters));
 		return this;
@@ -183,7 +212,7 @@ public class SenseType implements Type {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SenseType of(Type ... parameterType){
+	public Type of(Type ... parameterType){
 		if (!this.isGeneric()){
 			throw new IllegalStateException("Type " + this.getName() + " is not generic");
 		}
@@ -239,7 +268,7 @@ public class SenseType implements Type {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SenseType or(Type other) {
+	public Type or(Type other) {
 		return new UnionType(this, other);
 	}
 
@@ -248,10 +277,20 @@ public class SenseType implements Type {
 	 */
 	@Override
 	public boolean isAssignableTo(Type type) {
-		
-		if (type.isGeneric()){
-			return isAssignableTo(type.getSuperType());
+	
+		if (type.equals(Any)){
+			return true;
 		}
+		if (this.equals(Nothing)){
+			return true;
+		}
+		if (type.equals(Nothing)){
+			return false;
+		}
+		if (this.equals(Any)){
+			return false;
+		}
+		
 		
 		if (type instanceof SenseType){
 			SenseType other = (SenseType)type;
@@ -263,17 +302,29 @@ public class SenseType implements Type {
 				
 				for(int i =0; i < this.parameters.size();i++){
 					// TODO consider variance and lowerbound
-					if (!this.parameters.get(i).getUpperbound().equals(other.parameters.get(i).getUpperbound())){
+					if (!this.parameters.get(i).getUpperbound().isAssignableTo(other.parameters.get(i).getUpperbound())){
 						return false;
 					}
 				}
 				
 				return true;
 			}
+			
+			if (this.superType != null){
+				if (!superType.equals(Any) && this.isGeneric()){
+					Type[] types = new Type[this.parameters.size()];
+					for(int i = 0; i < types.length; i++){
+						types[i] = this.parameters.get(i).getUpperbound();
+					}
+					return this.superType.of(types).isAssignableTo(type);
+				} else {
+					return this.superType.isAssignableTo(type);
+				}
+			}
 		}
 		
 		
-		return isPromotableTo(type) || ((this.superType != null && this.superType.isAssignableTo(type)));
+		return false;
 	}
 
 
@@ -314,7 +365,7 @@ public class SenseType implements Type {
 	@Override
 	public List<Method> getAvailableMethods(String name) {
 		List<Method> list = getDeclaredMethods(name);
-		if (list.isEmpty() && superType != null){
+		if (list.isEmpty() && superType != null && this != superType){
 			return superType.getAvailableMethods(name);
 		}
 		return list;
@@ -326,6 +377,11 @@ public class SenseType implements Type {
 	 */
 	@Override
 	public boolean isPromotableTo(Type type) {
+		if (this == type || this.equals(type)){
+			return true;
+		} else if (this.isAssignableTo(type)){
+			return true;
+		}
 		return getAvailableMethods("to" + type.getSimpleName()).size() > 0;
 	}
 
@@ -334,6 +390,10 @@ public class SenseType implements Type {
 	 */
 	@Override
 	public java.lang.String getSimpleName() {
+		if (simpleName == null){
+			String[] s = this.name.split("\\.");
+			simpleName = s[s.length - 1];
+		}
 		return simpleName;
 	}
 
@@ -373,6 +433,13 @@ public class SenseType implements Type {
 	public List<Field> getDeclaredFields(java.lang.String name) {
 		throw new UnsupportedOperationException("Not implememented yet");
 	}
+	/**
+	 * @param kind2
+	 */
+	public void setKind(Kind kind) {
+		this.kind = kind;
+	}
+
 	
 
 }

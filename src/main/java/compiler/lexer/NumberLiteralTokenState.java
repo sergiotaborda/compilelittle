@@ -6,6 +6,8 @@ package compiler.lexer;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import compiler.Grammar;
+
 /**
  * 
  */
@@ -16,7 +18,7 @@ public class NumberLiteralTokenState extends TokenState {
 	 * @param table
 	 */
 	public NumberLiteralTokenState(TokenState other) {
-		super(other.grammar);
+		super(other.getScanner());
 		this.builder = other.builder;
 	}
 
@@ -25,6 +27,9 @@ public class NumberLiteralTokenState extends TokenState {
 	 * @return
 	 */
 	public ParseState receive(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
+		
+		Grammar grammar = this.getScanner().getGrammar();
+				
 		if ( c == '.' && builder.toString().contains(".")){
 			
 			// test together
@@ -41,7 +46,7 @@ public class NumberLiteralTokenState extends TokenState {
 				return new OperatorTokenState(this);
 			} else {
 				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-				return new TokenState(grammar).receive(pos, c, tokensQueue);
+				return this.getScanner().newInitialState().receive(pos, c, tokensQueue);
 			}
 		} else if ( grammar.isDigit(c)){
 			builder.append(c);
@@ -54,10 +59,10 @@ public class NumberLiteralTokenState extends TokenState {
 				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
 			}
 			
-			return new TokenState(grammar).receive(pos, c, tokensQueue);
+			return this.getScanner().newInitialState().receive(pos, c, tokensQueue);
 		} else if (grammar.isStopCharacter(c) ){
 			tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-			return new TokenState(grammar).receive(pos, c, tokensQueue);
+			return this.getScanner().newInitialState().receive(pos, c, tokensQueue);
 		 } else {
 			 builder.append(c);
 		 }

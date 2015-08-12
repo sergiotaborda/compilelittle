@@ -15,20 +15,24 @@ import compiler.Grammar;
  */
 public class TokenState extends AbstractTokenState implements ParseState {
 
-	protected Grammar grammar;
 	protected StringBuilder builder= new StringBuilder();
+	private Scanner scanner;
 
 	/**
 	 * Constructor.
 	 * @param table
 	 */
-	public TokenState(Grammar grammar) {
-		this.grammar = grammar;
+	public TokenState(Scanner scanner) {
+		this.scanner = scanner;
 	}
 
-	public TokenState(Grammar grammar, StringBuilder builder) {
-		this.grammar = grammar;
+	public TokenState(Scanner scanner, StringBuilder builder) {
+		this(scanner);
 		this.builder = builder;
+	}
+	
+	public Scanner getScanner(){
+		return scanner;
 	}
 
 	/**
@@ -39,10 +43,12 @@ public class TokenState extends AbstractTokenState implements ParseState {
 
 		Optional<Token> test = Optional.empty();
 
+		Grammar grammar = this.scanner.getGrammar();
+		
 		if (grammar.isNumberStarter(c)){
 			builder.append(c);
 			return new NumberLiteralTokenState(this);
-		} else if (grammar.isStopCharacter(c)){
+		} else if (c == 0 || grammar.isStopCharacter(c)){
 			if (builder.length() > 0){
 
 				test = grammar.terminalMatch(pos, builder.toString());
@@ -88,15 +94,15 @@ public class TokenState extends AbstractTokenState implements ParseState {
 
 		if (test.isPresent()){
 			if (test.get().isStartLineComment() ){
-				return new LineCommentTokenState(grammar);
+				return scanner.getLineCommentTokenState(this);
 			} else if (test.get().isStartMultiLineComment() ){
-				return new MultiLineCommentTokenState(grammar);
+				return scanner.getMultiLineCommentTokenState(this);
 			} else if (test.get().isStringLiteralStart()){
-				return new StringLiteralTokenState(this);
+				return scanner.getStringLiteralTokenState(this); 
 			}else if (test.get().isNumberLiteral()){
-				return new NumberLiteralTokenState(this);
+				return scanner.getNumberLiteralTokenState(this);
 			}else if (test.get().isOperator()){
-				return new OperatorTokenState(this);
+				return scanner.getOperatorTokenState(this);
 			} else {
 				tokensQueue.accept(test.get());
 				builder.delete(0, builder.length());
@@ -111,7 +117,7 @@ public class TokenState extends AbstractTokenState implements ParseState {
 	@Override
 	public void clear(ScanPosition pos, Consumer<Token> tokensQueue) {
 		if (builder.length() > 0){
-			Optional<Token> test = grammar.maybeMatch(pos, builder.toString());
+			Optional<Token> test = scanner.getGrammar().maybeMatch(pos, builder.toString());
 			
 			if (test.isPresent()){
 				tokensQueue.accept(test.get());

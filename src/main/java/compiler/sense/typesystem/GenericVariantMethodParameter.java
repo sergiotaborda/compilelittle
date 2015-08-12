@@ -5,8 +5,9 @@ package compiler.sense.typesystem;
 
 import java.util.Optional;
 
-import compiler.sense.typesystem.TypeParameter.Variance;
 import compiler.typesystem.Type;
+import compiler.typesystem.TypeParameter;
+import compiler.typesystem.TypeParameter.Variance;
 
 /**
  * 

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import compiler.sense.typesystem.SenseType;
 import compiler.typesystem.Type;
+import compiler.typesystem.VariableInfo;
 
 /**
  * 

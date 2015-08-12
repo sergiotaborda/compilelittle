@@ -14,6 +14,7 @@ import java.util.Optional;
 import compiler.typesystem.Type;
 import compiler.typesystem.TypeNotFoundException;
 import compiler.typesystem.TypesRepository;
+import compiler.typesystem.VariableInfo;
 
 /**
  * 

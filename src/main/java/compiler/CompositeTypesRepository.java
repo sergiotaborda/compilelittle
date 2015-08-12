@@ -16,6 +16,8 @@ import compiler.typesystem.TypesRepository;
 public class CompositeTypesRepository implements TypesRepository {
 
 	private List<TypeResolver> typeResolvers = new ArrayList<>();
+	
+	public CompositeTypesRepository (){}
 	/**
 	 * {@inheritDoc}
 	 */

@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import compiler.syntax.AstNode;
-
 /**
  * 
  */
@@ -47,9 +45,11 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
 	/**
 	 * @param astNode
 	 */
-	public void add(N node) {
-		node.setParent((N)this);
-		children.add(node);
+	public final void add(N node) {
+		if (node != null){
+			node.setParent((N)this);
+			children.add(node);
+		}
 	}
 	/**
 	 * @param astNode
@@ -74,13 +74,16 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
 		}
 	}
 
-	public void replace(N node, N newnode){
+	public  void replace(N node, N newnode){
 		
 		for (ListIterator<N> it = children.listIterator(); it.hasNext();) {
 			N n = it.next();
 			
 			if (n.equals(node)){
-				n.setParent(null);
+//				if (n.getParent() == this){
+//					n.setParent(null);
+//				}
+				newnode.setParent((N)this);
 				it.remove();
 				it.add(newnode);
 			}

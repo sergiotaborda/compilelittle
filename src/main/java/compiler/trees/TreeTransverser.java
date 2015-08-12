@@ -48,7 +48,7 @@ public class TreeTransverser {
 		return duplicate(root, duplicator);
 
 	}
-
+	
 	private static <T extends Node<T>, R extends Node<R>> R duplicate(T root, Function<T, R> duplicator) {
 		R newRoot = duplicator.apply(root);
 		
@@ -58,5 +58,31 @@ public class TreeTransverser {
 		return newRoot;
 	}
 	
+	public static <T extends Node<T>, R extends Node<R>> R transform(T root , Function<T,R> transformer){
+		
+		return transforms(root, transformer);
+
+	}
 	
+	private static <T extends Node<T>, R extends Node<R>> R transforms(T root, Function<T, R> transformer) {
+		R newRoot = transformer.apply(root);
+		
+		if (newRoot != null){
+			if (newRoot.getChildren().size() != root.getChildren().size()){
+				for(T n : root.getChildren()){
+					R node = transforms(n, transformer);
+					if (node != null){
+						newRoot.add(node);
+					}
+				}
+			}
+			
+			if (newRoot.getClass().getName().equals(root.getClass().getName()) 
+					&& newRoot.getChildren().size() != root.getChildren().size()){
+				throw new RuntimeException("Wrong transformation of " + root.getClass().getName());
+			}
+		}
+		
+		return newRoot;
+	}
 }

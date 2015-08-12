@@ -19,13 +19,14 @@ public class MultiLineCommentTokenState extends TokenState {
 	 * Constructor.
 	 * @param table
 	 */
-	public MultiLineCommentTokenState(Grammar table) {
-		super(table);
+	public MultiLineCommentTokenState(TokenState currentState) {
+		super(currentState.getScanner());
 	}
 
 	@Override
 	public ParseState receive(ScanPosition pos,char c, Consumer<Token> tokensQueue) {
 		
+		Grammar grammar = this.getScanner().getGrammar();
 		if (grammar.isStopCharacter(c)){
 			if (!grammar.isIgnore(c)){
 				builder.append(c);
@@ -35,7 +36,7 @@ public class MultiLineCommentTokenState extends TokenState {
 			if (test.isPresent() && test.get().isEndMultiLineComment()){
 				commentsOpen--;
 				if (commentsOpen==0){
-					return new TokenState(grammar);
+					return this.getScanner().newInitialState();
 				} else {
 					builder = builder.delete(0, builder.length() - 1);
 					return this;
@@ -52,7 +53,7 @@ public class MultiLineCommentTokenState extends TokenState {
 			Optional<Token> test = grammar.maybeMatch( pos,builder.toString());
 			
 			if (test.isPresent() && test.get().isEndMultiLineComment()){
-				return new TokenState(grammar);
+				return this.getScanner().newInitialState();
 			} else if (builder.length() > 0){
 				builder = builder.delete(0, builder.length() - 1);
 			}

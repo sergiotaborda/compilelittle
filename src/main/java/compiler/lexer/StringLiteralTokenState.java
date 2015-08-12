@@ -6,18 +6,23 @@ package compiler.lexer;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import compiler.Grammar;
+
 /**
  * 
  */
 public class StringLiteralTokenState extends TokenState {
 
+	private TokenState state;
+
+
 	/**
 	 * Constructor.
 	 * @param table
 	 */
-	public StringLiteralTokenState(TokenState other) {
-		super(other.grammar);
-	    this.builder = other.builder.delete(0, 1);
+	public StringLiteralTokenState(TokenState currentState) {
+		super(currentState.getScanner());
+	    this.builder = currentState.builder.delete(0, 1);
 	}
 
 	
@@ -27,13 +32,14 @@ public class StringLiteralTokenState extends TokenState {
 	 */
 	public ParseState receive(ScanPosition pos, char c, Consumer<Token> tokensQueue) {
 		
-		 if (grammar.isStringLiteralDelimiter(c)){
+		 final Grammar grammar = this.getScanner().getGrammar();
+		if (grammar.isStringLiteralDelimiter(c)){
 			 Optional<Token> token = grammar.stringLiteralMath(pos, builder.toString());
 			 if (token.isPresent()){
 				 tokensQueue.accept(token.get());
 			 }
 			 
-			 return new TokenState(grammar);
+			 return this.getScanner().newInitialState();
 		 } else {
 			 builder.append(c);
 		 }

@@ -9,19 +9,21 @@ import java.util.List;
 import compiler.sense.Kind;
 import compiler.typesystem.Field;
 import compiler.typesystem.Type;
+import compiler.typesystem.TypeParameter;
 
 /**
  * 
  */
-public class NothingType implements Type {
+public class NothingType extends SenseType {
 
 	/**
-	 * {@inheritDoc}
+	 * Constructor.
+	 * @param name
 	 */
-	@Override
-	public String getName() {
-		return "sense.Nothing";
+	protected NothingType() {
+		super("sense.Nothing");
 	}
+
 
 	/**
 	 * {@inheritDoc}

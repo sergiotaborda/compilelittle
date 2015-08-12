@@ -11,17 +11,19 @@ import compiler.sense.Kind;
 import compiler.sense.typesystem.ConcreteMethodParameter;
 import compiler.sense.typesystem.Method;
 import compiler.sense.typesystem.TypeMatch;
-import compiler.sense.typesystem.TypeParameter;
-import compiler.sense.typesystem.TypeParameter.Variance;
 import compiler.sense.typesystem.UnionType;
 import compiler.typesystem.Field;
 import compiler.typesystem.Type;
+import compiler.typesystem.TypeParameter;
+import compiler.typesystem.TypeParameter.Variance;
 
 /**
  * 
  */
 public class JavaType implements Type {
 
+	public static final JavaType Object = new JavaType(Object.class, null);
+	
 	private Class<?> type;
 	private JavaTypeResolver resolver;
 

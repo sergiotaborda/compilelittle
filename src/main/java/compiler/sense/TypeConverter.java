@@ -11,10 +11,10 @@ import compiler.sense.typesystem.Method;
 import compiler.sense.typesystem.ConcreteMethodParameter;
 import compiler.sense.typesystem.SenseType;
 import compiler.sense.typesystem.TypeMatch;
-import compiler.sense.typesystem.TypeParameter;
 import compiler.sense.typesystem.UnionType;
 import compiler.typesystem.Field;
 import compiler.typesystem.Type;
+import compiler.typesystem.TypeParameter;
 
 /**
  * 

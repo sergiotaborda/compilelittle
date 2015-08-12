@@ -13,10 +13,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import compiler.sense.typesystem.Method;
+import compiler.parser.IdentifierNode;
+import compiler.sense.ast.ArgumentListNode;
+import compiler.sense.ast.ArithmeticNode;
+import compiler.sense.ast.ArithmeticOperation;
+import compiler.sense.ast.AssignmentNode;
+import compiler.sense.ast.BlockNode;
+import compiler.sense.ast.CatchOptionNode;
+import compiler.sense.ast.ClassInstanceCreation;
+import compiler.sense.ast.ClassType;
+import compiler.sense.ast.ConditionalStatement;
+import compiler.sense.ast.FieldAccessNode;
+import compiler.sense.ast.ForEachNode;
+import compiler.sense.ast.ImportNode;
+import compiler.sense.ast.ImportsNode;
+import compiler.sense.ast.Imutability;
+import compiler.sense.ast.IndexedAccessNode;
+import compiler.sense.ast.LiteralExpressionNode;
+import compiler.sense.ast.MethodDeclarationNode;
+import compiler.sense.ast.MethodInvocationNode;
+import compiler.sense.ast.ParametersListNode;
+import compiler.sense.ast.PosExpression;
+import compiler.sense.ast.QualifiedNameNode;
+import compiler.sense.ast.RangeNode;
+import compiler.sense.ast.ReturnNode;
+import compiler.sense.ast.ScopedVariableDefinitionNode;
+import compiler.sense.ast.StringValue;
+import compiler.sense.ast.SwitchOption;
+import compiler.sense.ast.TypeNode;
+import compiler.sense.ast.TypedNode;
+import compiler.sense.ast.UnitTypes;
+import compiler.sense.ast.VariableDeclarationNode;
+import compiler.sense.ast.VariableReadNode;
+import compiler.sense.ast.VariableWriteNode;
 import compiler.sense.typesystem.ConcreteMethodParameter;
+import compiler.sense.typesystem.Method;
 import compiler.sense.typesystem.MethodSignature;
 import compiler.sense.typesystem.SenseType;
 import compiler.syntax.AstNode;
@@ -26,6 +58,7 @@ import compiler.trees.VisitorNext;
 import compiler.typesystem.Field;
 import compiler.typesystem.Type;
 import compiler.typesystem.TypesRepository;
+import compiler.typesystem.VariableInfo;
 
 /**
  * 
@@ -42,7 +75,6 @@ public class SenseSemantic {
 	 * @param t
 	 */
 	public void analise(UnitTypes t) {
-
 
 		List<ClassType> classes = new ArrayList<>(2);
 		ImportsNode imports = null;
@@ -75,24 +107,20 @@ public class SenseSemantic {
 
 
 		for (ClassType ct : classes){
-
-
-
-			VariablesVisitor vv = new VariablesVisitor(sc);
-			TreeTransverser.tranverse(ct, vv);
+			TreeTransverser.tranverse(ct,new AnalisisVisitor(sc));
 		}
 	}
 
 
 
-	public static class VariablesVisitor implements Visitor<AstNode> {
+	public static class AnalisisVisitor implements Visitor<AstNode> {
 
 		SemanticContext semanticContext;
 
 		private Map<String , Set<MethodSignature> > defined = new HashMap<String, Set<MethodSignature>>();
 		private Map<String , Set<MethodSignature> > expected = new HashMap<String, Set<MethodSignature>>();
 
-		public VariablesVisitor (SemanticContext sc){
+		public AnalisisVisitor (SemanticContext sc){
 			this.semanticContext = sc;
 		}
 
@@ -118,9 +146,9 @@ public class SenseSemantic {
 						throw new SyntaxError("Method '" + entry.getKey() + "' is not defined");
 					}
 
-					for (MethodSignature exp : entry.getValue()){
+					for (MethodSignature expected : entry.getValue()){
 						for (MethodSignature s : def){
-							if (exp.isAssignableTo(s)){
+							if (expected.isPromotableTo(s)){
 								continue outter;
 							}
 						}
@@ -135,7 +163,6 @@ public class SenseSemantic {
 		 */
 		@Override
 		public VisitorNext visitBeforeChildren(AstNode node) {
-
 			if (node instanceof MethodDeclarationNode){
 				semanticContext.beginScope(((MethodDeclarationNode)node).getName());
 			} else if (node instanceof ClassType){
@@ -143,12 +170,22 @@ public class SenseSemantic {
 
 				semanticContext.beginScope(t.getName());
 
+				SenseType myType = SenseTypeResolver.getInstance().resolveTypeByName(t.getName());
+
+				if (myType == null){
+					myType= new SenseType(t.getName());
+					SenseTypeResolver.getInstance().registerType(myType.getName(), myType);
+				}
+				myType.setKind(t.getKind());
+				
 				TypeNode st = t.getSuperType();
 				Type superType = SenseType.Any;
 				if (st != null){
 					superType = semanticContext.typeForName(st.getName());
 					st.setType(superType);
+					
 				}
+				myType.setSuperType(superType);
 
 				ClassType ct = (ClassType)node;
 
@@ -161,9 +198,8 @@ public class SenseSemantic {
 
 				}
 
-
-
-				semanticContext.currentScope().defineVariable("this", new SenseType(t.getName())).setInitialized(true);
+				
+				semanticContext.currentScope().defineVariable("this", myType).setInitialized(true);
 				semanticContext.currentScope().defineVariable("super", superType).setInitialized(true);
 			}else if (node instanceof BlockNode){
 				semanticContext.beginScope("block");
@@ -190,6 +226,9 @@ public class SenseSemantic {
 				}
 				variableInfo.markWrite();
 				v.setVariableInfo(variableInfo);
+			}else if (node instanceof FieldAccessNode){
+				FieldAccessNode n = (FieldAccessNode)node;
+
 			}
 
 			return VisitorNext.Children;
@@ -232,32 +271,8 @@ public class SenseSemantic {
 					throw new SyntaxError("Cannot range from " + left + " to " + right);
 				}
 
-				r.type = SenseType.Progression.of(finalType);
+				r.setType(SenseType.Progression.of(finalType));
 
-
-			}else if (node instanceof ScopedVariableDefinitionNode){
-				ScopedVariableDefinitionNode variableDeclaration = (ScopedVariableDefinitionNode)node;
-				Type type = variableDeclaration.getType();
-				VariableInfo info = semanticContext.currentScope().defineVariable(variableDeclaration.getName(), type);
-				info.setImutable(variableDeclaration.getImutability() == Imutability.Imutable );
-				
-				variableDeclaration.setInfo(info);
-
-				TypedNode init = variableDeclaration.getInitializer();
-
-				if (init != null){
-
-					info.setInitialized(true);
-					Type right = init.getType();
-
-					if (!right.isAssignableTo(type)){
-						if (right.isPromotableTo(type) /*|| right.isPrimitive()*/){
-							variableDeclaration.setInitializer(new PromoteNode((ExpressionNode)variableDeclaration.getInitializer(),right, type));
-						} else {
-							throw new SyntaxError( right + " is not assignable to variable " + info.getName() + " of type "  + type );
-						}	
-					}
-				}
 
 			} else if (node instanceof ArithmeticNode){
 				ArithmeticNode n = (ArithmeticNode)node;
@@ -274,6 +289,7 @@ public class SenseSemantic {
 
 					if (!method.isPresent()){
 						// search static operator
+						SenseType t = SenseType.Natural;
 						throw new SyntaxError("Method " + n.getOperation().equivalentMethod() +  "(" + right  + ") is not defined in " + left);
 					} 
 					// else , sustitute the current node by a mehtod invocation node
@@ -304,7 +320,14 @@ public class SenseSemantic {
 				Type right = n.getRight().getType();
 
 				if (!right.isAssignableTo(left)){
-					throw new SyntaxError( right + " is not assignable to " + left );
+					
+					if (!right.isPromotableTo(left) /*|| right.isPrimitive()*/){
+						throw new SyntaxError( right + " is not assignable to " + left );
+					} else {
+						final MethodInvocationNode m = new  MethodInvocationNode((AstNode)n.getRight() , "to" + left.getSimpleName());
+						m.setType(left);
+						n.replace( (AstNode)n.getRight(), m);
+					}
 				}
 
 				if (n.getLeft() instanceof VariableWriteNode){
@@ -315,8 +338,33 @@ public class SenseSemantic {
 					}
 					info.setInitialized(true);
 				}
-			} else if (node instanceof FieldAccessNode){
-				FieldAccessNode n = (FieldAccessNode)node;
+	
+			} else if (node instanceof ScopedVariableDefinitionNode){
+				ScopedVariableDefinitionNode variableDeclaration = (ScopedVariableDefinitionNode)node;
+				Type type = variableDeclaration.getType();
+				VariableInfo info = semanticContext.currentScope().defineVariable(variableDeclaration.getName(), type);
+				info.setImutable(variableDeclaration.getImutabilityValue() == Imutability.Imutable );
+				
+				variableDeclaration.setInfo(info);
+
+				TypedNode init = variableDeclaration.getInitializer();
+
+				if (init != null){
+
+					info.setInitialized(true);
+					Type right = init.getType();
+
+					if (!right.isAssignableTo(type)){
+						if (right.isPromotableTo(type) /*|| right.isPrimitive()*/){
+							MethodInvocationNode m = new  MethodInvocationNode((AstNode)variableDeclaration.getInitializer() , "to" + type.getSimpleName());
+							m.setType(type);
+							variableDeclaration.setInitializer(m);
+							
+						} else {
+							throw new SyntaxError( right + " is not assignable to variable " + info.getName() + " of type "  + type );
+						}	
+					}
+				}
 
 
 			}else if (node instanceof IndexedAccessNode){
@@ -413,6 +461,11 @@ public class SenseSemantic {
 					}
 				} else if (access instanceof TypedNode){
 					methodOwnerType = ((TypedNode)access).getType();
+				} else if (access instanceof IdentifierNode){
+					
+					VariableInfo variable = semanticContext.currentScope().searchVariable(((IdentifierNode) access).getId());
+
+					methodOwnerType = variable.getType();
 				} else {
 					throw new SyntaxError("Not supported yet");
 				}
@@ -427,8 +480,30 @@ public class SenseSemantic {
 					Optional<Method> method = methodOwnerType.getAppropriateMethod(signature);
 
 					if (!method.isPresent()){
+						if (!methodOwnerType.isAssignableTo(SenseType.Maybe)){
+							throw new SyntaxError("The method " + name + "(" + Arrays.toString(parameters) + ") is undefined for type " + methodOwnerType);
+						}
+					
+						Type innerType = methodOwnerType.getParameters().get(0).getUpperbound();
+						
+						method = innerType.getAppropriateMethod(signature);
 
-						throw new SyntaxError("The method " + name + "(" + Arrays.toString(parameters) + ") is undefined for type " + methodOwnerType);
+						if (!method.isPresent()){
+							throw new SyntaxError("The method " + name + "(" + Arrays.toString(parameters) + ") is undefined for type " + methodOwnerType);
+						}
+						
+						// transform to call inside the maybe using map
+						Type finalType = SenseType.Maybe.of(method.get().getReturningType());
+						
+						MethodInvocationNode transform = new MethodInvocationNode(
+								m.getAccess(), 
+								"map", 
+								new ClassInstanceCreation(SenseType.Function1.of(method.get().getReturningType(), finalType))
+						);
+						
+						m.getParent().replace(m, transform);
+						transform.setType(finalType);
+						
 					} else {
 						Method mdth =method.get();
 						m.setType(mdth.getReturningType());
@@ -454,8 +529,13 @@ public class SenseSemantic {
 			} else if (node instanceof MethodDeclarationNode){
 
 				MethodDeclarationNode m = (MethodDeclarationNode)node;
+				
 				VariableInfo var = semanticContext.currentScope().searchVariable("this");
 
+				if (var.getType().getKind() == Kind.Interface){
+					m.setAbstract(true);
+				}
+				
 				markDefine(var.getType(), m.getName(), m.getParameters());
 				if (m.getReturnType().isVoid()){
 					VariableInfo variable = semanticContext.currentScope().searchVariable("@returnOfMethod");
@@ -464,7 +544,7 @@ public class SenseSemantic {
 						throw new SyntaxError("Method " + m.getName() + " can not return a value");
 					}
 
-				} else {
+				} else if (!m.isAbstract()){
 
 					Type returnType = m.getReturnType().getType();
 					if (!returnType.equals(SenseType.Void)){

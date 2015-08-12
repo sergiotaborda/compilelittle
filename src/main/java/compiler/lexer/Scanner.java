@@ -16,17 +16,20 @@ import compiler.Grammar;
  */
 public class Scanner  {
 
-    Grammar grammar;
+    protected Grammar grammar;
     
 	public Scanner(Grammar grammar){
 		this.grammar = grammar;
 	}
 	
-	
-	public TokenStream read (Reader reader) throws IOException{
+	public Grammar getGrammar(){
+		return grammar;
+	}
+
+	public final TokenStream read (Reader reader) throws IOException{
 		int c;
 		
-		ParseState state = new TokenState(grammar);
+		ParseState state = newInitialState();
 
 		final List<Token> input = new ArrayList<>(50);
 
@@ -46,6 +49,52 @@ public class Scanner  {
 		consumer.accept(new EOFToken());
 	
 		return new ListTokenStream(input);
+	}
+
+	public ParseState newInitialState(){
+		return new TokenState(this);
+	}
+	
+	/**
+	 * @return
+	 */
+	public ParseState getLineCommentTokenState(TokenState tokenState) {
+		return new LineCommentTokenState(tokenState);
+	}
+
+
+	/**
+	 * @return
+	 */
+	public ParseState getMultiLineCommentTokenState(TokenState tokenState) {
+		return new MultiLineCommentTokenState(tokenState);
+	}
+
+
+	/**
+	 * @param tokenState
+	 * @return
+	 */
+	public ParseState getStringLiteralTokenState(TokenState tokenState) {
+		return new StringLiteralTokenState(tokenState);
+	}
+
+
+	/**
+	 * @param tokenState
+	 * @return
+	 */
+	public ParseState getNumberLiteralTokenState(TokenState tokenState) {
+		return new NumberLiteralTokenState(tokenState);
+	}
+
+
+	/**
+	 * @param tokenState
+	 * @return
+	 */
+	public ParseState getOperatorTokenState(TokenState tokenState) {
+		return new OperatorTokenState(tokenState);
 	}
 
 }
