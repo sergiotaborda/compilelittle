@@ -106,59 +106,9 @@ public class TestSenseGrammar {
 		
 	}
 	
-	@Test @Ignore
-	public void testLALR() throws IOException  {
 
-		SenseGrammar g = new SenseGrammar();
-		
-		ItemStatesLookupTable table = new LALRAutomatonFactory().create().produceLookupTable(g);
-		
-		assertNotNull(table);
-		
-		try(FileWriter writer = new FileWriter(new File("./states.txt"))){
-			
-			writer.write(table.getStates().toString());
-			writer.flush();
-		}
-		
-		final File out = new File("./table.txt");
-		writeTableToFile(table, out);
-		
-		SenseLookupTable stable = new SenseLookupTable(g, new FileInputStream(out));
-		
-		
-		writeTableToFile(stable,  new File("./tableRef.txt"));
-		assertEquals(table, stable);
-		
-	}
 
-	private void writeTableToFile(LookupTable table,File out ) throws IOException {
-		try(FileWriter writer = new FileWriter(out)){
-			
-			writer.append('\t');
-			for( Production p  : table.columns()){
-				
-				writer.append(p.toString()).append('\t');
-			}
-			
-			writer.append('\n');
-			for( LookupTableRow row : table){
-				
-				writer.append(Integer.toString(row.getId()));
-				writer.append('\t');
-				
-				for( Production p  : table.columns()){
-					LookupTableAction action = row.getActionFor(p);
-					if (action != null){
-						writer.append(action.toString());
-					}
-					writer.append('\t');
-				}
-
-				writer.append('\n');
-			}
-		}
-	}
+	
 	
 
 	@Test  @Ignore
@@ -209,6 +159,21 @@ public class TestSenseGrammar {
 		
 		assertFalse(0 == conflit);
 		
+	}
+	@Test
+	public void testLambda() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/lambda.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/lambda.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new SenseCompiler();
+		compiler.addBackEnd(new PrintOutBackEnd());
+	//	compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+
 	}
 	
 	@Test

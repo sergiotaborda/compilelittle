@@ -120,8 +120,8 @@ public class SenseTypeSystem {
 	/**
 	 * @return
 	 */
-	public static TypeDefinition Function2() {
-		return getInstance().getForName("sense.lang.Function", 2).get();
+	public static TypeDefinition Function(int count) {
+		return getInstance().getForName("sense.lang.Function", count).get();
 	}
 
 	/**
@@ -140,6 +140,12 @@ public class SenseTypeSystem {
 
 		SenseTypeDefinition function2 = register(new SenseTypeDefinition("sense.lang.Function", Kind.Class, any,
 				new GenericDefinition("R", Variance.Invariant, any, nothing),
+				new GenericDefinition("T", Variance.Invariant, any, nothing)
+		));
+		
+		SenseTypeDefinition function3 = register(new SenseTypeDefinition("sense.lang.Function", Kind.Class, any,
+				new GenericDefinition("R", Variance.Invariant, any, nothing),
+				new GenericDefinition("T", Variance.Invariant, any, nothing),
 				new GenericDefinition("T", Variance.Invariant, any, nothing)
 		));
 		
@@ -328,7 +334,7 @@ public class SenseTypeSystem {
 	public SenseTypeDefinition specify(TypeDefinition definition, TypeDefinition ... genericParametersCapture) {
 
 		if (definition.getGenericParameters().size() != genericParametersCapture.length){
-			throw new CompilationError("Wrong number of generic arguments");
+			throw new CompilationError("Wrong number of generic arguments for type " + definition + ". Expected " + definition.getGenericParameters().size() + " found " + genericParametersCapture.length);
 		}
 		GenericTypeParameter[] genericParameters = new GenericTypeParameter[definition.getGenericParameters().size()];
 

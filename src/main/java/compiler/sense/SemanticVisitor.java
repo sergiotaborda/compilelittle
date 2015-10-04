@@ -3,12 +3,13 @@
  */
 package compiler.sense;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +29,7 @@ import compiler.sense.ast.FieldOrPropertyAccessNode;
 import compiler.sense.ast.ForEachNode;
 import compiler.sense.ast.Imutability;
 import compiler.sense.ast.IndexedAccessNode;
+import compiler.sense.ast.LambdaExpressionNode;
 import compiler.sense.ast.LiteralExpressionNode;
 import compiler.sense.ast.MethodDeclarationNode;
 import compiler.sense.ast.MethodInvocationNode;
@@ -43,6 +45,7 @@ import compiler.sense.ast.TypedNode;
 import compiler.sense.ast.VariableDeclarationNode;
 import compiler.sense.ast.VariableReadNode;
 import compiler.sense.ast.VariableWriteNode;
+import compiler.sense.ast.VariablesList;
 import compiler.sense.typesystem.Kind;
 import compiler.sense.typesystem.SenseTypeDefinition;
 import compiler.sense.typesystem.SenseTypeSystem;
@@ -196,7 +199,7 @@ public class SemanticVisitor implements Visitor<AstNode> {
 			v.setVariableInfo(variableInfo);
 		}else if (node instanceof TypeNode){
 			TypeNode t = (TypeNode)node;
-			t.setTypeDefinition( semanticContext.typeForName(t.getName(), t.getChildren().size()));
+			t.setTypeDefinition( semanticContext.typeForName(t.getName(), t.getGenericParametersCount()));
 		} 
 
 		return VisitorNext.Children;
@@ -211,11 +214,15 @@ public class SemanticVisitor implements Visitor<AstNode> {
 			TypeNode t = (TypeNode)node;
 			TypeDefinition type = t.getTypeDefinition();
 			if (t.getChildren().size() > 0){
+				
+				List<TypeDefinition> generics = new ArrayList<>();
 				for(AstNode p : t.getChildren().get(0).getChildren()){
-					TypeNode generic = (TypeNode)p;
-					TypeDefinition g = generic.getTypeDefinition();
-					type = SenseTypeSystem.getInstance().specify( type, g);
+					TypeNode generic = ensureTypeNode(p);
+					generics.add(generic.getTypeDefinition());
 				}
+				
+				type = SenseTypeSystem.getInstance().specify( type, generics.toArray(new TypeDefinition[generics.size()]));
+				
 				t.setTypeDefinition(type);
 
 			}
@@ -238,8 +245,23 @@ public class SemanticVisitor implements Visitor<AstNode> {
 			}
 
 			r.setTypeDefinition(SenseTypeSystem.getInstance().specify(SenseTypeSystem.Progression(), finalType));
-
-
+		} else if (node instanceof LambdaExpressionNode){
+			LambdaExpressionNode n = (LambdaExpressionNode)node;
+			
+			int parametersCount = n.getParameters().getChildren().size();
+			
+			List<TypeDefinition> generics = new ArrayList<>();
+			
+			generics.add(n.getBody().getTypeDefinition());
+			
+			for (AstNode v : n.getParameters().getChildren()){
+				
+				generics.add(((TypedNode)v).getTypeDefinition());
+			}
+			
+			TypeDefinition funtionType = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Function(generics.size()), generics.toArray(new TypeDefinition[generics.size()]));
+			
+			n.setTypeDefinition(funtionType);
 		} else if (node instanceof ArithmeticNode){
 			ArithmeticNode n = (ArithmeticNode)node;
 
@@ -522,7 +544,7 @@ public class SemanticVisitor implements Visitor<AstNode> {
 					
 					// transform to call inside the maybe using map
 					TypeDefinition finalType = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Maybe(), field.get().getReturningType());
-					TypeDefinition mappingFunction = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Function2(),innerType, field.get().getReturningType());
+					TypeDefinition mappingFunction = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Function(2),innerType, field.get().getReturningType());
 					
 					MethodInvocationNode transform = new MethodInvocationNode(
 							m.getPrimary(), 
@@ -670,7 +692,7 @@ public class SemanticVisitor implements Visitor<AstNode> {
 						TypeDefinition innerCallReturn = method.get().getReturningType().getUpperbound();
 						TypeDefinition finalType = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Maybe(), innerCallReturn);
 						
-						TypeDefinition functionType = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Function2(), innerType, innerCallReturn);
+						TypeDefinition functionType = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Function(2), innerType, innerCallReturn);
 						
 						MethodSignature mapSignature = new MethodSignature(
 								"map", 
@@ -816,6 +838,18 @@ public class SemanticVisitor implements Visitor<AstNode> {
 
 		} else if (node instanceof BlockNode){
 			semanticContext.endScope();
+		}
+	}
+
+	/**
+	 * @param p
+	 * @return
+	 */
+	private TypeNode ensureTypeNode(AstNode p) {
+		if (p instanceof TypeNode){
+			return (TypeNode)p;
+		} else {
+			return ((compiler.sense.ast.ParametricTypesNode)p).getTypeNode();
 		}
 	}
 

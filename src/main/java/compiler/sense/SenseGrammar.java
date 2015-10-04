@@ -43,6 +43,7 @@ import compiler.sense.ast.ImportsNode;
 import compiler.sense.ast.Imutability;
 import compiler.sense.ast.ImutabilityNode;
 import compiler.sense.ast.IndexedAccessNode;
+import compiler.sense.ast.LambdaExpressionNode;
 import compiler.sense.ast.MethodCallNode;
 import compiler.sense.ast.MethodDeclarationNode;
 import compiler.sense.ast.MethodInvocationNode;
@@ -64,6 +65,7 @@ import compiler.sense.ast.TryStatement;
 import compiler.sense.ast.TypeNode;
 import compiler.sense.ast.UnitTypes;
 import compiler.sense.ast.VariableDeclarationNode;
+import compiler.sense.ast.VariablesList;
 import compiler.sense.ast.VariableReadNode;
 import compiler.sense.ast.VariableWriteNode;
 import compiler.sense.ast.VarianceNode;
@@ -1487,6 +1489,52 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		getNonTerminal("expression").addSemanticAction( (p, r) -> {
 			p.setAstNode(r.get(0).getAstNode().get());		
 		});
+		
+		getNonTerminal("lambda").addSemanticAction( (p, r) -> {
+			if (r.size() == 5){
+				LambdaExpressionNode lambda = new LambdaExpressionNode();
+				lambda.setParameters(r.get(1).getAstNode().get());
+				lambda.setBody(ensureExpression(r.get(4).getAstNode().get()));
+				p.setAstNode(lambda);	
+			} else if (r.size() == 3){
+				LambdaExpressionNode lambda = new LambdaExpressionNode();
+				
+				VariablesList list = new VariablesList();
+				VariableReadNode v = new VariableReadNode(r.get(0).getLexicalValue());
+				list.add(v);
+				
+				
+				lambda.setParameters(list);
+				lambda.setBody(ensureExpression(r.get(2).getAstNode().get()));
+				p.setAstNode(lambda);	
+			}
+		});
+		
+		getNonTerminal("lambdaExpression").addSemanticAction( (p, r) -> {
+			p.setAstNode(r.get(0).getAstNode().get());		
+		});
+
+		getNonTerminal("lambdaParameters").addSemanticAction( (p, r) -> {
+			p.setAstNode(r.get(0).getAstNode().get());		
+		});
+
+		getNonTerminal("variableNamesList").addSemanticAction( (p, r) -> {
+			
+			if (r.size() == 1){
+				VariablesList list = new VariablesList();
+				VariableReadNode v = new VariableReadNode(r.get(0).getLexicalValue());
+				list.add(v);
+				
+				p.setAstNode(list);		
+			} else {
+				VariablesList list = r.get(0).getAstNode(VariablesList.class).get();
+				VariableReadNode v = new VariableReadNode(r.get(2).getLexicalValue());
+				list.add(v);
+				p.setAstNode(list);		
+			}
+
+		});
+
 
 		getNonTerminal("conditionalExpression").addSemanticAction( (p, r) -> {
 			p.setAstNode(r.get(0).getAstNode().get());		

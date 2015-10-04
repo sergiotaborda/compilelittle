@@ -56,7 +56,7 @@ public class StructureVisitor implements Visitor<AstNode> {
 		
 		if (node instanceof TypeNode){
 			TypeNode t = (TypeNode)node;
-			t.setTypeDefinition( semanticContext.typeForName(t.getName(), t.getChildren().size()));
+			t.setTypeDefinition( semanticContext.typeForName(t.getName(), t.getGenericParametersCount()));
 		} else if (node instanceof FieldDeclarationNode){
 			FieldDeclarationNode f = (FieldDeclarationNode)node;
 			currentType.addField(f.getName(), f.getTypeDefinition(), f.getImutabilityValue());

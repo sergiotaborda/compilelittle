@@ -3,9 +3,15 @@
  */
 package compiler.sense;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import compiler.Compiler;
@@ -13,6 +19,12 @@ import compiler.FileCompilationUnit;
 import compiler.bnf.BnfCompiler;
 import compiler.bnf.ToJavaBackEnd;
 import compiler.lexer.ListCompilationUnitSet;
+import compiler.parser.ItemStatesLookupTable;
+import compiler.parser.LALRAutomatonFactory;
+import compiler.parser.LookupTable;
+import compiler.parser.LookupTableAction;
+import compiler.parser.LookupTableRow;
+import compiler.parser.Production;
 
 /**
  * 
@@ -34,4 +46,57 @@ public class Builder {
 		compiler.compile(unitSet);
 	}
 
+	@Test 
+	public void testProduceTableAndTestLALR() throws IOException  {
+
+		SenseGrammar g = new SenseGrammar();
+		
+		ItemStatesLookupTable table = new LALRAutomatonFactory().create().produceLookupTable(g);
+		
+		assertNotNull(table);
+		
+		try(FileWriter writer = new FileWriter(new File("./states.txt"))){
+			
+			writer.write(table.getStates().toString());
+			writer.flush();
+		}
+		
+		final File out = new File("./table.txt");
+		writeTableToFile(table, out);
+		
+		SenseLookupTable stable = new SenseLookupTable(g, new FileInputStream(out));
+		
+		
+		writeTableToFile(stable,  new File("./tableRef.txt"));
+		assertEquals(table, stable);
+		
+	}
+	
+	private void writeTableToFile(LookupTable table,File out ) throws IOException {
+		try(FileWriter writer = new FileWriter(out)){
+			
+			writer.append('\t');
+			for( Production p  : table.columns()){
+				
+				writer.append(p.toString()).append('\t');
+			}
+			
+			writer.append('\n');
+			for( LookupTableRow row : table){
+				
+				writer.append(Integer.toString(row.getId()));
+				writer.append('\t');
+				
+				for( Production p  : table.columns()){
+					LookupTableAction action = row.getActionFor(p);
+					if (action != null){
+						writer.append(action.toString());
+					}
+					writer.append('\t');
+				}
+
+				writer.append('\n');
+			}
+		}
+	}
 }

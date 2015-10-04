@@ -76,6 +76,16 @@ public class TypeNode extends SenseAstNode implements TypedNode{
 	public void setTypeDefinition(TypeDefinition type){
 		this.type = type;
 	}
+	/**
+	 * @return
+	 */
+	public int getGenericParametersCount() {
+		if (this.getChildren() == null || this.getChildren().isEmpty()){
+			return 0;
+		} else {
+			return this.getChildren().get(0).getChildren().size();
+		}
+	}
 
 
 }
