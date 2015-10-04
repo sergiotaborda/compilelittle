@@ -4,7 +4,7 @@ import compiler.Language;
 import compiler.parser.nodes.ParserTreeNode;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
-import compiler.typesystem.TypesRepository;
+import compiler.typesystem.TypeResolver;
 
 public class ReferenceLanguage extends Language{
 
@@ -13,7 +13,7 @@ public class ReferenceLanguage extends Language{
 	}
 
 	@Override
-	public AstNode transform(ParserTreeNode root, TypesRepository repository) {
+	public AstNode transform(ParserTreeNode root, TypeResolver resolver) {
 		return TreeTransverser.copy(root, p -> {
 			AstNode n = new AstNode();
 			

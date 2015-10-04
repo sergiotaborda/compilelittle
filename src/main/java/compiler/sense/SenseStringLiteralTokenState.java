@@ -82,7 +82,7 @@ public class SenseStringLiteralTokenState extends StringLiteralTokenState {
 				interpolated = new StringBuilder();
 				
 				if (code.charAt(0) != '#'){
-					throw new SyntaxError("Expected hexadecimal value for unicode character");
+					throw new CompilationError("Expected hexadecimal value for unicode character");
 				}
 				
 				builder.append("\\u" + code.substring(1));

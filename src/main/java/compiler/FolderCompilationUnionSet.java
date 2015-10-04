@@ -48,11 +48,11 @@ public class FolderCompilationUnionSet implements CompilationUnitSet {
 	}
 
 	public static Stream<Path> filesInDir(Path dir, Predicate<String> filter) {
-	    return listFiles(dir).filter(p -> filter.test(p.getFileName().toString()))
+	    return listFiles(dir)
 	            .flatMap(path -> path.toFile().isDirectory() 
 	                    ? filesInDir(path, filter) 
 	                    : Stream.of(path)
-	            );
+	            ).filter(p -> filter.test(p.getFileName().toString()));
 	}
 	 
 	private static Stream<Path> listFiles(Path dir) {

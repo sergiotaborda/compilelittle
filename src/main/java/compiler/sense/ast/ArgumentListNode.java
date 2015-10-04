@@ -5,8 +5,8 @@ package compiler.sense.ast;
 
 import java.util.stream.Collectors;
 
-import compiler.sense.typesystem.ConcreteMethodParameter;
 import compiler.syntax.AstNode;
+import compiler.typesystem.MethodParameter;
 
 
 /**
@@ -21,9 +21,9 @@ public class ArgumentListNode extends SenseAstNode {
 			this.add(n);
 		}
 	}
-	public ConcreteMethodParameter[] asMethodParameters(){
-		return this.getChildren().stream().map(v -> new ConcreteMethodParameter(((TypedNode)v).getType()))
+	public MethodParameter[] asMethodParameters(){
+		return this.getChildren().stream().map(v -> new MethodParameter(((TypedNode)v).getTypeDefinition()))
 		.collect(Collectors.toList())
-		.toArray(new ConcreteMethodParameter[0]);
+		.toArray(new MethodParameter[this.getChildren().size()]);
 	}
 }

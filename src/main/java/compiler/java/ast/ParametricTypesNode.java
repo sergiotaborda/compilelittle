@@ -3,8 +3,8 @@
  */
 package compiler.java.ast;
 
-import compiler.typesystem.Type;
-import compiler.typesystem.TypeParameter.Variance;
+import compiler.typesystem.TypeDefinition;
+import compiler.typesystem.Variance;
 
 
 /**
@@ -29,8 +29,8 @@ public class ParametricTypesNode extends JavaAstNode implements TypedNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type getType() {
-		return typeNode.getType();
+	public TypeDefinition getTypeDefinition() {
+		return typeNode.getTypeDefinition();
 	}
 
 	public Variance getVariance() {

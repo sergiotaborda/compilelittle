@@ -3,7 +3,7 @@
  */
 package compiler.java.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -12,7 +12,7 @@ public class TypeNode extends JavaAstNode implements TypedNode{
 
 	private boolean isVoid;
 	private QualifiedNameNode name;
-	private Type type;
+	private TypeDefinition type;
 
 	public TypeNode() {
 		this(false);
@@ -59,11 +59,11 @@ public class TypeNode extends JavaAstNode implements TypedNode{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type getType() {
+	public TypeDefinition getTypeDefinition() {
 		return this.type;
 	}
 	
-	public void setType(Type type){
+	public void setTypeDefinition(TypeDefinition type){
 		this.type = type;
 	}
 

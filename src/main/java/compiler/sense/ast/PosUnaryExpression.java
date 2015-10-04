@@ -4,7 +4,7 @@
 package compiler.sense.ast;
 
 import compiler.sense.ast.BooleanOperatorNode.BooleanOperation;
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -21,8 +21,8 @@ public class PosUnaryExpression extends ExpressionNode {
 		this.operation = operation;
 	}
 	
-	public Type getType(){
-		return ((ExpressionNode)this.getChildren().get(0)).getType();
+	public TypeDefinition getTypeDefinition(){
+		return ((ExpressionNode)this.getChildren().get(0)).getTypeDefinition();
 	}
 	
 	public BooleanOperation getOperation(){

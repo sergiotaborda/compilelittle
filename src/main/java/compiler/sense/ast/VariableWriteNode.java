@@ -3,7 +3,7 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.VariableInfo;
 
 /**
@@ -45,8 +45,8 @@ public class VariableWriteNode extends ExpressionNode {
 		this.variableInfo = variableInfo;
 	}
 
-	public Type getType(){
-		return variableInfo.getType();
+	public TypeDefinition getTypeDefinition(){
+		return variableInfo.getTypeDefinition();
 	}
 
 }

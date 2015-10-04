@@ -3,15 +3,16 @@
  */
 package compiler.sense.ast;
 
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
  */
 public class BooleanExpressionNode extends ExpressionNode {
 
-	public SenseType getType() {
-		return SenseType.Boolean;
+	public TypeDefinition getTypeDefinition() {
+		return SenseTypeSystem.Boolean();
 	}
 
 }

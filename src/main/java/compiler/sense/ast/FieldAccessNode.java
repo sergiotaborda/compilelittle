@@ -3,7 +3,8 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
+import compiler.syntax.AstNode;
+import compiler.typesystem.TypeDefinition;
 
 
 
@@ -12,23 +13,25 @@ import compiler.typesystem.Type;
  */
 public class FieldAccessNode extends NeedTypeCalculationNode {
 
+	private AstNode primary;
 	private String name;
 
-	public FieldAccessNode() {
-		this.name = null;
-	}
+
 	/**
 	 * Constructor.
 	 * @param string
 	 */
 	public FieldAccessNode(String name) {
-		this.name = name;
+		setName(name);
 	}
 
 	/**
 	 * @param string
 	 */
 	public void setName(String name) {
+		if (name == null){
+			throw new IllegalArgumentException();
+		}
 		this.name= name;
 	}
 
@@ -39,7 +42,16 @@ public class FieldAccessNode extends NeedTypeCalculationNode {
 		return name;
 	}
 
-	public void setType(Type type){
-		super.setType(type);
+	public void setType(TypeDefinition type){
+		super.setTypeDefinition(type);
 	}
+	
+	public AstNode getPrimary() {
+		return primary;
+	}
+	public void setPrimary(AstNode primary) {
+		this.primary = primary;
+		this.add(primary);
+	}
+
 }

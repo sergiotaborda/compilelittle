@@ -3,15 +3,14 @@
  */
 package compiler.sense;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,6 +40,11 @@ import compiler.parser.SLRAutomatonFactory;
 import compiler.parser.SplitAction;
 import compiler.parser.Terminal;
 import compiler.parser.Text;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.Method;
+import compiler.typesystem.MethodParameter;
+import compiler.typesystem.MethodSignature;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -115,7 +119,6 @@ public class TestSenseGrammar {
 			
 			writer.write(table.getStates().toString());
 			writer.flush();
-		//	System.out.println(table);
 		}
 		
 		final File out = new File("./table.txt");
@@ -208,7 +211,7 @@ public class TestSenseGrammar {
 		
 	}
 	
-	@Test 
+	@Test
 	public void testStringInterpolation() throws IOException {
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/interpolation.sense");
 		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/interpolation.java");
@@ -241,9 +244,36 @@ public class TestSenseGrammar {
 	}
 	
 	@Test 
-	public void testCompileExpression() throws IOException {
-		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.sense");
-		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.java");
+	public void testVariance (){
+		final SenseTypeSystem instance = SenseTypeSystem.getInstance();
+		TypeDefinition maybeAny = instance.specify(SenseTypeSystem.Maybe()  , SenseTypeSystem.Any());
+		TypeDefinition none = SenseTypeSystem.None();
+		TypeDefinition maybeWhole = instance.specify(SenseTypeSystem.Maybe()  , SenseTypeSystem.Whole());
+		TypeDefinition maybeNatural = instance.specify(SenseTypeSystem.Maybe()  , SenseTypeSystem.Natural());
+		
+		assertTrue( instance.isAssignableTo(maybeNatural, maybeAny));
+		assertFalse(instance.isAssignableTo(maybeAny,maybeNatural));
+		
+		assertTrue( instance.isAssignableTo(maybeNatural, maybeWhole));
+		assertFalse(instance.isAssignableTo(maybeWhole,maybeNatural));
+		
+		assertTrue( instance.isAssignableTo(none, maybeAny));
+		assertTrue( instance.isAssignableTo(none, maybeWhole));
+		assertTrue( instance.isAssignableTo(none, maybeNatural));
+		
+	}
+	
+	@Test 
+	public void testIllegalSpecification (){
+		// TODO should not be possible to create a maybe of a maybe
+		final SenseTypeSystem instance = SenseTypeSystem.getInstance();
+		instance.specify(SenseTypeSystem.Maybe()  , SenseTypeSystem.None());
+	}
+	
+	@Test 
+	public void testField() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/field.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/field.java");
 
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new FileCompilationUnit(file));
@@ -256,35 +286,89 @@ public class TestSenseGrammar {
 
 	}
 	
-	@Test @Ignore
-	public void testCompileGenericClass() throws IOException {
+	
+	@Test 
+	public void testCompileExpression() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/expressions.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new SenseCompiler();
+		compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+
+	}
+	@Test 
+	public void testCompileNativeClass() throws IOException {
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/collections/Array.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/collections/Array.java");
 
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new FileCompilationUnit(file));
 
  
 		final Compiler compiler = new SenseCompiler();
-		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.addBackEnd(new OutToJavaSource(out));
 		compiler.compile(unitSet);
 
 	}
 	
-	@Test @Ignore
-	public void testCompileForEach() throws IOException {
-		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/foreach.sense");
+	@Test 
+	public void testCompileGenericClass() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/collections/Sequence.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/collections/Sequence.java");
 
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new FileCompilationUnit(file));
 
  
 		final Compiler compiler = new SenseCompiler();
-		compiler.addBackEnd(new PrintOutBackEnd());
+		compiler.addBackEnd(new OutToJavaSource(out));
 		compiler.compile(unitSet);
 
 	}
 	
-	@Test  
+//	@Test 
+//	public void testSenseType() throws IOException {
+//		 
+//		TypeDefinition sMaybe = SenseTypeSystem.getInstance().specify(SenseTypeSystem.Maybe(), SenseTypeSystem.String());
+//				
+//		MethodSignature mapSignature = new MethodSignature(
+//				sMaybe, 
+//				"map", 
+//				new MethodParameter(SenseType.Function1.of(SenseType.Natural, SenseType.String), "it")
+//		);
+//		
+//		Optional<Method> mapMethod = sMaybe.getAppropriateMethod(mapSignature);
+//		
+//		SenseType binded = (SenseType) mapMethod.get().bindGenerics(mapSignature);
+//		
+//		Method m = binded.getAppropriateMethod(mapSignature).get();
+//		
+//		assertNotNull(m);
+//		assertEquals(SenseTypeSystem.getInstance().specify(SenseTypeSystem.Maybe(), SenseTypeSystem.Natural()), m.getReturningType().getUpperbound());
+//	}
+	
+	@Test 
+	public void testVoid() throws IOException {
+		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/void.sense");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/void.java");
+
+		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
+		unitSet.add(new FileCompilationUnit(file));
+
+ 
+		final Compiler compiler = new SenseCompiler();
+		compiler.addBackEnd(new OutToJavaSource(out));
+		compiler.compile(unitSet);
+
+	}
+	
+	
+	@Test 
 	public void testCompilerProgram() throws IOException {
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.sense");
 		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/program.java");
@@ -312,15 +396,19 @@ public class TestSenseGrammar {
 		compiler.compile(unitSet);
 	}
 	
-	@Test  
+	@Test  @Ignore
 	public void testCompileLibrary() throws IOException {
 		File folder = new File(new File(".").getAbsoluteFile().getParentFile(), "src/main/sense/");
+		File out = new File(new File(".").getAbsoluteFile().getParentFile(), "compiled");
+
+		final Compiler compiler = new SenseCompiler();
+		compiler.addBackEnd(new OutToJavaSource(out));
 
 		CompilationUnitSet unitSet = new FolderCompilationUnionSet(folder , name -> name.endsWith(".sense"));
 	
- 
-		final Compiler compiler = new SenseCompiler();
-		compiler.addBackEnd(new PrintOutBackEnd());
+
 		compiler.compile(unitSet);
 	}
+
+
 }

@@ -6,8 +6,9 @@ package compiler.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.TypeResolver;
+import compiler.typesystem.TypeSearchParameters;
 
 /**
  * 
@@ -17,7 +18,7 @@ public class JavaTypeResolver implements TypeResolver{
 	
 	static JavaTypeResolver me = new JavaTypeResolver();
 	
-	private Map<String, Type> types = new HashMap<>();
+	private Map<String, TypeDefinition> types = new HashMap<>();
 	/**
 	 * @return
 	 */
@@ -30,8 +31,8 @@ public class JavaTypeResolver implements TypeResolver{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type resolveTypeByName(String name) {
-		
+	public TypeDefinition resolveTypeByName(TypeSearchParameters filter) {
+		String name = filter.getName();
 		if (!name.startsWith("java")){
 			return null;
 		}
@@ -49,10 +50,10 @@ public class JavaTypeResolver implements TypeResolver{
 	 * @param forName
 	 * @return
 	 */
-	protected Type fromClass(Class<?> type) {
+	protected TypeDefinition fromClass(Class<?> type) {
 	
 		 if (!types.containsKey(type.getName())){
-			 Type t = new JavaType(type, this);
+			 TypeDefinition t = new JavaType(type, this);
 			 types.put(type.getName(), t);
 			 return t;
 		 }  else {

@@ -23,6 +23,7 @@ import compiler.java.ast.PosExpression;
 import compiler.java.ast.VariableDeclarationNode;
 import compiler.java.ast.VariableReadNode;
 import compiler.parser.IdentifierNode;
+import compiler.sense.ast.FieldOrPropertyAccessNode;
 import compiler.sense.ast.ForEachNode;
 import compiler.sense.ast.NumericValue;
 import compiler.sense.ast.RangeNode;
@@ -41,12 +42,24 @@ public class Sense2JavaTransformer implements Function<AstNode, AstNode> {
 	@Override
 	public AstNode apply(AstNode snode) {
 		
+		if (snode == null){
+			return null;
+		}
+		
 		if (snode instanceof IdentifierNode){
 			return snode;
 		} else if (snode instanceof NumericValue){
 			
 			return new compiler.java.ast.NumericValue(((NumericValue)snode).getValue());
-		}else if (snode instanceof ForEachNode){
+		} else if (snode instanceof FieldOrPropertyAccessNode){
+			FieldOrPropertyAccessNode p = (FieldOrPropertyAccessNode)snode;
+			compiler.java.ast.FieldAccessNode n = new compiler.java.ast.FieldAccessNode();
+			
+			n.setName(p.getName());
+			n.setTypeDefinition(n.getTypeDefinition());
+			n.setPrimary(apply(p.getPrimary()));
+			return n;
+		} else if (snode instanceof ForEachNode){
 		
 			ForEachNode forloop = (ForEachNode)snode;
 			if (forloop.getContainer() instanceof RangeNode){
@@ -89,16 +102,16 @@ public class Sense2JavaTransformer implements Function<AstNode, AstNode> {
 			
 			AstNode jnode = (AstNode) c.newInstance(new Object[c.getParameters().length]) ;
 
-			Map<String,Property> mapping = new HashMap<>();
-			for(Property g : readProperties(jnode.getClass())){
+			Map<String,AstNodeProperty> mapping = new HashMap<>();
+			for(AstNodeProperty g : readProperties(jnode.getClass())){
 				mapping.put(g.getName(), g);
 			}
 			
-			for(Property f : readProperties(snode.getClass())){
+			for(AstNodeProperty f : readProperties(snode.getClass())){
 				if (f.getName().equals("children") || f.getName().equals("parent")){
 					continue;
 				}
-				Property g = mapping.get(f.getName());
+				AstNodeProperty g = mapping.get(f.getName());
 				
 				if (g != null){
 					Object obj = f.get(snode);
@@ -125,15 +138,15 @@ public class Sense2JavaTransformer implements Function<AstNode, AstNode> {
 		}
 	}
 
-	private static Set<Property> readProperties(Class type){
+	private static Set<AstNodeProperty> readProperties(Class type){
 		
-		Set<Property> f = new HashSet<Property>();
+		Set<AstNodeProperty> f = new HashSet<AstNodeProperty>();
 		
 		collectProperties(type, f);
 		return f;
 	}
 
-	private static void collectProperties(Class type, Set<Property> fields){
+	private static void collectProperties(Class type, Set<AstNodeProperty> fields){
 		
 		Stream.concat(Stream.of(type.getMethods()), Stream.of(type.getDeclaredMethods()))
 		.filter( m ->m.getName().startsWith("set") && !Modifier.isStatic(m.getModifiers()) && m.getParameterCount() == 1)
@@ -144,7 +157,7 @@ public class Sense2JavaTransformer implements Function<AstNode, AstNode> {
 			Method acessor;
 			try {
 				acessor = m.getDeclaringClass().getMethod(prefix + name, new Class[0]);
-				return  new Property( name.substring(0,1).toLowerCase() + name.substring(1), acessor, m);
+				return  new AstNodeProperty( name.substring(0,1).toLowerCase() + name.substring(1), acessor, m);
 			} catch (Exception e) {
 				return null;
 			}

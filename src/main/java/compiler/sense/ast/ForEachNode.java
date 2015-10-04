@@ -3,6 +3,8 @@
  */
 package compiler.sense.ast;
 
+import compiler.syntax.AstNode;
+
 
 
 /**
@@ -63,5 +65,15 @@ public class ForEachNode extends StatementNode {
 		return blockNode;
 	}
 
-	
+	public void replace(AstNode node, AstNode newnode){
+		super.replace(node, newnode);
+		
+		if (this.variableDeclarationNode == node){
+			this.variableDeclarationNode = (VariableDeclarationNode) newnode;
+		} else if (this.blockNode == node){
+			this.blockNode = (BlockNode) newnode;
+		} else if (this.container == node){
+			this.container = (ExpressionNode) newnode;
+		}
+	}
 }

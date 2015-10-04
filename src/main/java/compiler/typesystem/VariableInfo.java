@@ -3,14 +3,13 @@
  */
 package compiler.typesystem;
 
-import compiler.sense.typesystem.SenseType;
 
 /**
  * 
  */
 public class VariableInfo {
 
-	private Type type;
+	private TypeDefinition type;
 	private String name;
 	private boolean initialized;
 	private boolean isTypeVariable;
@@ -23,7 +22,7 @@ public class VariableInfo {
 	 * @param name
 	 * @param type
 	 */
-	public VariableInfo(String name, Type type, boolean isTypeVariable) {
+	public VariableInfo(String name, TypeDefinition type, boolean isTypeVariable) {
 		this.name = name;
 		this.type = type;
 		this.isTypeVariable= isTypeVariable;
@@ -49,7 +48,7 @@ public class VariableInfo {
 	 * Obtains {@link SenseType}.
 	 * @return the type
 	 */
-	public Type getType() {
+	public TypeDefinition getTypeDefinition() {
 		return type;
 	}
 

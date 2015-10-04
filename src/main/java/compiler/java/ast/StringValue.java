@@ -3,7 +3,8 @@
  */
 package compiler.java.ast;
 
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.TypeDefinition;
 
 
 /**
@@ -13,8 +14,8 @@ public class StringValue extends LiteralExpressionNode {
 
 	private String value;
 	
-	public SenseType getType() {
-		return SenseType.String;
+	public TypeDefinition getTypeDefinition() {
+		return SenseTypeSystem.String();
 	}
 
 	public String getValue() {

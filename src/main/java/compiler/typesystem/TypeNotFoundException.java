@@ -6,7 +6,7 @@ package compiler.typesystem;
 /**
  * 
  */
-public class TypeNotFoundException extends compiler.SyntaxError{
+public class TypeNotFoundException extends compiler.CompilationError{
 
 	/**
 	 * 

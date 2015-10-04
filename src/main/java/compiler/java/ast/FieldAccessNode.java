@@ -3,6 +3,8 @@
  */
 package compiler.java.ast;
 
+import compiler.syntax.AstNode;
+
 
 
 /**
@@ -11,6 +13,7 @@ package compiler.java.ast;
 public class FieldAccessNode extends NeedTypeCalculationNode {
 
 	private String name;
+	private AstNode primary;
 
 	/**
 	 * @param string
@@ -25,5 +28,11 @@ public class FieldAccessNode extends NeedTypeCalculationNode {
 	public String getName() {
 		return name;
 	}
-
+	public AstNode getPrimary() {
+		return primary;
+	}
+	public void setPrimary(AstNode primary) {
+		this.primary = primary;
+		this.add(primary);
+	}
 }

@@ -34,7 +34,12 @@ public class TreeTransverser {
 			LinkedList<T> list = new LinkedList<>(node.getChildren());
 			
 			while(!list.isEmpty()) {
-				visit(list.removeFirst(), visitor);
+				T child = list.removeFirst();
+				// children can be replaces, so do not visit if is no longer a child
+				if (node.getChildren().contains(child)){
+					visit(child, visitor);
+				}
+			
 			}
 			
 			visitor.visitAfterChildren(node);

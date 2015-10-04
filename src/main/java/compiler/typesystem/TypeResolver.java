@@ -10,9 +10,10 @@ package compiler.typesystem;
 public interface TypeResolver {
 
 	/**
-	 * @param name
+	 * @param filter
 	 * @return
 	 */
-	Type resolveTypeByName(String name);
+	TypeDefinition resolveTypeByName(TypeSearchParameters filter);
+
 
 }

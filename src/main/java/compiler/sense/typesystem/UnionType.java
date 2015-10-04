@@ -3,19 +3,18 @@
  */
 package compiler.sense.typesystem;
 
-import compiler.typesystem.Type;
 
 /**
  * 
  */
-public class UnionType extends SenseType {
+public class UnionType extends SenseTypeDefinition {
 
 	/**
 	 * Constructor.
 	 * @param name
 	 */
-	public UnionType(Type a, Type b) {
-		super(a.toString() + "|" + b.toString());
+	public UnionType(SenseTypeDefinition a, SenseTypeDefinition b) {
+		super(a.toString() + "|" + b.toString(), Kind.Class, null);
 	
 	}
 	

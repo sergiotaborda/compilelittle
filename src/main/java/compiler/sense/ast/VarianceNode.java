@@ -4,7 +4,7 @@
 package compiler.sense.ast;
 
 import compiler.syntax.AstNode;
-import compiler.typesystem.TypeParameter.Variance;
+import compiler.typesystem.Variance;
 
 /**
  * 

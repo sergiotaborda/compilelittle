@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.TypeNotFoundException;
-import compiler.typesystem.TypesRepository;
+import compiler.typesystem.TypeResolver;
+import compiler.typesystem.TypeSearchParameters;
 import compiler.typesystem.VariableInfo;
 
 /**
@@ -24,13 +25,13 @@ public class SemanticContext {
 	Deque<SemanticScope> scopes = new LinkedList<SemanticScope>();
 	private List<String> imports = new ArrayList<String>();
 	
-	private Map<String, Type> types = new HashMap<>();
-	private TypesRepository repository;
+	private Map<TypeSearchParameters, TypeDefinition> types = new HashMap<>();
+	private TypeResolver resolver;
 	
-	public SemanticContext(TypesRepository repository){
-		this.repository = repository;
+	public SemanticContext(TypeResolver resolver){
+		this.resolver = resolver;
 
-		imports.add("sense");
+		imports.add("sense.lang");
 	}
 
 	/**
@@ -60,11 +61,19 @@ public class SemanticContext {
 		imports.add(importName);
 	}
 
-	public Type typeForName(String name) {
-		Optional<Type> type = resolveTypeForName(name);
+	public TypeDefinition typeForName(String name) {
+		return typeForName(name, 0);
+	}
+	/**
+	 * @param name
+	 * @param size
+	 * @return
+	 */
+	public TypeDefinition typeForName(String name, int size) {
+		Optional<TypeDefinition> type = resolveTypeForName(name, size);
 		
 		if (!type.isPresent()){
-			throw new TypeNotFoundException(name + " is not a recognized type");
+			throw new TypeNotFoundException(name + "'" + size +" is not a recognized type");
 		}
 		
 		return type.get();
@@ -73,11 +82,11 @@ public class SemanticContext {
 	 * @param name
 	 * @return
 	 */
-	public Optional<Type> resolveTypeForName(String name) {
+	public Optional<TypeDefinition> resolveTypeForName(String name, int genericParametersCount) {
 
 		if(name.contains(".")){
 			// is qualified
-			Type type = typeForQualifiedName(name);
+			TypeDefinition type = typeForQualifiedName(name,genericParametersCount);
 			if (type!= null){
 				return Optional.of(type);
 			} else {
@@ -89,14 +98,14 @@ public class SemanticContext {
 			VariableInfo variableInfo = currentScope().searchVariable(name);
 
 			if (variableInfo != null && variableInfo.isTypeVariable()){
-				return Optional.of(variableInfo.getType());
+				return Optional.of(variableInfo.getTypeDefinition());
 			}
 
 
 			// not type variable, attach imports and look again
 
 			for (String importPackage : imports){
-				Type type = typeForQualifiedName(importPackage + "." + name);
+				TypeDefinition type = typeForQualifiedName(importPackage + "." + name, genericParametersCount);
 				if (type != null){
 					return Optional.of(type);
 				}
@@ -110,20 +119,33 @@ public class SemanticContext {
 	 * @param name
 	 * @return
 	 */
-	private Type typeForQualifiedName(String name) {
+	private TypeDefinition typeForQualifiedName(String name, int genericParametersCount) {
 
-		Type type = types.get(name);
+		TypeSearchParameters filter = new TypeSearchParameters(name,  genericParametersCount);
+		
+		TypeDefinition type = types.get(filter);
 
 
 		if (type == null){
 			
-			type = repository.resolveTypeByName(name);
+			type = resolver.resolveTypeByName(filter);
 
 			if (type != null){
-				types.put(name, type);
+				types.put(filter, type);
 			}
 		}
 		return type;
 	}
+
+	/**
+	 * @param i 
+	 * @param name
+	 * @param myType
+	 */
+	public void registerType(TypeDefinition type, int genericParametersCount) {
+		types.put(new TypeSearchParameters(type.getName(),  genericParametersCount), type);
+	}
+
+
 
 }

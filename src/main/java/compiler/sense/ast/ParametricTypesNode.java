@@ -3,8 +3,8 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
-import compiler.typesystem.TypeParameter.Variance;
+import compiler.typesystem.TypeDefinition;
+import compiler.typesystem.Variance;
 
 
 /**
@@ -15,6 +15,19 @@ public class ParametricTypesNode extends SenseAstNode implements TypedNode {
 	
 	private TypeNode typeNode;
 	private Variance variance;
+
+	
+	public ParametricTypesNode (){}
+	
+	/**
+	 * Constructor.
+	 * @param typeNode2
+	 * @param variance2
+	 */
+	public ParametricTypesNode(TypeNode typeNode, Variance variance) {
+		this.typeNode = typeNode;
+		this.variance = variance;
+	}
 
 	public TypeNode getTypeNode() {
 		return typeNode;
@@ -29,8 +42,8 @@ public class ParametricTypesNode extends SenseAstNode implements TypedNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type getType() {
-		return typeNode.getType();
+	public TypeDefinition getTypeDefinition() {
+		return typeNode.getTypeDefinition();
 	}
 
 	public Variance getVariance() {

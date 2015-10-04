@@ -3,7 +3,7 @@
  */
 package compiler.java.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.VariableInfo;
 
 /**
@@ -18,8 +18,8 @@ public class VariableDeclarationNode extends JavaAstNode implements ScopedVariab
 	private VariableInfo info;
 	private ImutabilityNode imutability;
 	
-	public Type getType() {
-		return type.getType();
+	public TypeDefinition getTypeDefinition() {
+		return type.getTypeDefinition();
 	}
 
 	public TypeNode getTypeNode() {

@@ -1,6 +1,6 @@
 package packageName.subpackageName;
 
-import /*native*/ java.lang.Math;
+import sense.lang.Math; /* native use of java.lang.Math */
 
 public class SenseProgram {
 
@@ -19,8 +19,8 @@ public class SenseProgram {
 	 	
 	 	Complex m = c * z;
 	 	
-	 	System.out.print("Calculating..");
-	 	Maybe<String> a = System.getProperty("version");
+	 	Console.println("Calculating..");
+	 	//Maybe<String> a = System.getProperty("version");
 	 	
 	 	
 	 	return r;

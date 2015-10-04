@@ -3,7 +3,8 @@
  */
 package compiler.java.ast;
 
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.SenseTypeDefinition;
+
 
 
 /**
@@ -22,7 +23,7 @@ public class NumericValue extends LiteralExpressionNode {
 	/**
 	 * @param n
 	 */
-	public void setValue(Number n, SenseType type) {
+	public void setValue(Number n, SenseTypeDefinition type) {
 		this.number = n;
 		this.type = type;
 	}

@@ -8,7 +8,7 @@ public class Array<T> {
 		return null;
 	}
 	
-	public void set(Natural index, T value) { // Receive generic type
+	public Void set(Natural index, T value) { // Receive generic type
 		// native
 	}
 } 

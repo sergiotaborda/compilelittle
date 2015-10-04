@@ -59,4 +59,10 @@ public class QualifiedNameNode extends SenseAstNode {
 			return new QualifiedNameNode(name.substring(pos + 1));
 		}
 	}
+	/**
+	 * @return
+	 */
+	public boolean isComposed() {
+		return name.indexOf(".") > 0;
+	}
 }

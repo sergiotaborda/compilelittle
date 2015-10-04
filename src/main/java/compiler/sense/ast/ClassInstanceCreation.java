@@ -3,8 +3,7 @@
  */
 package compiler.sense.ast;
 
-import compiler.sense.ast.TypeNode;
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -16,9 +15,8 @@ public class ClassInstanceCreation extends ExpressionNode{
 
 	public ClassInstanceCreation (){}
 	
-	public ClassInstanceCreation (Type type, SenseAstNode ... args){
-		TypeNode t = new TypeNode(new QualifiedNameNode(type.getName()));
-		t.setType(type);
+	public ClassInstanceCreation (TypeDefinition type, SenseAstNode ... args){
+		TypeNode t = new TypeNode(type);
 		setTypeNode(t);
 
 		ArgumentListNode list = new ArgumentListNode();
@@ -61,8 +59,8 @@ public class ClassInstanceCreation extends ExpressionNode{
 	 * Obtains {@link TypeNode}.
 	 * @return the type
 	 */
-	public Type getType() {
-		return typeNode.getType();
+	public TypeDefinition getTypeDefinition() {
+		return typeNode.getTypeDefinition();
 	}
 
 

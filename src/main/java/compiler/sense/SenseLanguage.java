@@ -7,11 +7,10 @@ import compiler.Language;
 import compiler.parser.LookupTable;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
-import compiler.sense.SenseSemantic.AnalisisVisitor;
 import compiler.sense.ast.UnitTypes;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
-import compiler.typesystem.TypesRepository;
+import compiler.typesystem.TypeResolver;
 
 /**
  * 
@@ -38,14 +37,14 @@ public class SenseLanguage extends Language{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AstNode transform(ParserTreeNode root,TypesRepository repository) {
+	public AstNode transform(ParserTreeNode root,TypeResolver resolver) {
 		UnitTypes t = root.getProperty("node", UnitTypes.class).orElse(null);
 		
 		
 		if (t == null){
 			throw new RuntimeException("Compilation error");
 		}
-		SenseSemantic semantic = new SenseSemantic(repository);
+		SenseSemantic semantic = new SenseSemantic(resolver);
 		
 		// Garanties Semantic is correct
 		semantic.analise(t);

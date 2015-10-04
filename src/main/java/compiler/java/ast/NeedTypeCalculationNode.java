@@ -3,14 +3,14 @@
  */
 package compiler.java.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
  */
 public class NeedTypeCalculationNode extends ExpressionNode {
 
-	public void setType(Type type) {
+	public void setTypeDefinition(TypeDefinition type) {
 		this.type = type;
 	}
 }

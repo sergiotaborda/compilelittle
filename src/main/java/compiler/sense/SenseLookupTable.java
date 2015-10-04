@@ -94,7 +94,9 @@ public class SenseLookupTable extends AbstractLookupTable {
 	private void AddAction(Production production, String action, LookupTableRow r, int i) {
 		
 		if (action.startsWith("T")){
-			String[] list = action.substring(2, action.length() -2).split(",");
+			int pos = action.indexOf('[');
+			int end = action.indexOf(']', pos);
+			String[] list = action.substring(pos+1, end).split(",");
 			
 			for(String act : list){
 				AddAction(production, act.trim(), r, i);

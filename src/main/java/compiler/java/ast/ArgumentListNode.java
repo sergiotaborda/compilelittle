@@ -5,7 +5,7 @@ package compiler.java.ast;
 
 import java.util.stream.Collectors;
 
-import compiler.sense.typesystem.ConcreteMethodParameter;
+import compiler.typesystem.MethodParameter;
 
 
 /**
@@ -14,9 +14,9 @@ import compiler.sense.typesystem.ConcreteMethodParameter;
 public class ArgumentListNode extends JavaAstNode {
 
 	
-	public ConcreteMethodParameter[] asMethodParameters(){
-		return this.getChildren().stream().map(v -> new ConcreteMethodParameter(((TypedNode)v).getType()))
+	public MethodParameter[] asMethodParameters(){
+		return this.getChildren().stream().map(v -> new MethodParameter(((TypedNode)v).getTypeDefinition()))
 		.collect(Collectors.toList())
-		.toArray(new ConcreteMethodParameter[0]);
+		.toArray(new MethodParameter[0]);
 	}
 }

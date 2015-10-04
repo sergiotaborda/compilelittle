@@ -3,12 +3,12 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
  */
 public interface TypedNode {
 
-	public Type getType();
+	public TypeDefinition getTypeDefinition();
 }

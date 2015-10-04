@@ -3,7 +3,7 @@
  */
 package compiler.java.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 
 
@@ -47,8 +47,8 @@ public class ClassInstanceCreation extends ExpressionNode{
 	 * Obtains {@link TypeNode}.
 	 * @return the type
 	 */
-	public Type getType() {
-		return typeNode.getType();
+	public TypeDefinition getTypeDefinition() {
+		return typeNode.getTypeDefinition();
 	}
 
 

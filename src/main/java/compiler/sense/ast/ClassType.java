@@ -3,7 +3,7 @@
  */
 package compiler.sense.ast;
 
-import compiler.sense.Kind;
+import compiler.sense.typesystem.Kind;
 
 
 /**

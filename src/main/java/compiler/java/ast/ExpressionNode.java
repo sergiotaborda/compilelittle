@@ -4,7 +4,7 @@
  */
 package compiler.java.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 
 /**
@@ -12,9 +12,9 @@ import compiler.typesystem.Type;
  */
 public class ExpressionNode extends JavaAstNode implements TypedNode {
 
-	protected Type type;
+	protected TypeDefinition type;
 
-	public Type getType() {
+	public TypeDefinition getTypeDefinition() {
 		return type;
 	}
 

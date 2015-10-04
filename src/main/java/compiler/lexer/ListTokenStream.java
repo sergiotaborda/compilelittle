@@ -3,7 +3,6 @@
  */
 package compiler.lexer;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,6 +60,10 @@ public class ListTokenStream implements TokenStream {
 
 	private boolean equalsListTokenStream(ListTokenStream other) {
 		return this.position == other.position && this.tokens == other.tokens;
+	}
+	
+    public int hashCode() {
+    	return this.position;
 	}
 
 	/**

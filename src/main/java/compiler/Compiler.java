@@ -11,6 +11,7 @@ import java.util.List;
 import compiler.lexer.TokenStream;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
+import compiler.typesystem.CompositeTypeResolver;
 import compiler.typesystem.TypeResolver;
 
 /**
@@ -20,11 +21,10 @@ public class Compiler {
 	
 	private Language language;
 	private List<CompilerBackEnd> ends = new ArrayList<>();
-	private CompositeTypesRepository repository;
-
+	private CompositeTypeResolver repository = new CompositeTypeResolver();
+	
 	public Compiler(Language language){
 		this.language = language;
-		this.repository = new CompositeTypesRepository();
 	}
 	
 	
@@ -71,10 +71,10 @@ public class Compiler {
 				{
 					end.use(language.transform(node, repository));
 				}
-			} catch (SyntaxError e){
+			} catch (CompilationError e){
 				throw e;
 			} catch (RuntimeException e){
-				throw new RuntimeException("On " + unit.getName() +":" + e.getMessage() , e);
+				throw new RuntimeException("On " + unit.getName() +" error:" + e.getMessage() , e);
 			} catch (IOException e){
 				// use quueue for each unit to hold errors
 			} 

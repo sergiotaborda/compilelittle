@@ -3,7 +3,7 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -20,8 +20,8 @@ public class PosExpression extends ExpressionNode{
 		this.operation = op;
 	}
 
-	public Type getType(){
-		return ((ExpressionNode)this.getChildren().get(0)).getType();
+	public TypeDefinition getTypeDefinition(){
+		return ((ExpressionNode)this.getChildren().get(0)).getTypeDefinition();
 	}
 	
 	public ArithmeticOperation getOperation(){

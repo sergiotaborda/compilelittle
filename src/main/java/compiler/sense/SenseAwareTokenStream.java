@@ -5,6 +5,7 @@ package compiler.sense;
 
 import compiler.SymbolBasedToken;
 import compiler.TokenSymbol;
+import compiler.lexer.ListTokenStream;
 import compiler.lexer.Token;
 import compiler.lexer.TokenStream;
 
@@ -57,7 +58,23 @@ class SenseAwareTokenStream implements TokenStream {
 	public TokenStream duplicate() {
 		return new SenseAwareTokenStream(original.duplicate());
 	}
+	
+	public String toString(){
+		return original.toString();
+	}
 
+	public boolean equals(Object obj) {
+		return (obj instanceof SenseAwareTokenStream) && equalsListTokenStream((SenseAwareTokenStream)obj); 
+	}
+
+
+	private boolean equalsListTokenStream(SenseAwareTokenStream other) {
+		return this.original.equals(other.original);
+	}
+	
+    public int hashCode() {
+    	return this.original.hashCode();
+	}
 
 	/**
 	 * {@inheritDoc}

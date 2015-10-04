@@ -3,7 +3,9 @@
  */
 package compiler.java.ast;
 
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.TypeDefinition;
+
 
 
 /**
@@ -11,7 +13,7 @@ import compiler.sense.typesystem.SenseType;
  */
 public class NullValue extends LiteralExpressionNode {
 
-	public SenseType getType() {
-		return SenseType.None;
+	public TypeDefinition getTypeDefinition() {
+		return SenseTypeSystem.getInstance().getForName("None").get();
 	}
 }

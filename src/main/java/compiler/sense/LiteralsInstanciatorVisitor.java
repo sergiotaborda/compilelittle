@@ -8,7 +8,7 @@ import compiler.sense.ast.AssignmentNode;
 import compiler.sense.ast.BooleanValue;
 import compiler.sense.ast.ClassInstanceCreation;
 import compiler.sense.ast.ExpressionNode;
-import compiler.sense.ast.FieldAccessNode;
+import compiler.sense.ast.FieldOrPropertyAccessNode;
 import compiler.sense.ast.LiteralExpressionNode;
 import compiler.sense.ast.MethodInvocationNode;
 import compiler.sense.ast.NullValue;
@@ -16,7 +16,7 @@ import compiler.sense.ast.NumericValue;
 import compiler.sense.ast.ScopedVariableDefinitionNode;
 import compiler.sense.ast.StringConcatenationNode;
 import compiler.sense.ast.StringValue;
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.SenseTypeSystem;
 import compiler.syntax.AstNode;
 import compiler.trees.Visitor;
 import compiler.trees.VisitorNext;
@@ -74,7 +74,7 @@ public class LiteralsInstanciatorVisitor implements Visitor<AstNode> {
 			
 			if (node.getParent().getParent() instanceof ClassInstanceCreation){
 				ClassInstanceCreation c = (ClassInstanceCreation)node.getParent().getParent();
-				if (c.getType().equals(SenseType.String)){
+				if (c.getTypeDefinition().equals(SenseTypeSystem.String())){
 					return;
 				}
 			} 
@@ -82,7 +82,7 @@ public class LiteralsInstanciatorVisitor implements Visitor<AstNode> {
 		}
 		else if (node instanceof ArithmeticNode){
 			ArithmeticNode a = (ArithmeticNode) node;
-			if (a.getType().getName().equals("sense.String")){
+			if (a.getTypeDefinition().getName().equals("sense.String")){
 				StringConcatenationNode c;
 				if (a.getLeft() instanceof StringConcatenationNode){
 					c = (StringConcatenationNode)a.getLeft();
@@ -111,14 +111,14 @@ public class LiteralsInstanciatorVisitor implements Visitor<AstNode> {
 			return literal;
 			//new FieldAccessNode(((BooleanValue)literal).isValue()? "True" : "False");
 		} else if (literal instanceof NullValue){
-			FieldAccessNode n = new FieldAccessNode("None.None");
-			n.setType(SenseType.None);
+			FieldOrPropertyAccessNode n = new FieldOrPropertyAccessNode("None.None");
+			n.setTypeDefinition(SenseTypeSystem.None());
 			return n;
 		} else if (literal instanceof NumericValue){
-			return new ClassInstanceCreation(literal.getType(), 
-					new ClassInstanceCreation(SenseType.String, new StringValue(literal.getLiteralValue())));
+			return new ClassInstanceCreation(literal.getTypeDefinition(), 
+					new ClassInstanceCreation(SenseTypeSystem.String(), new StringValue(literal.getLiteralValue())));
 		} else {
-			return new ClassInstanceCreation(literal.getType(), new StringValue(literal.getLiteralValue()));
+			return new ClassInstanceCreation(literal.getTypeDefinition(), new StringValue(literal.getLiteralValue()));
 		}
 	}
 

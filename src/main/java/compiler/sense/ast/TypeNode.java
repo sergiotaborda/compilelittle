@@ -3,8 +3,8 @@
  */
 package compiler.sense.ast;
 
-import compiler.sense.Kind;
-import compiler.typesystem.Type;
+import compiler.sense.typesystem.GenericTypeParameter;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -13,7 +13,7 @@ public class TypeNode extends SenseAstNode implements TypedNode{
 
 	private boolean isVoid;
 	private QualifiedNameNode name;
-	private Type type;
+	private TypeDefinition type;
 
 	/**
 	 * Constructor.
@@ -22,6 +22,19 @@ public class TypeNode extends SenseAstNode implements TypedNode{
 	public TypeNode(boolean isVoid) {
 		this.isVoid = isVoid;
 	}
+	/**
+	 * Constructor.
+	 * @param object
+	 */
+	public TypeNode(TypeDefinition type) {
+		this.name = new QualifiedNameNode(type.getName());
+		this.setTypeDefinition(type);
+		
+		for(GenericTypeParameter p : type.getGenericParameters()){
+			this.add(new ParametricTypesNode(new TypeNode(p.getLowerBound()), p.getVariance()));
+		}
+	}
+
 
 	/**
 	 * Constructor.
@@ -34,7 +47,7 @@ public class TypeNode extends SenseAstNode implements TypedNode{
 	/**
 	 * @param generic
 	 */
-	public void setParametricTypes(ParametricTypesNode generic) {
+	public void addParametricType(ParametricTypesNode generic) {
 		this.add(generic);
 	}
 
@@ -56,11 +69,11 @@ public class TypeNode extends SenseAstNode implements TypedNode{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type getType() {
+	public TypeDefinition getTypeDefinition() {
 		return this.type;
 	}
 	
-	public void setType(Type type){
+	public void setTypeDefinition(TypeDefinition type){
 		this.type = type;
 	}
 

@@ -3,10 +3,7 @@
  */
 package compiler.sense.ast;
 
-import compiler.parser.IdentifierNode;
-import compiler.sense.typesystem.SenseType;
-import compiler.syntax.AstNode;
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.VariableInfo;
 
 /**
@@ -33,8 +30,8 @@ public class FieldDeclarationNode extends AnnotadedSenseAstNode implements Scope
 		return typeNode;
 	}
 	
-	public Type getType() {
-		return typeNode.getType();
+	public TypeDefinition getTypeDefinition() {
+		return typeNode.getTypeDefinition();
 	}
 
 	public String getName() {

@@ -4,8 +4,6 @@
 package compiler.sense;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -36,8 +34,8 @@ import compiler.sense.ast.ComparisonNode;
 import compiler.sense.ast.ContinueNode;
 import compiler.sense.ast.DecisionNode;
 import compiler.sense.ast.ExpressionNode;
-import compiler.sense.ast.FieldAccessNode;
 import compiler.sense.ast.FieldDeclarationNode;
+import compiler.sense.ast.FieldOrPropertyAccessNode;
 import compiler.sense.ast.ForEachNode;
 import compiler.sense.ast.ImplementedInterfacesNode;
 import compiler.sense.ast.ImportNode;
@@ -70,9 +68,11 @@ import compiler.sense.ast.VariableReadNode;
 import compiler.sense.ast.VariableWriteNode;
 import compiler.sense.ast.VarianceNode;
 import compiler.sense.ast.WhileNode;
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.Kind;
+import compiler.sense.typesystem.SenseTypeSystem;
 import compiler.syntax.AstNode;
-import compiler.typesystem.TypeParameter.Variance;
+import compiler.typesystem.TypeDefinition;
+import compiler.typesystem.Variance;
 
 
 /**
@@ -168,53 +168,53 @@ public class SenseGrammar extends AbstractSenseGrammar{
 	 * @param text
 	 * @return
 	 */
-	private SenseType determineType(String literalNumber) {
+	private TypeDefinition determineType(String literalNumber) {
 		if (literalNumber.startsWith("#") || literalNumber.startsWith("$")){
-			return SenseType.Natural; 
+			return SenseTypeSystem.Natural(); 
 		}
 		
 		char end = literalNumber.charAt(literalNumber.length()- 1);
 		if (literalNumber.contains(".") && matchDecimal(literalNumber)){
 			// decimal
 			if (Character.isDigit(end) || end == 'M'){
-				return SenseType.Decimal;
+				return SenseTypeSystem.Decimal();
 			} else if (end == 'N'){
-				throw new SyntaxError("A decimal number cannot end with N");
+				throw new CompilationError("A decimal number cannot end with N");
 			} else if (end == 'S'){
-				throw new SyntaxError("A decimal number cannot end with S");
+				throw new CompilationError("A decimal number cannot end with S");
 			} else if (end == 'I'){
-				throw new SyntaxError("A decimal number cannot end with I");
+				throw new CompilationError("A decimal number cannot end with I");
 			} else if (end == 'L'){
-				throw new SyntaxError("A decimal number cannot end with L");
+				throw new CompilationError("A decimal number cannot end with L");
 			} else if (end == 'D'){
-				return SenseType.Double;
+				return SenseTypeSystem.Double();
 			}else if (end == 'F'){
-				return SenseType.Float;
+				return SenseTypeSystem.Float();
 			}else if (end == 'J'){
-				return SenseType.Imaginary;
+				return SenseTypeSystem.Imaginary();
 			}
 		} else if (matchNatural(literalNumber)){
 			// whole
 			if (Character.isDigit(end) || end == 'N'){
-				return SenseType.Natural;
+				return SenseTypeSystem.Natural();
 			} else if (end == 'S'){
-				return SenseType.Short;
+				return SenseTypeSystem.Short();
 			} else if (end == 'I'){
-				return SenseType.Int;
+				return SenseTypeSystem.Int();
 			} else if (end == 'L'){
-				return SenseType.Long;
+				return SenseTypeSystem.Long();
 			} else if (end == 'D'){
-				return SenseType.Double;
+				return SenseTypeSystem.Double();
 			}else if (end == 'F'){
-				return SenseType.Float;
+				return SenseTypeSystem.Float();
 			}else if (end == 'M'){
-				return SenseType.Decimal;
+				return SenseTypeSystem.Decimal();
 			}else if (end == 'J'){
-				return SenseType.Imaginary;
+				return SenseTypeSystem.Imaginary();
 			}
 		} 
 
-		throw new SyntaxError("'" + literalNumber + "' is not reconized as a Number");
+		throw new CompilationError("'" + literalNumber + "' is not reconized as a Number");
 
 	}
 
@@ -751,12 +751,12 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				AstNode n = r.get(2).getAstNode().get();
 
 				if (n instanceof ParametricTypesNode){
-					type.setParametricTypes((ParametricTypesNode)n);
+					type.addParametricType((ParametricTypesNode)n);
 				} else {
 					ParametricTypesNode generic = new ParametricTypesNode();
 					generic.add(n);
 
-					type.setParametricTypes(generic);
+					type.addParametricType(generic);
 				}
 
 
@@ -1134,8 +1134,10 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				DecisionNode node = new DecisionNode();
 
 				node.setCondition(r.get(2).getAstNode(ExpressionNode.class).get());
-				node.setTruePath(r.get(4).getAstNode(BlockNode.class).get());
-
+				if (r.get(4).getAstNode(BlockNode.class).isPresent()){
+					node.setTruePath(r.get(4).getAstNode(BlockNode.class).get());
+				}
+				
 				p.setAstNode(node);
 			}
 
@@ -1366,8 +1368,8 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 				n.setName(r.get(index++).getAstNode(IdentifierNode.class).get().getId());
 
-				if (r.size() > ++index){
-					n.setInitializer(r.get(index).getAstNode(ExpressionNode.class).get());
+				if (r.size() > index+1){
+					n.setInitializer(ensureExpression(r.get(++index).getAstNode().get()));
 				}
 
 				p.setSemanticAttribute("node", n);
@@ -1376,6 +1378,50 @@ public class SenseGrammar extends AbstractSenseGrammar{
 
 		});
 
+		getNonTerminal("expressionName").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				if (!r.get(0).getAstNode().isPresent()){
+					p.setAstNode(new QualifiedNameNode(r.get(0).getLexicalValue()));
+				} else if (r.get(0).getAstNode().get() instanceof IdentifierNode){
+					p.setAstNode(new QualifiedNameNode(r.get(0).getAstNode(IdentifierNode.class).get().getId()));
+				} else {
+					p.setAstNode(ensureQualifiedName(r.get(0).getAstNode().get()));
+				}
+			} else  if (r.size() == 3){
+
+				QualifiedNameNode q = r.get(0).getAstNode(QualifiedNameNode.class).get();
+				
+				q.append(r.get(2).getLexicalValue());
+				p.setAstNode(q);
+			}
+
+		});
+		
+		getNonTerminal("ambiguousName").addSemanticAction( (p, r) -> {
+
+			if (r.size() == 1){
+				
+				
+				if (!r.get(0).getAstNode().isPresent()){
+					p.setAstNode(new QualifiedNameNode(r.get(0).getLexicalValue()));
+				} else if (r.get(0).getAstNode().get() instanceof IdentifierNode){
+					p.setAstNode(new QualifiedNameNode(r.get(0).getAstNode(IdentifierNode.class).get().getId()));
+				} else {
+					p.setAstNode(ensureQualifiedName(r.get(0).getAstNode().get()));
+				}
+				
+			} else  if (r.size() == 3){
+
+				QualifiedNameNode q = r.get(0).getAstNode(QualifiedNameNode.class).get();
+				
+				q.append(r.get(2).getLexicalValue());
+				p.setAstNode(q);
+			}
+
+		});
+		
+		
 		getNonTerminal("formalParameterList").addSemanticAction( (p, r) -> {
 
 			if (r.size() == 1){
@@ -1578,7 +1624,21 @@ public class SenseGrammar extends AbstractSenseGrammar{
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
 				AssignmentNode node= new AssignmentNode(resolveAssignmentOperation(r.get(1)));
-				node.setLeft (r.get(0).getAstNode().get());
+				
+			  	AstNode q  = r.get(0).getAstNode().get();
+				
+			  	if (q instanceof QualifiedNameNode){
+			  		if (((QualifiedNameNode) q).isComposed()){
+			  			FieldOrPropertyAccessNode f = new FieldOrPropertyAccessNode(((QualifiedNameNode)q).getLast().getName());
+				  		f.setPrimary(((QualifiedNameNode)q).getPrevious());
+				  		q = f;
+			  		} else {
+			  			FieldOrPropertyAccessNode f = new FieldOrPropertyAccessNode(((QualifiedNameNode)q).getName());
+				  		q = f;
+			  		}
+			  		
+			  	}
+				node.setLeft (q);
 				node.setRight (ensureExpression(r.get(2).getAstNode().get()));
 
 				p.setAstNode(node);
@@ -1716,8 +1776,12 @@ public class SenseGrammar extends AbstractSenseGrammar{
 			if (r.size()==1){
 				p.setAstNode(r.get(0).getAstNode().get());
 			} else {
-				FieldAccessNode node = new FieldAccessNode();
-				node.setName((String)r.get(2).getSemanticAttribute("lexicalValue").get());
+				FieldOrPropertyAccessNode node = new FieldOrPropertyAccessNode((String)r.get(2).getSemanticAttribute("lexicalValue").get());
+				
+				AstNode d = r.get(0).getAstNode().get();
+				
+				node.setPrimary(d);
+
 				p.setAstNode(node);
 			}
 		});
@@ -1841,9 +1905,20 @@ public class SenseGrammar extends AbstractSenseGrammar{
 	 */
 	private ExpressionNode ensureExpression(AstNode node) {
 		if (node instanceof  IdentifierNode){
-			return new VariableReadNode(((IdentifierNode)node).getId());
+			if (((IdentifierNode)node).getId() == null){
+				return null;
+			}
+			return new FieldOrPropertyAccessNode(((IdentifierNode)node).getId());
 		} else if (node instanceof  QualifiedNameNode){
-			return new VariableReadNode(((QualifiedNameNode)node).getName());
+			QualifiedNameNode q = (QualifiedNameNode)node;
+			if (q.isComposed()){
+				FieldOrPropertyAccessNode f = new FieldOrPropertyAccessNode(q.getLast().getName());
+				f.setPrimary(q.getPrevious());
+				return f;
+			} else {
+				return new VariableReadNode(q.getName());
+			}
+			
 		} else {
 			return (ExpressionNode)node;
 		}
@@ -1912,7 +1987,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		case "|=":
 			return AssignmentNode.Operation.BitOrAndAssign;
 		default:
-			throw new SyntaxError(op + "is not a recognized operator");
+			throw new CompilationError(op + "is not a recognized operator");
 		}
 	}
 
@@ -1946,7 +2021,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		case "!":
 			return BooleanOperatorNode.BooleanOperation.LogicNegate;
 		default:
-			throw new SyntaxError(op + "is not a recognized operator");
+			throw new CompilationError(op + "is not a recognized operator");
 		}
 	}
 
@@ -1978,7 +2053,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		case "!==":
 			return ComparisonNode.Operation.ReferenceDifferent;
 		default:
-			throw new SyntaxError(op + "is not a recognized operator");
+			throw new CompilationError(op + "is not a recognized operator");
 		}
 	}
 
@@ -2015,7 +2090,7 @@ public class SenseGrammar extends AbstractSenseGrammar{
 		case ">>>":
 			return ArithmeticOperation.SignedRightShift;
 		default:
-			throw new SyntaxError(op + "is not a recognized operator");
+			throw new CompilationError(op + "is not a recognized operator");
 		}
 
 	}

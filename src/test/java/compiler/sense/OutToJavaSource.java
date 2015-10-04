@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 
 import compiler.CompilerBackEnd;
 import compiler.java.JavaSourceWriterVisitor;
+import compiler.sense.ast.ClassType;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
 
@@ -38,7 +39,28 @@ public class OutToJavaSource implements CompilerBackEnd {
 
 		AstNode javaRoot = TreeTransverser.transform(root, new Sense2JavaTransformer());
 		
-		try(PrintWriter writer = new PrintWriter(new FileWriter(out))){
+		File compiled = out;
+		if (out.isDirectory()){
+			ClassType t = (ClassType) root.getChildren().get(0);
+			String path = t.getName().replace('.', '/');
+			int pos = path.lastIndexOf('/');
+			String filename = path.substring(pos+1) + ".java";
+			path = path.substring(0, pos);
+			File folder = new File(out, path );
+			folder.mkdirs();
+			
+			compiled = new File(folder, filename);
+			try {
+				compiled.createNewFile();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		try(PrintWriter writer = new PrintWriter(new FileWriter(compiled))){
 			TreeTransverser.tranverse(javaRoot, new JavaSourceWriterVisitor(writer));
 		} catch (IOException e) {
 			e.printStackTrace();

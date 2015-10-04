@@ -4,7 +4,7 @@
 package compiler.sense.ast;
 
 import compiler.syntax.AstNode;
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.VariableInfo;
 
 /**
@@ -19,8 +19,8 @@ public class VariableDeclarationNode extends SenseAstNode implements ScopedVaria
 	private VariableInfo info;
 	private ImutabilityNode imutability;
 	
-	public Type getType() {
-		return type.getType();
+	public TypeDefinition getTypeDefinition() {
+		return type.getTypeDefinition();
 	}
 
 	public TypeNode getTypeNode() {
@@ -85,7 +85,7 @@ public class VariableDeclarationNode extends SenseAstNode implements ScopedVaria
 		
 		if (this.inicializer == node){
 			ExpressionNode exp = (ExpressionNode) newnode;
-			exp.setType(this.inicializer.getType());
+			exp.setTypeDefinition(this.inicializer.getTypeDefinition());
 			this.inicializer = exp;
 		}
 	}

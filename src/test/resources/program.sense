@@ -3,7 +3,7 @@
 */
 package packageName.subpackageName;
 
-import java.lang.Math;
+import sense.lang.Math;
 
 public class SenseProgram extends Any implements Iterable<Int> {
 
@@ -96,7 +96,7 @@ public class SenseProgram extends Any implements Iterable<Int> {
 		 } finally {
 		     s = "Mensagem 
 					de Erro"; // string literals preseve multiline and tabulations
-		     String g = s[9];
+		     Character g = s[8];
 		 }
 		 
 	}

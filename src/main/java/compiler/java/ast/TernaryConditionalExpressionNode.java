@@ -3,8 +3,8 @@
  */
 package compiler.java.ast;
 
-import compiler.sense.typesystem.SenseType;
-import compiler.typesystem.Type;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.TypeDefinition;
 
 
 /**
@@ -40,8 +40,8 @@ public class TernaryConditionalExpressionNode extends ExpressionNode implements 
 		this.add(exp);
 	}
 
-	public Type getType() {
-		return thenExpression.getType().or(elseExpression.getType());
+	public TypeDefinition getTypeDefinition() {
+		return SenseTypeSystem.getInstance().unionOf( thenExpression.getTypeDefinition(), elseExpression.getTypeDefinition());
 	}
 
 	/**

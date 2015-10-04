@@ -4,7 +4,8 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
+
+import compiler.typesystem.TypeDefinition;
 
 
 /**
@@ -12,13 +13,13 @@ import compiler.typesystem.Type;
  */
 public class ExpressionNode extends SenseAstNode implements TypedNode {
 
-	private Type type;
+	private TypeDefinition type;
 
-	public Type getType() {
+	public TypeDefinition getTypeDefinition() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setTypeDefinition(TypeDefinition type) {
 		this.type = type;
 	}
 }

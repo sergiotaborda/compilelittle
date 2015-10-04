@@ -44,12 +44,12 @@ import compiler.java.ast.VariableReadNode;
 import compiler.java.ast.VariableWriteNode;
 import compiler.java.ast.WhileNode;
 import compiler.parser.IdentifierNode;
+import compiler.sense.typesystem.GenericTypeParameter;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
 import compiler.trees.Visitor;
 import compiler.trees.VisitorNext;
-import compiler.typesystem.Type;
-import compiler.typesystem.TypeParameter;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -119,7 +119,7 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 
 				if (t.getSuperType() != null){
 					writer.print(" extends ");
-					writer.print(t.getSuperType().getType().getName());
+					writer.print(t.getSuperType().getTypeDefinition().getName());
 
 				}
 
@@ -303,7 +303,7 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 				ClassInstanceCreation n = (ClassInstanceCreation)node;
 				
 				writer.print(" new ");
-				writer.print(n.getType().getName());
+				writer.print(n.getTypeDefinition().getName());
 				writer.print(" (");
 				TreeTransverser.tranverse(n.getArguments(), new JavaSourceWriterVisitor(writer));
 				writer.print(")");
@@ -347,7 +347,7 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 					if (t.isVoid()){
 						writer.print("void");
 					} else {
-						final Type type = t.getType();
+						final TypeDefinition type = t.getTypeDefinition();
 						writer.print(type.getSimpleName());
 						
 						writeGenerics(type);
@@ -364,7 +364,7 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 					}
 				}
 				
-				writer.print(t.getType().getName());
+				writer.print(t.getTypeDefinition().getName());
 				writer.print(" ");
 				writer.print(t.getName());
 				
@@ -550,7 +550,7 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 				FieldDeclarationNode m = (FieldDeclarationNode)node;
 
 				writer.print("\n");
-				writer.print(m.getType().getSimpleName());
+				writer.print(m.getTypeDefinition().getSimpleName());
 				writer.print(" ");
 				writer.print(m.getName());
 
@@ -570,11 +570,11 @@ public class JavaSourceWriterVisitor implements Visitor<AstNode>  {
 
 	}
 
-	private void writeGenerics(final Type type) {
-		if (!type.getParameters().isEmpty()){
+	private void writeGenerics(final TypeDefinition type) {
+		if (!type.getGenericParameters().isEmpty()){
 			writer.print("<");
 			boolean first = true;
-			for(TypeParameter p : type.getParameters()){
+			for(GenericTypeParameter p : type.getGenericParameters()){
 				if (first){
 					first = false;
 				} else {

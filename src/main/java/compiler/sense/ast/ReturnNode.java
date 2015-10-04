@@ -3,7 +3,8 @@
  */
 package compiler.sense.ast;
 
-import compiler.typesystem.Type;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.TypeDefinition;
 
 
 /**
@@ -26,8 +27,8 @@ public class ReturnNode extends StatementNode implements TypedNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Type getType() {
-		return ((ExpressionNode)this.getChildren().get(0)).getType();
+	public TypeDefinition getTypeDefinition() {
+		return this.getChildren().isEmpty() ? SenseTypeSystem.Void() : ((ExpressionNode)this.getChildren().get(0)).getTypeDefinition();
 	}
 	
 	

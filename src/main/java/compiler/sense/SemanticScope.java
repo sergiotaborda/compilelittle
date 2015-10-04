@@ -8,8 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import compiler.sense.typesystem.SenseType;
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 import compiler.typesystem.VariableInfo;
 
 /**
@@ -68,10 +67,10 @@ public class SemanticScope {
 	 * @param id
 	 * @param type
 	 */
-	public VariableInfo defineVariable(String name, Type type) {
+	public VariableInfo defineVariable(String name, TypeDefinition type) {
 		
 		if (variables.containsKey(name)){
-			throw new SyntaxError("Varible " + name + " is already defined in this scope.");
+			throw new CompilationError("Varible " + name + " is already defined in this scope.");
 		}
 	   final VariableInfo variableInfo = new VariableInfo(name, type, false);
 	   variables.put(name, variableInfo);
@@ -88,7 +87,7 @@ public class SemanticScope {
 		if (info == null && parent != null){
 			return this.parent.searchVariable(name);
 		}
-		
+			
 		return info;
 	}
 
@@ -96,9 +95,9 @@ public class SemanticScope {
 	 * @param name
 	 * @param any
 	 */
-	public VariableInfo defineTypeVariable(String name, SenseType type) {
+	public VariableInfo defineTypeVariable(String name, TypeDefinition type) {
 		if (variables.containsKey(name)){
-			throw new SyntaxError("Type varible " + name + " is already defined in this scope.");
+			throw new CompilationError("Type varible " + name + " is already defined in this scope.");
 		}
 	   final VariableInfo variableInfo = new VariableInfo(name, type, true);
 	   variables.put(name, variableInfo);

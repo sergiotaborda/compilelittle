@@ -4,7 +4,7 @@
 package compiler.sense.ast;
 
 import compiler.syntax.AstNode;
-import compiler.typesystem.Type;
+import compiler.typesystem.TypeDefinition;
 
 /**
  * 
@@ -51,8 +51,8 @@ public class AssignmentNode extends ExpressionNode {
 		this.operation = operation;
 	}
 	
-	public Type getType() {
-		return right.getType();
+	public TypeDefinition getTypeDefinition() {
+		return right.getTypeDefinition();
 	}
 	
 	/**

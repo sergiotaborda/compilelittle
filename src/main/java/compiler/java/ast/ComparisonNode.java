@@ -3,7 +3,8 @@
  */
 package compiler.java.ast;
 
-import compiler.sense.typesystem.SenseType;
+import compiler.sense.typesystem.SenseTypeSystem;
+import compiler.typesystem.TypeDefinition;
 
 
 /**
@@ -52,8 +53,8 @@ public class ComparisonNode extends BooleanExpressionNode {
 		return operation;
 	}
 	
-	public SenseType getType() {
-		return SenseType.Boolean;
+	public TypeDefinition getTypeDefinition() {
+		return SenseTypeSystem.Boolean();
 	}
 
 	public ExpressionNode getLeft(){
