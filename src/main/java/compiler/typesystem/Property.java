@@ -3,7 +3,6 @@
  */
 package compiler.typesystem;
 
-import compiler.sense.ast.Imutability;
 
 /**
  * 
@@ -13,7 +12,7 @@ public class Property {
 	private TypeVariable type;
 	private String name;
 	private TypeDefinition declaringType;
-	private Imutability imutabilityValue;
+	private boolean isFinal;
 	 
 	/**
 	 * Constructor.
@@ -21,10 +20,11 @@ public class Property {
 	 * @param name
 	 * @param fromClass
 	 */
-	public Property(TypeDefinition declaringType, String name, TypeVariable type,Imutability imutabilityValue) {
+	public Property(TypeDefinition declaringType, String name, TypeVariable type, boolean isFinal ) {
 		this.type = type;
 		this.name = name;
 		this.declaringType = declaringType;
+		this.isFinal = isFinal;
 	}
 
 	public TypeVariable getReturningType() {
@@ -39,8 +39,8 @@ public class Property {
 		return declaringType;
 	}
 
-	public Imutability getImutabilityValue() {
-		return imutabilityValue;
+	public boolean isFinal() {
+		return isFinal;
 	}
 
 

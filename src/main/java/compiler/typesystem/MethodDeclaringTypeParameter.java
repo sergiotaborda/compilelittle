@@ -3,7 +3,6 @@
  */
 package compiler.typesystem;
 
-import compiler.sense.typesystem.GenericTypeParameter;
 
 /**
  * 

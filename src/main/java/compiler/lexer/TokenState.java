@@ -47,7 +47,7 @@ public class TokenState extends AbstractTokenState implements ParseState {
 		
 		if (grammar.isNumberStarter(c)){
 			builder.append(c);
-			return new NumberLiteralTokenState(this);
+			return scanner.getNumberLiteralTokenState(this);
 		} else if (c == 0 || grammar.isStopCharacter(c)){
 			if (builder.length() > 0){
 

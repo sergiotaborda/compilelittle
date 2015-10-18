@@ -3,7 +3,6 @@
  */
 package compiler.typesystem;
 
-import compiler.sense.typesystem.SenseTypeSystem;
 
 
 /**
@@ -17,9 +16,9 @@ public class BoundedTypeParameter implements TypeVariable {
 	private Variance variance;
 	private String name;
 	
-	public BoundedTypeParameter(Variance variance, String name) {
-		this.upperBound = SenseTypeSystem.Any();
-		this.lowerBound = SenseTypeSystem.Nothing();
+	public BoundedTypeParameter(Variance variance, String name, TypeSystem system) {
+		this.upperBound = null;
+		this.lowerBound = system.MostLowerType();
 		this.variance = variance;
 		this.name = name;
 	}

@@ -8,10 +8,6 @@ import java.util.Optional;
 import compiler.lexer.ScanPosition;
 import compiler.lexer.Scanner;
 import compiler.lexer.Token;
-import compiler.parser.BottomUpParser;
-import compiler.parser.LALRAutomatonFactory;
-import compiler.parser.LookupTable;
-import compiler.parser.Parser;
 import compiler.parser.Production;
 import compiler.parser.ProductionItem;
 

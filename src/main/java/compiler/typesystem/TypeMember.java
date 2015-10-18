@@ -29,6 +29,11 @@ public interface TypeMember {
 	 */
 	boolean isMethod();
 	
+	/**
+	 * @return
+	 */
+	boolean isConstructor();
+	
 	public TypeDefinition getDeclaringType();
 
 	/**

@@ -74,7 +74,7 @@ public class Compiler {
 			} catch (CompilationError e){
 				throw e;
 			} catch (RuntimeException e){
-				throw new RuntimeException("On " + unit.getName() +" error:" + e.getMessage() , e);
+				throw new RuntimeException("On " + unit.getName() +" error: " + e.getMessage() , e);
 			} catch (IOException e){
 				// use quueue for each unit to hold errors
 			} 

@@ -3,7 +3,6 @@
  */
 package compiler.typesystem;
 
-import compiler.sense.typesystem.SenseTypeSystem;
 
 /**
  * 
@@ -14,9 +13,11 @@ public class CapturableTypeParameter implements TypeVariable {
 
 	private String name;
 	private TypeDefinition type;
+	private TypeSystem typeSystem;
 
-	public CapturableTypeParameter (String name){
+	public CapturableTypeParameter (String name, TypeSystem system){
 		this.name = name;
+		this.typeSystem = system;
 	}
 	
 	
@@ -38,7 +39,7 @@ public class CapturableTypeParameter implements TypeVariable {
 	@Override
 	public TypeDefinition getUpperbound() {
 		if (type == null){
-			return SenseTypeSystem.Any();
+			return typeSystem.MostUpperType();
 		} else {
 			return type;
 		}
@@ -50,7 +51,7 @@ public class CapturableTypeParameter implements TypeVariable {
 	@Override
 	public TypeDefinition getLowerBound() {
 		if (type == null){
-			return SenseTypeSystem.Nothing();
+			return typeSystem.MostLowerType();
 		} else {
 			return type;
 		}

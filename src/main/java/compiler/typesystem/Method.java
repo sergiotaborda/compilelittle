@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 
  */
-public class Method implements Member{
+public class Method implements CallableMember {
 
 	private final String name;
 	private boolean isStatic = false;
@@ -163,6 +163,14 @@ public class Method implements Member{
 		Method m = new Method(this.name, this.returnParameter, this.parameters);
 		m.setDeclaringType(concrete);
 		return m;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isConstructor() {
+		return false;
 	}
 
 }

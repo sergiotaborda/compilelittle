@@ -7,9 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import compiler.sense.typesystem.GenericTypeParameter;
-import compiler.sense.typesystem.Kind;
-
 /**
  * 
  */
@@ -20,7 +17,7 @@ public interface TypeDefinition {
 
 	public String getSimpleName();
 	
-	public Kind getKind();
+	public TypeKind getKind();
 	
 	public List<TypeMember> getMembers();
 	
@@ -28,6 +25,8 @@ public interface TypeDefinition {
 
 	public List<GenericTypeParameter> getGenericParameters();
 
+	public Optional<Constructor> getConstructorByParameters(MethodParameter ... parameters);
+		
 	/**
 	 * @param name
 	 * @return

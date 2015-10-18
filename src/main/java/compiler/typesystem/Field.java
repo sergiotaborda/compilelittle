@@ -3,8 +3,6 @@
  */
 package compiler.typesystem;
 
-import compiler.sense.ast.Imutability;
-import compiler.sense.typesystem.SenseTypeDefinition;
 
 /**
  * 
@@ -14,7 +12,7 @@ public class Field implements TypeMember {
 	private TypeDefinition type;
 	private String name;
 	private TypeDefinition declaringType;
-	private Imutability imutabilityValue;
+	private boolean isFinal;
 	 
 	/**
 	 * Constructor.
@@ -22,9 +20,10 @@ public class Field implements TypeMember {
 	 * @param name
 	 * @param fromClass
 	 */
-	public Field(String name, TypeDefinition type,Imutability imutabilityValue) {
+	public Field(String name, TypeDefinition type, boolean isFinal) {
 		this.type = type;
 		this.name = name;
+		this.isFinal = isFinal;
 	}
 
 	public TypeDefinition getReturningType() {
@@ -41,8 +40,8 @@ public class Field implements TypeMember {
 		return declaringType;
 	}
 
-	public Imutability getImutabilityValue() {
-		return imutabilityValue;
+	public boolean isFinal(){
+		return isFinal;
 	}
 
 	/**
@@ -89,9 +88,17 @@ public class Field implements TypeMember {
 	 */
 	@Override
 	public TypeMember changeDeclaringType(TypeDefinition concrete) {
-		Field f = new Field(this.name, this.type, this.imutabilityValue);
+		Field f = new Field(this.name, this.type, this.isFinal);
 		f.setDeclaringType(concrete);
 		return f;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isConstructor() {
+		return false;
 	}
 
 
