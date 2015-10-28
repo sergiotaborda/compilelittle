@@ -30,24 +30,34 @@ public class NumberLiteralTokenState extends TokenState {
 		
 		Grammar grammar = this.getScanner().getGrammar();
 				
-		if ( c == '.' && builder.toString().contains(".")){
+		int dotpos = builder.indexOf(".");
+		if ( c == '.' && dotpos >= 0){
 			
-			// test together
-			Optional<Token> together = grammar.maybeMatch(pos,"..");
+			if (dotpos == builder.length() - 1){
+				// found .. in the stream
+				
+				// test together
+				Optional<Token> together = grammar.maybeMatch(pos,"..");
 
-			if (together.isPresent()){
-				
-				builder.deleteCharAt(builder.length() -1);
-				// accept number
-				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-				
-				builder = new StringBuilder("..");
-				
-				return new OperatorTokenState(this);
+				if (together.isPresent()){
+					
+					builder.deleteCharAt(builder.length() -1);
+					// accept number
+					tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+					
+					builder = new StringBuilder("..");
+					
+					return new OperatorTokenState(this);
+				} else {
+					tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
+					return this.getScanner().newInitialState().receive(pos, c, tokensQueue);
+				}
 			} else {
-				tokensQueue.accept(grammar.terminalMatch(pos,builder.toString()).get());
-				return this.getScanner().newInitialState().receive(pos, c, tokensQueue);
+				// found another dot after a dot is already present, ex;  1.2.
+				builder.append(c);
+				return this.getScanner().getVersionLiteralTokenState(this);
 			}
+			
 		} else if ( grammar.isDigit(c)){
 			builder.append(c);
 		} else if (grammar.isAlphabetic(c)){

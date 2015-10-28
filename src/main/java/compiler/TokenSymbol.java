@@ -18,4 +18,5 @@ public enum TokenSymbol {
 	StartMultilineComment,
 	EndMultilineComment,
 	StartInlineComment, 
+	LiteralVersion
 }

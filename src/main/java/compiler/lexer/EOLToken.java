@@ -156,4 +156,12 @@ public class EOLToken implements Token {
 	public boolean isDecimalNumber() {
 		return false;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isVersionLiteral() {
+		return false;
+	}
 }

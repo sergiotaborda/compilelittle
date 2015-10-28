@@ -207,6 +207,13 @@ public class TestTokenStream {
 		public boolean isDecimalNumber() {
 			throw new UnsupportedOperationException("Not implememented yet");
 		}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isVersionLiteral() {
+			throw new UnsupportedOperationException("Not implememented yet");
+		}
 		
 	}
 }

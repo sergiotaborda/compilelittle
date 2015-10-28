@@ -8,14 +8,15 @@ import compiler.lexer.Token;
 /**
  * 
  */
-public class Numeric extends AbstractAutoNonTerminal implements AutoNonTerminal {
+public class VersionLiteral extends AbstractAutoNonTerminal implements AutoNonTerminal{
 
-	private static Numeric me = new Numeric();
+	private static VersionLiteral me = new VersionLiteral();
 	
 	/**
+	 * @param string 
 	 * @return
 	 */
-	public static Numeric instance() {
+	public static VersionLiteral instance() {
 		return me;
 	}
 	
@@ -23,14 +24,18 @@ public class Numeric extends AbstractAutoNonTerminal implements AutoNonTerminal 
 	 * Constructor.
 	 * @param name
 	 */
-	protected Numeric() {
-		super("Numeric");
+	protected VersionLiteral() {
+		super("Version");
 		this.addSemanticAction((p , r) -> {
 			 p.setSemanticAttribute("lexicalValue", r.get(0).getSemanticAttribute("lexicalValue").get());
-			 p.setSemanticAttribute("node", new NumericNode((String)r.get(0).getSemanticAttribute("lexicalValue").get()));
+			 p.setSemanticAttribute("node", new TextNode((String)r.get(0).getSemanticAttribute("lexicalValue").get()));
 		});
 	}
-
+	
+	public String toString(){
+		return "Version";
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -39,22 +44,14 @@ public class Numeric extends AbstractAutoNonTerminal implements AutoNonTerminal 
 		return false;
 	}
 
-	public String toString(){
-		return "Numeric";
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean match(Token token) {
-		return macthDigit(token);
+		return token.isVersionLiteral();
 	}
 	
-	private boolean macthDigit(Token token){
-		return token.isNumberLiteral();		
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -68,7 +65,7 @@ public class Numeric extends AbstractAutoNonTerminal implements AutoNonTerminal 
 	 */
 	@Override
 	public boolean isIdentifier() {
-	   return false;
+		return false;
 	}
 
 	/**
@@ -76,8 +73,7 @@ public class Numeric extends AbstractAutoNonTerminal implements AutoNonTerminal 
 	 */
 	@Override
 	public boolean isNumeric() {
-		return true;
+		return false;
 	}
-
 
 }

@@ -253,6 +253,8 @@ public abstract class AbstractGrammar extends Grammar {
 			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.Operator));
 		} else if (text.equals("\n")){
 			return Optional.of(new EOLToken(pos));
+		} else if (isVersionLiteral(text)){
+			return Optional.of(new SymbolBasedToken(pos,text, TokenSymbol.LiteralVersion));
 		}
 		
 		TokenSymbol s = keywords.contains(text) ? TokenSymbol.KeyWord :  TokenSymbol.ID;
@@ -261,6 +263,14 @@ public abstract class AbstractGrammar extends Grammar {
 	}
 
 
+	/**
+	 * @param text
+	 * @return
+	 */
+	public boolean isVersionLiteral(String text) {
+		return text.contains(".");
+	}
+	
 
 	/**
 	 * {@inheritDoc}

@@ -97,4 +97,12 @@ public class Scanner  {
 		return new OperatorTokenState(tokenState);
 	}
 
+	/**
+	 * @param numberLiteralTokenState
+	 * @return
+	 */
+	public ParseState getVersionLiteralTokenState(TokenState tokenState) {
+		return new VersionLiteralTokenState(tokenState);
+	}
+
 }

@@ -5,8 +5,6 @@ package compiler.lexer;
 
 import java.util.Optional;
 
-import compiler.TokenSymbol;
-
 /**
  * 
  */
@@ -73,6 +71,11 @@ public interface Token {
 	 * @return
 	 */
 	public boolean isKeyword();
+
+	/**
+	 * @return
+	 */
+	public boolean isVersionLiteral();
 
 
 }

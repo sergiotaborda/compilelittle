@@ -156,4 +156,12 @@ public class EOFToken implements Token {
 	public boolean isKeyword() {
 		return false;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isVersionLiteral() {
+		return false;
+	}
 }

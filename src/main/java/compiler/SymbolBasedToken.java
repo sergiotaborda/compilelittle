@@ -115,6 +115,13 @@ public class SymbolBasedToken implements Token{
 		return symbol == TokenSymbol.LiteralDecimalNumber;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isVersionLiteral() {
+		return  symbol == TokenSymbol.LiteralVersion;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -159,6 +166,8 @@ public class SymbolBasedToken implements Token{
 	public int hashCode (){
 		return this.text.hashCode();
 	}
+
+
 
 
 

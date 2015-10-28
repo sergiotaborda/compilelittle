@@ -53,6 +53,7 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 			writer.println("import compiler.parser.Terminal;");
 			writer.println("import compiler.parser.Text;");
 			writer.println("import compiler.parser.Numeric;");
+			writer.println("import compiler.parser.VersionLiteral;");
 			writer.println();
 			writer.println("public abstract class " + className + " extends AbstractGrammar {");
 			writer.println();
@@ -163,6 +164,8 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 				writer.append("Text.instance()");
 			} else if (rule.getName().equals("characterLiteral")){
 				writer.append("Text.instance()");
+			} else if (rule.getName().equals("versionLiteral")){
+				writer.append("VersionLiteral.instance()");
 			} else if (rule.getName().endsWith("?")){
 				
 				writer.append(escapeName(parseOptional(rule.getName()))).append(".optional()");

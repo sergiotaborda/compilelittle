@@ -103,6 +103,8 @@ public class TokenState extends AbstractTokenState implements ParseState {
 				return scanner.getNumberLiteralTokenState(this);
 			}else if (test.get().isOperator()){
 				return scanner.getOperatorTokenState(this);
+			} else if (test.get().isVersionLiteral()){
+				return scanner.getVersionLiteralTokenState(this);
 			} else {
 				tokensQueue.accept(test.get());
 				builder.delete(0, builder.length());
