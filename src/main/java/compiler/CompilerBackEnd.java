@@ -3,16 +3,15 @@
  */
 package compiler;
 
-import compiler.syntax.AstNode;
 
 /**
- * 
+ * Acts as a final CompilePhase.
  */
 public interface CompilerBackEnd {
 
 	/**
 	 * @param transform
 	 */
-	void use(AstNode root);
+	void use(CompiledUnit unit);
 
 }

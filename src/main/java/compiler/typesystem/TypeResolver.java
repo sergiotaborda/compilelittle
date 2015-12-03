@@ -15,5 +15,10 @@ public interface TypeResolver {
 	 */
 	TypeDefinition resolveTypeByName(TypeSearchParameters filter);
 
+	/**
+	 * @param type
+	 */
+	void registerType(TypeDefinition type);
+
 
 }

@@ -18,5 +18,7 @@ public interface CompilationUnit {
 	 * @return
 	 */
 	public String getName();
+	
+	public String getOrigin();
 
 }

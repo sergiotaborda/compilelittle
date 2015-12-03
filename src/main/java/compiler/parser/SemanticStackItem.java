@@ -48,6 +48,9 @@ public abstract class SemanticStackItem extends ParserTreeNode implements StackI
 	 */
 	@Override
 	public void setAstNode(AstNode node) {
+		if (node.getScanPosition() == null){
+			node.setScanPosition(this.getScanPosition());
+		}
 		this.setProperty("node", node);
 	}
 	

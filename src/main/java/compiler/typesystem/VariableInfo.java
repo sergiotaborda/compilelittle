@@ -44,10 +44,7 @@ public class VariableInfo {
 	public boolean isEfectivlyFinal(){
 		return writeCount < 2;
 	}
-	/**
-	 * Obtains {@link SenseType}.
-	 * @return the type
-	 */
+
 	public TypeDefinition getTypeDefinition() {
 		return type;
 	}

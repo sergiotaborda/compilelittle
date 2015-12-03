@@ -7,9 +7,6 @@ import compiler.parser.BottomUpParser;
 import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LookupTable;
 import compiler.parser.Parser;
-import compiler.parser.nodes.ParserTreeNode;
-import compiler.syntax.AstNode;
-import compiler.typesystem.TypeResolver;
 
 /**
  * 
@@ -27,10 +24,6 @@ public abstract class Language {
 		return grammar;
 	}
 	
-
-	public abstract AstNode transform(ParserTreeNode root, TypeResolver resolver);
-
-
 	/**
 	 * @return
 	 */

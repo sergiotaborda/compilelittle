@@ -42,8 +42,7 @@ public class ReduceAction implements LookupTableAction {
 					read.addFirst((Symbol)item);
 				}
 			}
-
-
+			
 			if (count != 0){
 				ctx.addDeferedSemanticAction(target, left, read);
 			}

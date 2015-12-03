@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import compiler.Compiler;
+import compiler.AstCompiler;
 import compiler.FileCompilationUnit;
-import compiler.lexer.ListCompilationUnitSet;
+import compiler.ListCompilationUnitSet;
 
 /**
  * 
@@ -28,10 +28,8 @@ public class TestBnf {
 		unitSet.add(new FileCompilationUnit(file));
 
 
-		final Compiler compiler = new Compiler(new EBnfLanguage());
-		compiler.addBackEnd(new ToFileBackEnd(fileOut));
-		//compiler.addBackEnd(new ToJavaBackEnd(javaOut));
-		compiler.compile(unitSet);
+		final AstCompiler compiler = new AstCompiler(new EBnfLanguage());
+		compiler.parse(unitSet).sendTo(new ToFileBackEnd(fileOut));;
 
 	}
 

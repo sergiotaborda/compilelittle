@@ -12,10 +12,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import compiler.Compiler;
+import compiler.AstCompiler;
+import compiler.CompiledUnit;
 import compiler.CompilerBackEnd;
+import compiler.ListCompilationUnitSet;
 import compiler.StringCompilationUnit;
-import compiler.lexer.ListCompilationUnitSet;
 import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LookupTable;
 import compiler.syntax.AstNode;
@@ -46,23 +47,13 @@ public class TestReference4Grammar {
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new StringCompilationUnit(text));
 
-		final List<AstNode> node = new ArrayList<>(1);
-		
-		final Compiler compiler = new Compiler(new Reference4Language());
-		compiler.addBackEnd(new CompilerBackEnd(){
+		final AstCompiler compiler = new AstCompiler(new Reference4Language());
 
-			@Override
-			public void use(AstNode root) {
-				node.add(root);
-			}});
-		
-		compiler.compile(unitSet);
+		final List<CompiledUnit> node = compiler.parse(unitSet).sendToList();
 		
 		assertEquals(1, node.size());
 		
-		AstNode n = node.get(0);
-		
-		assertNotNull(n);
+		assertNotNull(node.get(0));
 
 	}
 

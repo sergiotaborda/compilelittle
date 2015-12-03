@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import compiler.CompiledUnit;
 import compiler.CompilerBackEnd;
 import compiler.syntax.AstNode;
 
@@ -27,11 +28,10 @@ public class ToFileBackEnd implements CompilerBackEnd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void use(AstNode root) {
-		
+	public void use(CompiledUnit unit) {
 		try (PrintWriter writer = new PrintWriter(new FileWriter(file))){
 			
-			write(root, writer);
+			write(unit.getAstRootNode(), writer);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -85,5 +85,7 @@ public class ToFileBackEnd implements CompilerBackEnd {
 			throw new RuntimeException("Not found");
 		}
 	}
+
+
 
 }

@@ -21,7 +21,9 @@ public class MethodSignature {
 	}
 	
 
-
+	public String toString() {
+		return name + "(" + parameters.toString() + ")";
+	}
 
 	/**
 	 * Obtains {@link boolean}.

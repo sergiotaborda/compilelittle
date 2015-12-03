@@ -40,7 +40,15 @@ public class FileCompilationUnit implements CompilationUnit {
 	 */
 	@Override
 	public String getName() {
-		return path.getFileName().toString();
+		return path.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOrigin() {
+		return path.toString();
 	}
 
 }

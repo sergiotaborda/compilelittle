@@ -54,10 +54,7 @@ public class MethodParameter implements MethodMember {
 	public TypeVariable getType() {
 		return type;
 	}
-	/**
-	 * Atributes {@link SenseType}.
-	 * @param type the type to set
-	 */
+
 	public void setType(TypeVariable type) {
 		this.type = type;
 	}

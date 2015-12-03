@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import compiler.CompilationUnit;
 import compiler.Grammar;
 
 /**
@@ -16,45 +17,47 @@ import compiler.Grammar;
  */
 public class Scanner  {
 
-    protected Grammar grammar;
-    
+	protected Grammar grammar;
+
 	public Scanner(Grammar grammar){
 		this.grammar = grammar;
 	}
-	
+
 	public Grammar getGrammar(){
 		return grammar;
 	}
 
-	public final TokenStream read (Reader reader) throws IOException{
+	public final TokenStream read (CompilationUnit unit) throws IOException{
 		int c;
-		
+
 		ParseState state = newInitialState();
 
 		final List<Token> input = new ArrayList<>(50);
 
 		Consumer<Token> consumer = t -> input.add(t);
-		
-		ScanPosition pos = new ScanPosition();
-		while ( (c = reader.read()) > -1 ){
-			pos.incrementColumn();
-			state = state.receive(pos, (char)c,consumer);
-		
-			if (c == '\n'){
-				pos.incrementLine();
+
+		ScanPosition pos = new ScanPosition(unit);
+		try ( Reader reader = unit.read()){
+
+			while ( (c = reader.read()) > -1 ){
+				pos.incrementColumn();
+				state = state.receive(pos, (char)c,consumer);
+
+				if (c == '\n'){
+					pos.incrementLine();
+				}
 			}
 		}
-		
 		state.clear(pos, consumer);
 		consumer.accept(new EOFToken());
-	
+
 		return new ListTokenStream(input);
 	}
 
 	public ParseState newInitialState(){
 		return new TokenState(this);
 	}
-	
+
 	/**
 	 * @return
 	 */

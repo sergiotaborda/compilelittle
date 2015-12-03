@@ -3,11 +3,13 @@
  */
 package compiler.bnf;
 
+import compiler.AstCompiler;
+
 
 /**
  * 
  */
-public final class BnfCompiler extends compiler.Compiler{
+public final class BnfCompiler extends AstCompiler {
 
 	/**
 	 * Constructor.
@@ -16,5 +18,4 @@ public final class BnfCompiler extends compiler.Compiler{
 	public BnfCompiler() {
 		super(new EBnfLanguage());
 	}
-
 }

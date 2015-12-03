@@ -9,13 +9,12 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import compiler.Compiler;
+import compiler.AstCompiler;
 import compiler.FileCompilationUnit;
 import compiler.FirstFollowTable;
 import compiler.FirstFollowTableCalculator;
+import compiler.ListCompilationUnitSet;
 import compiler.RealizedPromisseSet;
-import compiler.lexer.ListCompilationUnitSet;
-import compiler.parser.BottomUpParser;
 import compiler.parser.EOFTerminal;
 import compiler.parser.Identifier;
 import compiler.parser.LookupTable;
@@ -109,22 +108,6 @@ public class TestBnfGrammar {
 		
 		assertNotNull(table);
 	}
-	
-	@Test 
-	public void testCompilar() throws IOException {
 
-		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/bigtest.bnf");
-		File fileOut = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/test_out.bnf");
-		File javaOut = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/AbstractJavaGrammar.java");
-
-		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
-		unitSet.add(new FileCompilationUnit(file));
-
-
-		final Compiler compiler = new Compiler(new EBnfLanguage());
-		compiler.addBackEnd(new ToFileBackEnd(fileOut));
-		compiler.addBackEnd(new ToJavaBackEnd(javaOut, "compiler.java.AbstractJavaGrammar"));
-		compiler.compile(unitSet);
-	}
 	
 }

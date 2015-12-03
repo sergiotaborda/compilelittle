@@ -8,9 +8,15 @@ public class StringCompilationUnit  implements CompilationUnit{
 
 	
 	private String unit;
-
+	private String origin;
+	
 	public StringCompilationUnit (String unit){
+		this( unit, "");
+	}
+	
+	public StringCompilationUnit (String unit,String origin){
 		this.unit = unit;
+		this.origin = origin;
 	}
 	
 	@Override
@@ -24,6 +30,14 @@ public class StringCompilationUnit  implements CompilationUnit{
 	@Override
 	public String getName() {
 		return  unit;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOrigin() {
+		return origin;
 	}
 
 }

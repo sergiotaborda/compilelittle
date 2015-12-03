@@ -34,7 +34,9 @@ public class Field implements TypeMember {
 		return name;
 	}
 
-	
+	public String toString(){
+		return name + ":" + type.toString();
+	}
 
 	public TypeDefinition getDeclaringType() {
 		return declaringType;
@@ -43,14 +45,6 @@ public class Field implements TypeMember {
 	public boolean isFinal(){
 		return isFinal;
 	}
-
-	/**
-	 * @param senseType
-	 * @return
-	 */
-//	public Field replicate(TypeDefinition newDeclaringType) {
-//		return new Field(newDeclaringType, name, type, imutabilityValue);
-//	}
 
 	/**
 	 * {@inheritDoc}
@@ -76,9 +70,6 @@ public class Field implements TypeMember {
 		return false;
 	}
 
-	/**
-	 * @param senseTypeDefinition
-	 */
 	public void setDeclaringType(TypeDefinition declaringType) {
 		this.declaringType = declaringType;
 	}
@@ -100,7 +91,13 @@ public class Field implements TypeMember {
 	public boolean isConstructor() {
 		return false;
 	}
+	
+	public int hashCode(){
+		return name.hashCode();
+	}
 
-
+	public boolean equals (Object other){
+		return other instanceof Field && ((Field)other).name.equals(this.name);
+	}
 
 }

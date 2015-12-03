@@ -3,6 +3,8 @@
  */
 package compiler.lexer;
 
+import compiler.CompilationUnit;
+
 /**
  * 
  */
@@ -10,9 +12,10 @@ public class ScanPosition {
 
 	int lineNumber = 1;
 	int columnNumber = 0;
+	private CompilationUnit unit;
 	
-	public ScanPosition() {
-		
+	public ScanPosition(CompilationUnit unit) {
+		this.unit = unit;
 	}
 
 	/**
@@ -22,6 +25,11 @@ public class ScanPosition {
 	public ScanPosition(ScanPosition other) {
 		this.lineNumber = other.lineNumber;
 		this.columnNumber = other.columnNumber;
+		this.unit = other.unit;
+	}
+	
+	public CompilationUnit getCompilationUnit(){
+		return unit;
 	}
 	
 	/**

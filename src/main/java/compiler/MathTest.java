@@ -4,10 +4,7 @@
 package compiler;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
-import compiler.lexer.ListCompilationUnitSet;
 import compiler.math.MathInterpreter;
 import compiler.math.MathLanguage2;
 
@@ -25,19 +22,11 @@ public class MathTest {
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new FileCompilationUnit(file));
 		
-	
-		try {
+		AstCompiler compiler = new AstCompiler(new MathLanguage2());
+
+		compiler.parse(unitSet).peek(new PrintOutBackEnd()).sendTo(new MathInterpreter());
 			
-			Compiler compiler = new Compiler(new MathLanguage2());
-			compiler.addBackEnd(new PrintOutBackEnd());
-			compiler.addBackEnd(new MathInterpreter());
-			compiler.compile(unitSet);
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
 	}
 
 }

@@ -13,6 +13,7 @@ public interface Symbol {
 	
 	public <A extends AstNode> Optional<A> getAstNode(Class<A> type);
 	public Optional<AstNode> getAstNode();
+
 	public void setAstNode(AstNode node);
 	
 	public ParserTreeNode getParserTreeNode();

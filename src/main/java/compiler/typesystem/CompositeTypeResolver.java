@@ -37,4 +37,14 @@ public class CompositeTypeResolver implements TypeResolver {
 		 resolvers.add(resolver);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void registerType(TypeDefinition type) {
+		for(TypeResolver resolver : resolvers){
+			resolver.registerType(type);
+		}
+	}
+
 }

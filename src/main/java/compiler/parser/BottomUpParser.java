@@ -12,19 +12,24 @@ import compiler.parser.nodes.ParserTreeNode;
 public class BottomUpParser implements Parser{
 
 	private Language language;
-
+	private volatile LookupTable table;
+	
 	public BottomUpParser(Language language){
 		this.language = language;
 	}
 
+	private LookupTable getTable(){
+		if (table == null){
+			table = language.getLookupTable();
+		}
+		return table;
+	}
 	@Override
 	public ParserTreeNode parse(TokenStream tokens) {
 
-		LookupTable table = language.getLookupTable();
-
+		LookupTable table = getTable();
 
 		ParsingContextBag bag = new ParsingContextBag(tokens);
-
 
 		ParserTreeNode root = null;
 
@@ -36,7 +41,7 @@ public class BottomUpParser implements Parser{
 				if (ctx.isValid()){
 
 					StackItem stateItem = ctx.stack().peekFirst();
-					// TODO  grammar for class with method with empty block 
+		
 					final TokenStackItem currentItem = ctx.inputStream().currentItem();
 					LookupTableAction action = table.getAction(stateItem,currentItem);
 
@@ -70,7 +75,7 @@ public class BottomUpParser implements Parser{
 								s.deleteCharAt(s.length()-1);
 								s.deleteCharAt(s.length()-1);
 							}
-							throw new RuntimeException("Token: '" +  token.getText().get() + "' is not excepted at position " + token.getPosition().getLineNumber() + ":" + token.getPosition().getColumnNumber() + " expected one of " + s + "(state " + stateItem + " )");
+							throw new RuntimeException("Parsing error on unit " + token.getPosition().getCompilationUnit().getName() + " at " + token.getPosition().getLineNumber() + ", " + token.getPosition().getColumnNumber() + ". Token: '" +  token.getText().get() + "' was not excepted at this position. Expected one of " + s + "(state " + stateItem + " )");
 
 						}
 					}

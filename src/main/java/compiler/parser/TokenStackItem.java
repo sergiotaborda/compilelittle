@@ -3,7 +3,6 @@ package compiler.parser;
 import java.util.Optional;
 
 import compiler.lexer.Token;
-import compiler.syntax.AstNode;
 
 public class TokenStackItem extends SemanticStackItem  {
 
@@ -11,7 +10,7 @@ public class TokenStackItem extends SemanticStackItem  {
 
 	public TokenStackItem(Token token) {
 		this.token = token;
-		
+		this.setScanPosition(token.getPosition());
 		Optional<String> text = token.getText();
 		if (text.isPresent()){
 			this.setSemanticAttribute("lexicalValue", text.get());

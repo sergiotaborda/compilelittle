@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
+import compiler.CompiledUnit;
 import compiler.CompilerBackEnd;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
@@ -34,11 +35,11 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void use(AstNode root) {
+	public void use(CompiledUnit unit) {
 
-		root = transformOptionals(root);
+		AstNode node = transformOptionals(unit.getAstRootNode());
 		
-		if (root == null){
+		if (node == null){
 			return;
 		}
 
@@ -63,10 +64,10 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 			writer.println();
 			writer.println("protected NonTerminal defineGrammar() {");
 			writer.println();
-			write(root, writer);
+			write(node, writer);
 			writer.println();
 			
-			Rule goal = (Rule)((RulesList)root).getChildren().get(0);
+			Rule goal = (Rule)((RulesList)node).getChildren().get(0);
 			
 			writer.println("	return " + escapeName(goal.getName()) + ";");
 			

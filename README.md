@@ -3,8 +3,7 @@ A little parser creation library in Java
 
 This is still in a very early development phase and at this point is meary an experiment.
 
-The compiler supports Bottom-up grammars like LR(0), SLR(1) and LALR(1) with a GLR parallel implementation for comflits.  Precedence and association rules are not supported at this point and must be baked into the grammar
-( see the sense grammar example for reference). 
+The compiler supports Bottom-up grammars like LR(0), SLR(1) and LALR(1) with a GLR parallel implementation for comflits.  Precedence and association rules are not supported at this point and must be baked into the grammar.
 
 ## Grammar
 

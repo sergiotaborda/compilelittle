@@ -3,6 +3,9 @@
  */
 package compiler.trees;
 
+import compiler.lexer.ScanPosition;
+import compiler.lexer.ScanPositionHolder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +18,23 @@ import java.util.function.Consumer;
 /**
  * 
  */
-public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N> {
+public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N> , ScanPositionHolder{
 
 	private List<N> children = new ArrayList<>();
 	private N parent;
 	private Map<String, Object> properties = new HashMap<>();
+	private ScanPosition position;
+	
+	public AbstractNode(){
+	}
+	
+	public ScanPosition getScanPosition(){
+		return position;
+	}
+	
+	public void setScanPosition(ScanPosition position){
+		this.position = position;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -47,6 +62,11 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
 	 */
 	public final void add(N node) {
 		if (node != null){
+			
+			if (children.isEmpty()){
+				this.setScanPosition(node.getScanPosition());
+			}
+			
 			node.setParent((N)this);
 			children.add(node);
 		}

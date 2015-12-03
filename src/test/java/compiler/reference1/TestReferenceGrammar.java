@@ -4,27 +4,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import compiler.Compiler;
-import compiler.CompilerBackEnd;
+import compiler.AstCompiler;
+import compiler.CompiledUnit;
 import compiler.FirstFollowTable;
 import compiler.FirstFollowTableCalculator;
+import compiler.ListCompilationUnitSet;
 import compiler.RealizedPromisseSet;
 import compiler.StringCompilationUnit;
-import compiler.lexer.ListCompilationUnitSet;
-import compiler.parser.BottomUpParser;
 import compiler.parser.EOFTerminal;
-import compiler.parser.ItemStatesLookupTable;
 import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LookupTable;
 import compiler.parser.MatchableProduction;
 import compiler.parser.Production;
 import compiler.parser.Terminal;
-import compiler.syntax.AstNode;
 
 public class TestReferenceGrammar {
 
@@ -79,23 +75,14 @@ public class TestReferenceGrammar {
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
 		unitSet.add(new StringCompilationUnit(text));
 
-		final List<AstNode> node = new ArrayList<>(1);
+	
+		final AstCompiler compiler = new AstCompiler(new ReferenceLanguage());
 		
-		final Compiler compiler = new Compiler(new ReferenceLanguage());
-		compiler.addBackEnd(new CompilerBackEnd(){
-
-			@Override
-			public void use(AstNode root) {
-				node.add(root);
-			}});
+		List<CompiledUnit> nodes = compiler.parse(unitSet).sendToList();
 		
-		compiler.compile(unitSet);
+		assertEquals(1, nodes.size());
 		
-		assertEquals(1, node.size());
-		
-		AstNode n = node.get(0);
-		
-		assertNotNull(n);
+		assertNotNull(nodes.get(0));
 
 	}
 }
