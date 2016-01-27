@@ -72,10 +72,5 @@ public interface Token {
 	 */
 	public boolean isKeyword();
 
-	/**
-	 * @return
-	 */
-	public boolean isVersionLiteral();
-
 
 }

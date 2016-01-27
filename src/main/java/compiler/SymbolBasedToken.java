@@ -119,14 +119,6 @@ public class SymbolBasedToken implements Token{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isVersionLiteral() {
-		return  symbol == TokenSymbol.LiteralVersion;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public boolean isOperator() {
 		return symbol == TokenSymbol.Operator;
 	}

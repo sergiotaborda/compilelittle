@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import compiler.CompilationUnit;
@@ -104,8 +105,24 @@ public class Scanner  {
 	 * @param numberLiteralTokenState
 	 * @return
 	 */
-	public ParseState getVersionLiteralTokenState(TokenState tokenState) {
-		return new VersionLiteralTokenState(tokenState);
+//	public ParseState getVersionLiteralTokenState(TokenState tokenState) {
+//		return new VersionLiteralTokenState(tokenState);
+//	}
+	
+	public Optional<ParseState> matchToken(Token token, TokenState state) {
+		if (token.isStartLineComment() ){
+			return Optional.of(this.getLineCommentTokenState(state));
+		} else if (token.isStartMultiLineComment() ){
+			return Optional.of( this.getMultiLineCommentTokenState(state));
+		} else if (token.isStringLiteralStart()){
+			return Optional.of( this.getStringLiteralTokenState(state)); 
+		}else if (token.isNumberLiteral()){
+			return Optional.of( this.getNumberLiteralTokenState(state));
+		}else if (token.isOperator()){
+			return Optional.of( this.getOperatorTokenState(state));
+		}  else {
+			return Optional.empty();
+		}
 	}
 
 }

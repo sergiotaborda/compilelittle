@@ -159,13 +159,5 @@ public class EmptyToken implements Token {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isVersionLiteral() {
-		return false;
-	}
-
 
 }

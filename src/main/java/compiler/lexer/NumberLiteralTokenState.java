@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import compiler.Grammar;
+import compiler.CompilationError;
 
 /**
  * 
@@ -53,9 +54,9 @@ public class NumberLiteralTokenState extends TokenState {
 					return this.getScanner().newInitialState().receive(pos, c, tokensQueue);
 				}
 			} else {
-				// found another dot after a dot is already present, ex;  1.2.
+				// found another dot after a dot is already present, but not in sequence e.g.  1.2.
 				builder.append(c);
-				return this.getScanner().getVersionLiteralTokenState(this);
+				throw new CompilationError(c + " is not a valid character at " + pos);
 			}
 			
 		} else if ( grammar.isDigit(c)){

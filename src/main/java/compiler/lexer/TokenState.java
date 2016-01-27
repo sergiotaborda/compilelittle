@@ -18,6 +18,7 @@ public class TokenState extends AbstractTokenState implements ParseState {
 	protected StringBuilder builder= new StringBuilder();
 	private Scanner scanner;
 
+	
 	/**
 	 * Constructor.
 	 * @param table
@@ -33,6 +34,10 @@ public class TokenState extends AbstractTokenState implements ParseState {
 	
 	public Scanner getScanner(){
 		return scanner;
+	}
+	
+	public StringBuilder getBuilder() {
+		return builder;
 	}
 
 	/**
@@ -93,18 +98,10 @@ public class TokenState extends AbstractTokenState implements ParseState {
 		}
 
 		if (test.isPresent()){
-			if (test.get().isStartLineComment() ){
-				return scanner.getLineCommentTokenState(this);
-			} else if (test.get().isStartMultiLineComment() ){
-				return scanner.getMultiLineCommentTokenState(this);
-			} else if (test.get().isStringLiteralStart()){
-				return scanner.getStringLiteralTokenState(this); 
-			}else if (test.get().isNumberLiteral()){
-				return scanner.getNumberLiteralTokenState(this);
-			}else if (test.get().isOperator()){
-				return scanner.getOperatorTokenState(this);
-			} else if (test.get().isVersionLiteral()){
-				return scanner.getVersionLiteralTokenState(this);
+			Optional<ParseState> parseState = scanner.matchToken(test.get(), this);
+			
+			if (parseState.isPresent()){
+				return parseState.get();
 			} else {
 				tokensQueue.accept(test.get());
 				builder.delete(0, builder.length());
@@ -127,6 +124,8 @@ public class TokenState extends AbstractTokenState implements ParseState {
 			}
 		}
 	}
+
+
 
 
 }
