@@ -20,7 +20,7 @@ public class AstCompiler implements Compiler {
 		@Override
 		public void start() {
 		}
-
+		
 		@Override
 		public void error(CompilerMessage error) {
 			System.err.println ("Compilation Error :" + error.getMessage());
@@ -53,7 +53,7 @@ public class AstCompiler implements Compiler {
 		try{
 			return new CompilationResultSet( unitSet.stream().parallel().map(unit -> {
 				try{
-
+					
 					TokenStream  input = grammar.scanner().read(unit);  
 
 					ParserTreeNode node = p.parse(input);
@@ -73,7 +73,6 @@ public class AstCompiler implements Compiler {
 		} finally {
 			listener.end();
 		}
-
 	}
 
 	/**

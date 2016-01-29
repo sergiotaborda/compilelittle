@@ -20,7 +20,7 @@ public class TestItemState {
 		ItemState s2 = new ItemState(null);
 		
 		NonTerminal n = new NonTerminal("A");
-		
+	
 		ProductionItem p = new ProductionItem(new RealizedPromisseSet<>(Terminal.of("["), Terminal.of("]")));
 		
 		p.root  = n;

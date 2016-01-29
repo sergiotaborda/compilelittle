@@ -17,7 +17,7 @@ public class ProductionItem {
 	List<SemanticAction> semanticActions = new ArrayList<SemanticAction>(0);
 	protected Integer id;
 	private RealizedPromisseSet<MatchableProduction> lookAhead;
-
+	
 	public static ProductionItem produceFinalFrom(NonTerminal n , ProductionSequence s, int id){
 		ProductionItem p = new ProductionItem(new RealizedPromisseSet<>());
 		p.root = n;

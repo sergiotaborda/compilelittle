@@ -34,7 +34,7 @@ public class CompilationResultSet {
 		}));
 	}
 	
-	public CompilationResultSet passBy(CompilerPhase phase){
+	public CompilationResultSet passBy(CompilerPhase phase){	
 		return new CompilationResultSet(stream.map(node -> phase.apply(node)));
 	}
 	
