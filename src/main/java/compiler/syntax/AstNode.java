@@ -15,4 +15,6 @@ public class AstNode extends AbstractNode<AstNode> {
 		return this.getClass().getName();
 	}
 
+
+
 }

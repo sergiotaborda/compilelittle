@@ -75,7 +75,6 @@ public class EmptyPromisseSet<T> implements PromisseSet<T> {
 
 	@Override
 	public PromisseSet<T> subtract(T other) {
-		// TODO Auto-generated method stub
 		return this;
 	}
 

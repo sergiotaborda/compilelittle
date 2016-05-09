@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------
 Test set: compiler.bnf.TestBnf
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.139 sec <<< FAILURE!
-test(compiler.bnf.TestBnf)  Time elapsed: 0.139 sec  <<< ERROR!
-java.lang.RuntimeException: On C:\Users\sergio.taborda\git\compilelittle\src\test\resources\test.bnf error: Parsing error on unit C:\Users\sergio.taborda\git\compilelittle\src\test\resources\test.bnf at 2, 43. Token: 'packageName' was not excepted at this position. Expected one of ';', ',', '|'(state 14 )
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.635 sec <<< FAILURE!
+test(compiler.bnf.TestBnf)  Time elapsed: 0.616 sec  <<< ERROR!
+java.lang.RuntimeException: On C:\Projetos\GitHub\compilelittle\src\test\resources\test.bnf error: Parsing error on unit C:\Projetos\GitHub\compilelittle\src\test\resources\test.bnf at 2, 43. Token: 'packageName' was not excepted at this position. Expected one of ';', ',', '|'(state 14 )
 	at compiler.AstCompiler.lambda$parse$0(AstCompiler.java:70)
 	at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:193)
 	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1374)
@@ -45,7 +45,7 @@ java.lang.RuntimeException: On C:\Users\sergio.taborda\git\compilelittle\src\tes
 	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
 	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
-Caused by: java.lang.RuntimeException: Parsing error on unit C:\Users\sergio.taborda\git\compilelittle\src\test\resources\test.bnf at 2, 43. Token: 'packageName' was not excepted at this position. Expected one of ';', ',', '|'(state 14 )
+Caused by: java.lang.RuntimeException: Parsing error on unit C:\Projetos\GitHub\compilelittle\src\test\resources\test.bnf at 2, 43. Token: 'packageName' was not excepted at this position. Expected one of ';', ',', '|'(state 14 )
 	at compiler.parser.BottomUpParser.parse(BottomUpParser.java:78)
 	at compiler.AstCompiler.lambda$parse$0(AstCompiler.java:59)
 	... 40 more

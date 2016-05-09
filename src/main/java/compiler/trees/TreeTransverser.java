@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class TreeTransverser {
 
 	
-	public static <T extends Node<T>> void tranverse(T node , Visitor<T> visitor){
+	public static <T extends Node<T>> void transverse(T node , Visitor<T> visitor){
 		
 		if (node == null){
 			return;

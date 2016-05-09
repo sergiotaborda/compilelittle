@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
 
 import compiler.CompiledUnit;
 import compiler.CompilerBackEnd;
@@ -54,7 +53,6 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 			writer.println("import compiler.parser.Terminal;");
 			writer.println("import compiler.parser.Text;");
 			writer.println("import compiler.parser.Numeric;");
-			writer.println("import compiler.parser.VersionLiteral;");
 			writer.println();
 			writer.println("public abstract class " + className + " extends AbstractGrammar {");
 			writer.println();
@@ -88,7 +86,7 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 	 */
 	private AstNode transformOptionals(AstNode root) {
 	
-		TreeTransverser.tranverse(root, new OptionalTransformVisitorWithSubstitution());
+		TreeTransverser.transverse(root, new OptionalTransformVisitorWithSubstitution());
 		
 		return root;
 	}
@@ -165,13 +163,11 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 				writer.append("Text.instance()");
 			} else if (rule.getName().equals("characterLiteral")){
 				writer.append("Text.instance()");
-			} else if (rule.getName().equals("versionLiteral")){
-				writer.append("VersionLiteral.instance()");
 			} else if (rule.getName().endsWith("?")){
 				
 				writer.append(escapeName(parseOptional(rule.getName()))).append(".optional()");
 			} else {
-				writer.append(escapeName(parseOptional(rule.getName())));
+				writeRule(writer, rule);
 			}
 			
 			
@@ -200,6 +196,10 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 		}
 	}
 
+	protected void writeRule(PrintWriter writer, RuleRef rule) {
+		writer.append(escapeName(parseOptional(rule.getName())));
+	}
+
 	private CharSequence escape(String name) {
 		if (name.equals("\"")){
 			return "\\" + name;
@@ -213,40 +213,40 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 	 * @param rule
 	 * @return
 	 */
-	private Optional<RuleRef> checkMultiple(Rule rule) {
-		AstNode r = rule.getExpression();
-		if (r instanceof RulesAlternative){
-			RulesAlternative alt = (RulesAlternative)r;
-			if (alt.getChildren().size() == 2){
-				AstNode template = alt.getChildren().get(0);
-				AstNode s = alt.getChildren().get(1);
-				if (template instanceof RuleRef && s instanceof RulesSequence){
-					RulesSequence seq = (RulesSequence)s;
-					if (seq.getChildren().size() == 2){
-						
-						AstNode original = seq.getChildren().get(0);
-						AstNode repeat = seq.getChildren().get(1);
-						
-						if (original instanceof RuleRef && repeat instanceof RuleRef){
-							RuleRef ref = (RuleRef) original;
-							RuleRef templateRef = (RuleRef) template;
-							RuleRef repeatRef = (RuleRef) repeat;
-							
-							if (ref.getName().equals(rule.getName()) || repeatRef.getName().equals(repeatRef.getName())){
-								
-								return Optional.of(templateRef);
-								
-							}
-						}
-						
-					}
-				}
-			}
-		} 
-		
-		return Optional.empty();
-		
-	}
+//	private Optional<RuleRef> checkMultiple(Rule rule) {
+//		AstNode r = rule.getExpression();
+//		if (r instanceof RulesAlternative){
+//			RulesAlternative alt = (RulesAlternative)r;
+//			if (alt.getChildren().size() == 2){
+//				AstNode template = alt.getChildren().get(0);
+//				AstNode s = alt.getChildren().get(1);
+//				if (template instanceof RuleRef && s instanceof RulesSequence){
+//					RulesSequence seq = (RulesSequence)s;
+//					if (seq.getChildren().size() == 2){
+//						
+//						AstNode original = seq.getChildren().get(0);
+//						AstNode repeat = seq.getChildren().get(1);
+//						
+//						if (original instanceof RuleRef && repeat instanceof RuleRef){
+//							RuleRef ref = (RuleRef) original;
+//							RuleRef templateRef = (RuleRef) template;
+//							RuleRef repeatRef = (RuleRef) repeat;
+//							
+//							if (ref.getName().equals(rule.getName()) || repeatRef.getName().equals(repeatRef.getName())){
+//								
+//								return Optional.of(templateRef);
+//								
+//							}
+//						}
+//						
+//					}
+//				}
+//			}
+//		} 
+//		
+//		return Optional.empty();
+//		
+//	}
 
 
 

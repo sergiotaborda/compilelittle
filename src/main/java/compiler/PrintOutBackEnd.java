@@ -17,7 +17,7 @@ public class PrintOutBackEnd implements CompilerBackEnd {
 	@Override
 	public void use(CompiledUnit unit) {
 		System.out.println();
-		TreeTransverser.tranverse(unit.getAstRootNode(), new XmlPrintOutAbstractTreeVisitor());
+		TreeTransverser.transverse(unit.getAstRootNode(), new XmlPrintOutAbstractTreeVisitor());
 		
 	}
 

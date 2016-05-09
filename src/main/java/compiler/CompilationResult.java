@@ -15,6 +15,9 @@ public class CompilationResult {
 	private boolean isError = false;
 
 	public CompilationResult(CompiledUnit success){
+		if (success == null){
+			throw new IllegalArgumentException("Result is required");
+		}
 		this.success = success; 
 	}
 	

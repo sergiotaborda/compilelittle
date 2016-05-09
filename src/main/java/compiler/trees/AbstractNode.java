@@ -100,9 +100,6 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
 			N n = it.next();
 			
 			if (n.equals(node)){
-//				if (n.getParent() == this){
-//					n.setParent(null);
-//				}
 				newnode.setParent((N)this);
 				it.remove();
 				it.add(newnode);

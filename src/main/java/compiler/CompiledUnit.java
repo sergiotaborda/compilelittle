@@ -3,10 +3,8 @@
  */
 package compiler;
 
-import java.util.function.Function;
-
-import compiler.syntax.AstNode;
 import compiler.parser.nodes.ParserTreeNode;
+import compiler.syntax.AstNode;
 
 /**
  * 
@@ -35,9 +33,9 @@ public final class CompiledUnit {
 		return astRootNode;
 	}
 	
-	public CompiledUnit transformAST(Function <AstNode , AstNode> transform){
-		return new CompiledUnit(unit, parserTreeRoot, transform.apply(this.astRootNode));
-	}
+//	public CompiledUnit transformAST(Function <AstNode , AstNode> transform){
+//		return new CompiledUnit(unit, parserTreeRoot, transform.apply(this.astRootNode));
+//	}
 	
 
 }
