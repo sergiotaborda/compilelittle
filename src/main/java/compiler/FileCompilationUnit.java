@@ -47,8 +47,8 @@ public class FileCompilationUnit implements CompilationUnit {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOrigin() {
-		return path.toString();
+	public Path getOrigin() {
+		return path;
 	}
 
 }
