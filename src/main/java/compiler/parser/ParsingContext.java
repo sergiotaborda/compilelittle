@@ -36,4 +36,6 @@ public interface ParsingContext {
 	 * @param read
 	 */
 	void addDeferedSemanticAction(ProductionItem target, ProductionStackItem left, LinkedList<Symbol> read);
+	
+	SemanticStackItem getLastTerminal();
 }

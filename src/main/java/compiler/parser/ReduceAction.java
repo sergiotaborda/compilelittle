@@ -2,6 +2,7 @@ package compiler.parser;
 
 import java.util.LinkedList;
 
+import compiler.Grammar;
 import compiler.parser.nodes.ParserTreeNode;
 
 public class ReduceAction implements LookupTableAction {
@@ -19,7 +20,21 @@ public class ReduceAction implements LookupTableAction {
 	}
 
 	@Override
-	public LookupTableActionResult operate(ParsingContext ctx) {
+	public boolean isShift() {
+		return false;
+	}
+
+	@Override
+	public boolean isReduce() {
+		return true;
+	}
+	
+	public ProductionStackItem getProductionItem(){
+		return new ProductionStackItem(table.getFinalProductionItem(targetId).root);
+	}
+	
+	@Override
+	public LookupTableActionResult operate(Grammar g,ParsingContext ctx) {
 
 		try {
 			
@@ -55,11 +70,10 @@ public class ReduceAction implements LookupTableAction {
 			LookupTableAction gotoAction = table.getAction(stateItem,p);
 			if (gotoAction instanceof GotoAction){
 				//System.out.println("["  + ctx.hashCode() + "] performed action " + gotoAction.toString());
-				gotoAction.operate(ctx);
+				gotoAction.operate(g,ctx);
 			} else {
 				return LookupTableActionResult.Error;
 			}
-
 
 			return LookupTableActionResult.Continue;
 		} catch (Exception e){

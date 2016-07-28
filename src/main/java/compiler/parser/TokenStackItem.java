@@ -45,6 +45,8 @@ public class TokenStackItem extends SemanticStackItem  {
 	public int hashCode(){
 		return token.hashCode();
 	}
+
+
 }
 
 

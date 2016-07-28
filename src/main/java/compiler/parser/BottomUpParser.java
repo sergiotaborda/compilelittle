@@ -46,7 +46,7 @@ public class BottomUpParser implements Parser{
 					LookupTableAction action = table.getAction(stateItem,currentItem);
 
 					//	System.out.println("[" +  ctx.hashCode() + "] with " + currentItem + " performed action " + action.toString());
-					LookupTableActionResult res = action.operate(ctx);
+					LookupTableActionResult res = action.operate(language.getGrammar(),ctx);
 
 
 

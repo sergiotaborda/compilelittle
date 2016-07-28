@@ -3,6 +3,7 @@
  */
 package compiler;
 
+import compiler.lexer.Scanner;
 import compiler.lexer.TokenStream;
 import compiler.parser.Parser;
 import compiler.parser.nodes.ParserTreeNode;
@@ -15,6 +16,8 @@ import compiler.syntax.AstNode;
 public class AstCompiler implements Compiler {
 
 	private Language language;
+	private Parser parser;
+	
 	private CompilerListener listener = new CompilerListener(){
 
 		@Override
@@ -38,6 +41,7 @@ public class AstCompiler implements Compiler {
 
 	public AstCompiler(Language language){
 		this.language = language;
+		this.parser = language.parser();
 	}
 
 	protected CompilerListener getListener(){
@@ -46,17 +50,15 @@ public class AstCompiler implements Compiler {
 	public CompilationResultSet parse(CompilationUnitSet unitSet){
 
 		listener.start();
-		Grammar grammar = language.getGrammar();
-
-		Parser p = language.parser();
+		Scanner scanner = language.getGrammar().scanner();
 
 		try{
 			return new CompilationResultSet( unitSet.stream().parallel().map(unit -> {
 				try{
 					
-					TokenStream  input = grammar.scanner().read(unit);  
+					TokenStream  input = scanner.read(unit);  
 
-					ParserTreeNode node = p.parse(input);
+					ParserTreeNode node = parser.parse(input);
 
 					AstNode root = node.getProperty("node", AstNode.class).orElse(null);
 

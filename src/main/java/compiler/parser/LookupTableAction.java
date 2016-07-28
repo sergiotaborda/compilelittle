@@ -1,5 +1,6 @@
 package compiler.parser;
 
+import compiler.Grammar;
 
 public interface LookupTableAction {
 
@@ -10,7 +11,8 @@ public interface LookupTableAction {
 		
 	}
 	
-	
-	LookupTableActionResult operate(ParsingContext ctx);
+	public boolean isShift();
+	public boolean isReduce();
+	LookupTableActionResult operate(Grammar g, ParsingContext ctx);
 
 }

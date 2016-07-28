@@ -17,6 +17,7 @@ import java.util.Set;
 import compiler.lexer.EOLToken;
 import compiler.lexer.ScanPosition;
 import compiler.lexer.Token;
+import compiler.parser.Associativity;
 import compiler.parser.AutoNonTerminal;
 import compiler.parser.MatchableProduction;
 import compiler.parser.NonTerminal;
@@ -24,6 +25,10 @@ import compiler.parser.Production;
 import compiler.parser.ProductionItem;
 import compiler.parser.ProductionSequence;
 import compiler.parser.ProductionTransversor;
+import compiler.parser.SemanticStackItem;
+import compiler.parser.Terminal;
+import compiler.parser.TokenPreference;
+import compiler.parser.TokenStackItem;
 
 /**
  * 
@@ -41,10 +46,41 @@ public abstract class AbstractGrammar extends Grammar {
 	protected Map<Integer, ProductionItem> finalitems = new HashMap<>();
 	protected Map<KeyProductionItem, Integer > reversefinalitems = new HashMap<>();
 	protected int previous =0;
+	
+	private Map<String, TokenPreference> preferenceMap = new HashMap<>();
+	private Map<String, Associativity> associativityMap = new HashMap<>();
+	
 	public AbstractGrammar (){
 		build();
 	}
 
+	
+	protected final void setOperator(int preference, Associativity associativity, String ... terminals) {
+		
+		for(String s : terminals){
+			preferenceMap.put(s, new TokenPreference(preference));
+			associativityMap.put(s, associativity);
+		}
+	}
+	
+	public Optional<TokenPreference> getPreference(SemanticStackItem currentItem) {
+		if (currentItem instanceof TokenStackItem){
+			TokenStackItem t = (TokenStackItem)currentItem;
+			return Optional.ofNullable(preferenceMap.get(t.getToken().getText().get()));
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public Optional<Associativity> getAssociativity(SemanticStackItem currentItem) {
+		if (currentItem instanceof TokenStackItem){
+			TokenStackItem t = (TokenStackItem)currentItem;
+			return Optional.ofNullable(associativityMap.get(t.getToken().getText().get()));
+		} else {
+			return Optional.empty();
+		}
+	}
+	
 	private void build(){
 		goal = defineGrammar();
 

@@ -1,5 +1,6 @@
 package compiler.parser;
 
+import compiler.Grammar;
 
 public class NoAction implements LookupTableAction{
 
@@ -8,7 +9,17 @@ public class NoAction implements LookupTableAction{
 	}
 
 	@Override
-	public LookupTableActionResult operate(ParsingContext ctx) {
+	public LookupTableActionResult operate(Grammar g, ParsingContext ctx) {
 		return LookupTableActionResult.Error;
+	}
+	
+	@Override
+	public boolean isShift() {
+		return false;
+	}
+
+	@Override
+	public boolean isReduce() {
+		return false;
 	}
 }

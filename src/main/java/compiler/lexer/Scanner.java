@@ -6,6 +6,7 @@ package compiler.lexer;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -34,10 +35,13 @@ public class Scanner  {
 		ParseState state = newInitialState();
 
 		final List<Token> input = new ArrayList<>(50);
-
-		Consumer<Token> consumer = t -> input.add(t);
+		final List<Token> inputView = Collections.unmodifiableList(input);
 
 		ScanPosition pos = new ScanPosition(unit);
+		
+		Consumer<Token> consumer = t -> input.add(onToken(t,inputView, pos));
+
+		
 		try ( Reader reader = unit.read()){
 
 			while ( (c = reader.read()) > -1 ){
@@ -53,6 +57,10 @@ public class Scanner  {
 		consumer.accept(new EOFToken());
 
 		return new ListTokenStream(input);
+	}
+
+	protected Token onToken(Token token, List<Token> inputView, ScanPosition pos) {
+		return token;
 	}
 
 	public ParseState newInitialState(){

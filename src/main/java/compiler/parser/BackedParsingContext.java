@@ -4,8 +4,10 @@
 package compiler.parser;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import compiler.lexer.TokenStream;
 import compiler.parser.nodes.ParserTreeNode;
@@ -22,7 +24,7 @@ public class BackedParsingContext implements ParsingContext {
 	ParserStack stack;
 	private boolean valid = true;
 	private ParsingContextBag parsingContextBag;
-	private List<DeferedSemanticAction> deferredSemanticActions;
+	private LinkedList<DeferedSemanticAction> deferredSemanticActions;
 
 	/**
 	 * Constructor.
@@ -138,6 +140,36 @@ public class BackedParsingContext implements ParsingContext {
 	@Override
 	public void addDeferedSemanticAction(ProductionItem target, ProductionStackItem left, LinkedList<Symbol> read) {
 		deferredSemanticActions.add(new DeferedSemanticAction(target, left, read));
+	}
+
+	@Override
+	public SemanticStackItem getLastTerminal() {
+		ListIterator<DeferedSemanticAction> it = deferredSemanticActions.listIterator(deferredSemanticActions.size());
+		
+		while (it.hasPrevious()){
+			DeferedSemanticAction p = it.previous();
+			Deque<SemanticStackItem> stack = new LinkedList<>();
+			for (Symbol s : p.getRead()){
+				stack.push((SemanticStackItem)s);
+				
+				while (!stack.isEmpty()){
+					SemanticStackItem ssi = stack.pop();
+					if (ssi instanceof TokenStackItem ){
+						if (((TokenStackItem)ssi).getToken().isOperator()){
+							return ssi;
+						}
+					} else {
+						for ( ParserTreeNode a : ((ProductionStackItem) ssi).getChildren()){
+							stack.push((SemanticStackItem) a);
+						}
+					}
+				}
+				
+			}
+
+		}
+		
+		return null;
 	}
 
 }

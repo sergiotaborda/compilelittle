@@ -1,5 +1,6 @@
 package compiler.parser;
 
+import compiler.Grammar;
 
 public class ShiftAction implements LookupTableAction {
 
@@ -18,7 +19,17 @@ public class ShiftAction implements LookupTableAction {
 	}
 
 	@Override
-	public LookupTableActionResult operate(ParsingContext ctx) {
+	public boolean isShift() {
+		return true;
+	}
+
+	@Override
+	public boolean isReduce() {
+		return false;
+	}
+	
+	@Override
+	public LookupTableActionResult operate(Grammar g,ParsingContext ctx) {
 		ctx.stack().push(ctx.inputStream().currentItem());
 		ctx.stack().push(new StateStackItem(stateId));
 		

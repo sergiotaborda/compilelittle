@@ -8,8 +8,11 @@ import java.util.Optional;
 import compiler.lexer.ScanPosition;
 import compiler.lexer.Scanner;
 import compiler.lexer.Token;
+import compiler.parser.Associativity;
 import compiler.parser.Production;
 import compiler.parser.ProductionItem;
+import compiler.parser.SemanticStackItem;
+import compiler.parser.TokenPreference;
 
 /**
  * 
@@ -82,6 +85,13 @@ public abstract class Grammar {
 
 	public boolean isAlphabetic(char c) {
 		return Character.isAlphabetic(c);
+	}
+	
+	public Optional<TokenPreference> getPreference(SemanticStackItem currentItem) {
+		return Optional.empty();
+	}
+	public Optional<Associativity> getAssociativity(SemanticStackItem currentItem) {
+		return Optional.empty();
 	}
 
 }

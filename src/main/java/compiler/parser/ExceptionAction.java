@@ -1,5 +1,6 @@
 package compiler.parser;
 
+import compiler.Grammar;
 
 public class ExceptionAction implements LookupTableAction {
 
@@ -14,7 +15,7 @@ public class ExceptionAction implements LookupTableAction {
 	}
 	
 	@Override
-	public LookupTableActionResult operate(ParsingContext ctx ) {
+	public LookupTableActionResult operate(Grammar g, ParsingContext ctx) {
 
 //		Token token = ctx.inputStream().currentItem().getToken();
 //		if (token.isEndOfFile()){
@@ -25,4 +26,13 @@ public class ExceptionAction implements LookupTableAction {
 		return LookupTableActionResult.Error;
 	}
 
+	@Override
+	public boolean isShift() {
+		return false;
+	}
+
+	@Override
+	public boolean isReduce() {
+		return false;
+	}
 }

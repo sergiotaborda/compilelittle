@@ -3,9 +3,15 @@
  */
 package compiler.math.ast;
 
+import java.util.Deque;
+
 /**
  * 
  */
-public class OperatorNode extends MathExpressionNode{
+public abstract class OperatorNode extends MathExpressionNode{
+
+	
+
+
 
 }

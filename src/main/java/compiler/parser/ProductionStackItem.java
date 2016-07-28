@@ -1,8 +1,6 @@
 package compiler.parser;
 
-
-
-
+import java.util.Optional;
 
 public class ProductionStackItem extends SemanticStackItem  {
 
@@ -24,5 +22,6 @@ public class ProductionStackItem extends SemanticStackItem  {
 	public String getLabel() {
 		return production.getLabel();
 	}
+
 
 }

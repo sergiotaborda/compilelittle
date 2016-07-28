@@ -7,7 +7,7 @@ import compiler.syntax.AstNode;
 
 public abstract class SemanticStackItem extends ParserTreeNode implements StackItem , Symbol {
 
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

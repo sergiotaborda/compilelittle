@@ -3,13 +3,14 @@
  */
 package compiler.math.ast;
 
+import java.util.Deque;
 
 /**
  * 
  */
 public class Value extends MathExpressionNode {
 
-	private long value;
+	protected long value;
 
 	/**
 	 * Constructor.
@@ -21,5 +22,14 @@ public class Value extends MathExpressionNode {
 
 	public String toString(){
 		return Long.toString(value);
+	}
+
+	@Override
+	public void operate(Deque<Value> stack) {
+		stack.push(this);
+	}
+
+	public long getValue() {
+		return value;
 	}
 }

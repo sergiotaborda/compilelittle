@@ -26,8 +26,20 @@ class DeferedSemanticAction {
 		this.read = read;
 	}
 	
+	public String toString(){
+		return target.toString() + " read symbols = " + read.toString();
+	}
+	
 	public void execute() {
 		target.executeSemanticActions(left, read);
+	}
+
+	public ProductionStackItem getLeft() {
+		return left;
+	}
+
+	public  List<Symbol>  getRead() {
+		return read;
 	}
 	
 
