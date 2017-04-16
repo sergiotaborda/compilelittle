@@ -26,7 +26,6 @@ import compiler.parser.ProductionItem;
 import compiler.parser.ProductionSequence;
 import compiler.parser.ProductionTransversor;
 import compiler.parser.SemanticStackItem;
-import compiler.parser.Terminal;
 import compiler.parser.TokenPreference;
 import compiler.parser.TokenStackItem;
 

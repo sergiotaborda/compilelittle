@@ -33,6 +33,8 @@ public class SplitAction  implements LookupTableAction{
 			return splitAction;
 		}
 	}
+	
+	private int count = 0;
 
 	@Override
 	public boolean isShift() {
@@ -123,11 +125,17 @@ public class SplitAction  implements LookupTableAction{
 			}
 			System.out.println();
 		}
-		List<ParsingContext> ps = ctx.split(list.size());
+		count++;
+		
+		if (count > 5){
+			((ReduceAction)list.get(0)).operate(g, ctx);
+		} else {
+			List<ParsingContext> ps = ctx.split(list.size());
 
-		for (int i=0; i < list.size(); i++){
-			if (list.get(i).operate(g,ps.get(i)) == LookupTableActionResult.Error){
-				ps.get(i).invalidate();
+			for (int i=0; i < list.size(); i++){
+				if (list.get(i).operate(g,ps.get(i)) == LookupTableActionResult.Error){
+					ps.get(i).invalidate();
+				}
 			}
 		}
 
