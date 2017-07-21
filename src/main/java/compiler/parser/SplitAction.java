@@ -118,12 +118,13 @@ public class SplitAction  implements LookupTableAction{
 				return LookupTableActionResult.Continue;
 			}
 		} else {
-			System.out.print("Conflit at state " + stateItem.toString() + " with token " + currentItem + " ");
-			for (LookupTableAction action : list){
-				System.out.print(((ReduceAction)action).getProductionItem().getProduction().toString());
-				System.out.print( " x ");
-			}
-			System.out.println();
+		    // TODO pass to proper logger
+//			System.out.print("Conflit at state " + stateItem.toString() + " with token " + currentItem + " ");
+//			for (LookupTableAction action : list){
+//				System.out.print(((ReduceAction)action).getProductionItem().getProduction().toString());
+//				System.out.print( " x ");
+//			}
+//			System.out.println();
 		}
 		count++;
 		

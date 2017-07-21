@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import compiler.AstCompiler;
@@ -13,7 +14,7 @@ import compiler.StringCompilationUnit;
 
 public class TestMathCompiler {
 
-	@Test
+	@Test @Ignore
 	public void testCompilar() throws IOException {
 
 
@@ -25,7 +26,7 @@ public class TestMathCompiler {
 
 	}
 
-	@Test
+	@Test @Ignore
 	public void testMathLanguage(){
 
 

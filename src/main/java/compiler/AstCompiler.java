@@ -37,7 +37,12 @@ public class AstCompiler implements Compiler {
 		@Override
 		public void end() {
 		
-		}};
+		}
+
+        @Override
+        public void trace(CompilerMessage error) {
+            System.out.println ("Compilation Trace :" +error.getMessage());
+        }};
 
 	public AstCompiler(Language language){
 		this.language = language;

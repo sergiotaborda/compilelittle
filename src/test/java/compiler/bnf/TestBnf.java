@@ -2,6 +2,7 @@ package compiler.bnf;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import compiler.AstCompiler;
@@ -17,7 +18,7 @@ import compiler.ListCompilationUnitSet;
  */
 public class TestBnf {
 
-	@Test
+	@Test @Ignore
 	public void test() throws IOException {
 
 		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/test.bnf");

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import compiler.AstCompiler;
@@ -67,7 +68,7 @@ public class TestReferenceGrammar {
 	}
 	
 	
-	@Test 
+	@Test  @Ignore
 	public void testCompiler() throws IOException {
 
 		String text = "aaabb";

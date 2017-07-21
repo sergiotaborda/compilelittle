@@ -7,19 +7,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import compiler.AstCompiler;
 import compiler.CompiledUnit;
-import compiler.CompilerBackEnd;
 import compiler.ListCompilationUnitSet;
 import compiler.StringCompilationUnit;
 import compiler.parser.LALRAutomatonFactory;
 import compiler.parser.LookupTable;
-import compiler.syntax.AstNode;
 
 /**
  * 
@@ -51,7 +48,7 @@ public class TestReference4Grammar {
 
 		final List<CompiledUnit> node = compiler.parse(unitSet).sendToList();
 		
-		assertEquals(1, node.size());
+		assertEquals(Integer.valueOf(1), Integer.valueOf(node.size()));
 		
 		assertNotNull(node.get(0));
 
