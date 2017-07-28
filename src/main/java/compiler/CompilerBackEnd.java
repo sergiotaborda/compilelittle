@@ -7,11 +7,11 @@ package compiler;
 /**
  * Acts as a final CompilePhase.
  */
-public interface CompilerBackEnd {
+public interface CompilerBackEnd extends CompilationUnitConsumer{
 
-	/**
-	 * @param transform
-	 */
-	void use(CompiledUnit unit);
+
+    default void beforeAll() {};
+
+    default void afterAll() {};
 
 }

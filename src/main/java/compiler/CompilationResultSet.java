@@ -3,6 +3,7 @@
  */
 package compiler;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,7 +27,7 @@ public class CompilationResultSet {
 		return stream;
 	}
 	
-	public CompilationResultSet peek(CompilerBackEnd acttion){
+	public CompilationResultSet peek(CompilationUnitConsumer acttion){
 		return new CompilationResultSet(stream.peek(node ->{
 			if (!node.isError()){
 				acttion.use(node.getCompiledUnit());
@@ -39,14 +40,19 @@ public class CompilationResultSet {
 	}
 	
 	public void sendTo(CompilerBackEnd end){
-		stream.forEach(node -> {
-			if (node.isError())
-			{
-				throw node.getThrowable(); 
-			} else {
-				end.use(node.getCompiledUnit());
-			}
-		});
+	    
+	    Iterator<CompilationResult> it = stream.iterator();
+	    end.beforeAll();
+	    while(it.hasNext()){
+	        CompilationResult node = it.next();
+	        if (node.isError())
+            {
+                throw node.getThrowable(); 
+            } else {
+                end.use(node.getCompiledUnit());
+            }
+	    }
+	    end.afterAll();
 	}
 	
 	public List<CompiledUnit> sendToList(){
