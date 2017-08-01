@@ -138,7 +138,7 @@ public class LookupTableRow implements Iterable<Map.Entry<Production, LookupTabl
 	
 	private boolean match (Production p , Token t)
 	{
-		if (p.isTerminal()){
+		if (p.isTerminal() && !t.isLiteral()){
 			return p.toTerminal().match(t);
 		} else if (p.isAutoNonTerminal()){
 			return ((AutoNonTerminal)p).match(t);

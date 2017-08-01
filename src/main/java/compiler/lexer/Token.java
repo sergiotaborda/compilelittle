@@ -12,64 +12,41 @@ public interface Token {
 
 	public ScanPosition getPosition();
 
-	/**
-	 * @return
-	 */
-	boolean isStartLineComment();
+	public boolean isStartLineComment();
 
-	/**
-	 * @return
-	 */
-	boolean isStartMultiLineComment();
+	public boolean isStartMultiLineComment();
 
-	/**
-	 * @return
-	 */
-	boolean isId();
+	public boolean isId();
 
-	/**
-	 * @return
-	 */
-	boolean isEndMultiLineComment();
+	public boolean isEndMultiLineComment();
 
-	boolean isEndOfFile();
+	public boolean isEndOfFile();
 
-	boolean isEndOfLine();
-	/**
-	 * @return
-	 */
-	boolean isStringLiteralStart();
+	public boolean isEndOfLine();
 
-	/**
-	 * @return
-	 */
-	boolean  isStringLiteral();
+	public boolean isStringLiteralStart();
 
-	/**
-	 * @return
-	 */
-	boolean isNumberLiteral();
+
+	public boolean  isStringLiteral();
+
+	public default boolean isLiteral(){
+	    return this.isStringLiteral() || this.isNumberLiteral();
+	}
+
+	public default boolean isNumberLiteral() {
+	    return this.isWholeNumber() || this.isDecimalNumber();
+	}
 
 	public boolean isWholeNumber();
 
 	public boolean isDecimalNumber();
 
-	/**
-	 * @return
-	 */
-	boolean isOperator();
+	public boolean isOperator();
 
-	/**
-	 * @param text
-	 * @return
-	 */
-	boolean match(String text);
+	public boolean match(String text);
 
-	Optional<String> getText();
+	public Optional<String> getText();
 
-	/**
-	 * @return
-	 */
 	public boolean isKeyword();
 
 
