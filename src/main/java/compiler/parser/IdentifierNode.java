@@ -8,7 +8,7 @@ import compiler.syntax.AstNode;
 /**
  * 
  */
-public class IdentifierNode extends AstNode {
+public class IdentifierNode extends AstNode implements NameIdentifierNode{
 
 	private String id;
 
@@ -20,7 +20,7 @@ public class IdentifierNode extends AstNode {
 		this.id = id;
 	}
 
-	public String getId(){
+	public String getName(){
 		return id;
 	}
 }

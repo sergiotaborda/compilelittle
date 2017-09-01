@@ -226,7 +226,7 @@ public abstract class AbstractGrammar extends Grammar {
 	 */
 	@Override
 	public final boolean isStopCharacter(char c) {
-		return isIgnore(c) || stopCharacters.contains(c) || isStringLiteralDelimiter(c);
+		return c == 0 || isIgnore(c) || stopCharacters.contains(c) || isStringLiteralDelimiter(c);
 	}
 
 	/**
