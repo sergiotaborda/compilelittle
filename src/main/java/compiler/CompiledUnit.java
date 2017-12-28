@@ -37,5 +37,7 @@ public final class CompiledUnit {
 //		return new CompiledUnit(unit, parserTreeRoot, transform.apply(this.astRootNode));
 //	}
 	
-
+	public String toString() {
+		return unit.getName();
+	}
 }

@@ -23,4 +23,8 @@ public class IdentifierNode extends AstNode implements NameIdentifierNode{
 	public String getName(){
 		return id;
 	}
+	
+	public String toString() {
+		return id;
+	}
 }

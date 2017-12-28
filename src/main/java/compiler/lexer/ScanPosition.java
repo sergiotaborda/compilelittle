@@ -28,6 +28,11 @@ public class ScanPosition {
 		this.unit = other.unit;
 	}
 	
+	public ScanPosition () {
+		lineNumber = -1;
+		columnNumber = -1;
+	}
+	
 	public CompilationUnit getCompilationUnit(){
 		return unit;
 	}
