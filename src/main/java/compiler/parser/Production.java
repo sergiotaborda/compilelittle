@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 
  */
-public interface Production {
+public interface Production extends SemanticActionHolder{
 
 	String getLabel();
 	
@@ -27,7 +27,6 @@ public interface Production {
 	AutoNonTerminal toAutoNonTerminal();
 
 	
-	public Production addSemanticAction(SemanticAction action);
 	/**
 	 * @return
 	 */

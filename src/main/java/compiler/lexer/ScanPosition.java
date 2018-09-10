@@ -79,5 +79,7 @@ public class ScanPosition {
 		this.lineNumber++;
 	}
 	
-	
+	public String toString() {
+		return unit + " at " + lineNumber + ", " + columnNumber;
+	}
 }

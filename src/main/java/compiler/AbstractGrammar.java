@@ -25,6 +25,8 @@ import compiler.parser.Production;
 import compiler.parser.ProductionItem;
 import compiler.parser.ProductionSequence;
 import compiler.parser.ProductionTransversor;
+import compiler.parser.SemanticAction;
+import compiler.parser.SemanticActionHolder;
 import compiler.parser.SemanticStackItem;
 import compiler.parser.TokenPreference;
 import compiler.parser.TokenStackItem;
@@ -169,6 +171,24 @@ public abstract class AbstractGrammar extends Grammar {
 			return new NonTerminal(name);
 		}
 		return a;
+	}
+	
+	public SemanticActionHolder getNonTerminal(String ... names){
+		
+		return new SemanticActionHolder () {
+
+			@Override
+			public SemanticActionHolder addSemanticAction(SemanticAction action) {
+	
+				for (String name : names) {
+					getNonTerminal(name).addSemanticAction(action);
+				}
+				
+				return this;
+			}
+			
+		};
+		
 	}
 	
 	public boolean hasNonTerminal(String name){

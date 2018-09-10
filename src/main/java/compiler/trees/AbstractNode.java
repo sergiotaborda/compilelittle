@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import compiler.lexer.ScanPosition;
@@ -122,7 +123,14 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
 		return Collections.unmodifiableList(children);
 	}
 	
+	public <U extends N> List<U> getChildren(Class<U> type) {
+		return Collections.unmodifiableList(children.stream().filter( c -> type.isInstance(c)).map( c -> (U)c).collect(Collectors.toList()));
+	}
+	
 	public N getFirstChild() {
+		if (children.isEmpty()) {
+			return null;
+		}
 		return children.get(0);
 	}
 

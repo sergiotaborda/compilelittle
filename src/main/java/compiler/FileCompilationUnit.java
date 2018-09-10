@@ -51,4 +51,7 @@ public class FileCompilationUnit implements CompilationUnit {
 		return path;
 	}
 
+	public String toString() {
+		return path.toString();
+	}
 }
