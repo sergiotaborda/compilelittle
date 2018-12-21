@@ -26,8 +26,10 @@ public class Identifier extends AbstractAutoNonTerminal {
 	protected Identifier() {
 		super("Identifier");
 		this.addSemanticAction((p , r) -> {
+		    String name = (String)r.get(0).getSemanticAttribute("lexicalValue").get();
+		    
 			 p.setSemanticAttribute("lexicalValue", r.get(0).getSemanticAttribute("lexicalValue").get());
-			 p.setSemanticAttribute("node", new IdentifierNode((String)r.get(0).getSemanticAttribute("lexicalValue").get()));
+			 p.setSemanticAttribute("node", new IdentifierNode(name));
 		});
 	}
 	

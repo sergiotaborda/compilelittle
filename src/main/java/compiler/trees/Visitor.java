@@ -11,12 +11,12 @@ public interface Visitor<T extends Node<T>> {
 	/**
 	 * 
 	 */
-	void startVisit();
+	default void startVisit() {}
 
 	/**
 	 * 
 	 */
-	void endVisit();
+	default void endVisit(){}
 
 	
 	VisitorNext visitBeforeChildren(T node);

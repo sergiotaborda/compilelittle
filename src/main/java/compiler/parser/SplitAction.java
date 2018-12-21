@@ -128,8 +128,9 @@ public class SplitAction  implements LookupTableAction{
 		}
 		count++;
 		
-		if (count > 5){
-			((ReduceAction)list.get(0)).operate(g, ctx);
+		LookupTableAction first = list.get(0);
+		if (count > 5 && first.isReduce()){
+		     first.operate(g, ctx);
 		} else {
 			List<ParsingContext> ps = ctx.split(list.size());
 
