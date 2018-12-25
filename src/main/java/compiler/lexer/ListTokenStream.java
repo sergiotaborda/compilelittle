@@ -4,6 +4,7 @@
 package compiler.lexer;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 
@@ -80,5 +81,10 @@ public class ListTokenStream implements TokenStream {
 	@Override
 	public Token peekPrevious() {
 		return tokens.get(position - 1);
+	}
+	
+	@Override
+	public Token peekNext() {
+		return tokens.get(position + 1);
 	}
 }

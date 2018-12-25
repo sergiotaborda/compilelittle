@@ -12,6 +12,7 @@ public interface TokenStream {
 	public boolean hasPrevious();
 	public Token next();
 	public Token peekPrevious();
+	public Token peekNext();
 	
 	/**
 	 * @return
