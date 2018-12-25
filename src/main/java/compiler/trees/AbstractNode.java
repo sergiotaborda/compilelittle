@@ -25,241 +25,252 @@ import compiler.lexer.ScanPositionHolder;
  */
 public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N> , ScanPositionHolder{
 
-	private List<N> children = new ArrayList<>();
-	private N parent;
-	private Map<String, Object> properties = new HashMap<>();
-	private ScanPosition position;
+    private List<N> children = new ArrayList<>();
+    private N parent;
+    private Map<String, Object> properties = new HashMap<>();
+    private ScanPosition position;
 
-	public AbstractNode(){
-	}
+    public AbstractNode(){
+    }
 
-	public ScanPosition getScanPosition(){
-		return position;
-	}
+    public ScanPosition getScanPosition(){
+        return position;
+    }
 
-	public void setScanPosition(ScanPosition position){
-		this.position = position;
-	}
+    public void setScanPosition(ScanPosition position){
+        this.position = position;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public N getParent() {
-		return parent;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public N getParent() {
+        return parent;
+    }
 
-	protected void setParent(N parent) {
-		this.parent = parent;
-	}
+    protected void setParent(N parent) {
+        this.parent = parent;
+    }
 
-	public ListIterator<N> listIterator() {
-		return new NodeListIterator(this.children.listIterator());
-	}
-
-	
-	private class NodeListIterator implements ListIterator<N> {
-
-		private ListIterator<N> original;
-
-		public NodeListIterator(ListIterator<N> original) {
-			this.original = original;
-		}
-
-		@Override
-		public void add(N e) {
-			original.add(prepareAttach(e));
-		}
-		
-
-		@Override
-		public void set(N e) {
-			original.set(prepareAttach(e));
-		}
-
-		@Override
-		public boolean hasNext() {
-			return original.hasNext();
-		}
-
-		@Override
-		public boolean hasPrevious() {
-			return original.hasPrevious();
-		}
-
-		@Override
-		public N next() {
-			return original.next();
-		}
-
-		@Override
-		public int nextIndex() {
-			return original.nextIndex();
-		}
-
-		@Override
-		public N previous() {
-			return original.previous();
-		}
-
-		@Override
-		public int previousIndex() {
-			return original.previousIndex();
-		}
-
-		@Override
-		public void remove() {
-			original.remove();
-		}
+    public ListIterator<N> listIterator() {
+        return new NodeListIterator(this.children.listIterator());
+    }
 
 
-		
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<N> getChildren() {
-		return Collections.unmodifiableList(children);
-	}
-	
-	public <U extends N> List<U> getChildren(Class<U> type) {
-		return Collections.unmodifiableList(children.stream().filter( c -> type.isInstance(c)).map( c -> (U)c).collect(Collectors.toList()));
-	}
-	
-	public N getFirstChild() {
-		if (children.isEmpty()) {
-			return null;
-		}
-		return children.get(0);
-	}
+    private class NodeListIterator implements ListIterator<N> {
 
-	/**
-	 * @param astNode
-	 */
-	public final void add(N node) {
-		if (node != null){
-			children.add(prepareAttach(node));
-		}
-	}
+        private ListIterator<N> original;
 
-	
-	protected N prepareAttach(N node){
-		if (children.isEmpty()){
-			this.setScanPosition(node.getScanPosition());
-		}
+        public NodeListIterator(ListIterator<N> original) {
+            this.original = original;
+        }
 
-		node.setParent((N)this);
-		return node;
-	}
-	/**
-	 * @param astNode
-	 */
-	public void addFirst(N node) {
-		if (node != null){
-			node.setParent((N)this);
+        @Override
+        public void add(N e) {
+            original.add(prepareAttach(e));
+        }
 
-			List<N> newList = new ArrayList<>(children.size() + 1);
-			newList.add(node);
-			newList.addAll(children);
-			this.children = newList;
-		}
-	}
 
-	public void addBefore(N reference, N toinclude) {
-		if (toinclude != null){
-			toinclude.setParent((N)this);
+        @Override
+        public void set(N e) {
+            original.set(prepareAttach(e));
+        }
 
-			int pos = children.indexOf(reference);
-			if (pos <= 0){
-				this.addFirst(toinclude);
-			} else {
-				List<N> newList = new LinkedList<>(children);
-				newList.add(pos, toinclude);
-				this.children = newList;
-			}
-		}
-	}
+        @Override
+        public boolean hasNext() {
+            return original.hasNext();
+        }
 
-	public void addLast(N astNode) {
-		this.add(astNode);
-	}
+        @Override
+        public boolean hasPrevious() {
+            return original.hasPrevious();
+        }
 
-	/**
-	 * @param astNode
-	 */
-	public void remove(N node) {
-		if (children.remove(node)){
-			node.setParent(null);
-		}
-	}
+        @Override
+        public N next() {
+            return original.next();
+        }
 
-	public  void replace(N node, N newnode){
+        @Override
+        public int nextIndex() {
+            return original.nextIndex();
+        }
 
-		for (ListIterator<N> it = children.listIterator(); it.hasNext();) {
-			N n = it.next();
+        @Override
+        public N previous() {
+            return original.previous();
+        }
 
-			if (n.equals(node)){
-				newnode.setParent((N)this);
-				it.remove();
-				it.add(newnode);
-			}
+        @Override
+        public int previousIndex() {
+            return original.previousIndex();
+        }
 
-		}
-		
-		Stream.of(this.getClass().getDeclaredFields()).filter(f -> Modifier.isPrivate( f.getModifiers())).forEach(f -> {
-			
-			Object value;
-			try {
-				f.setAccessible(true);
-				value = f.get(this);
-				if (value.equals(node)){
-					newnode.setParent((N)this);
-					f.set(this, newnode); 
-				}
-			} catch (Exception e) {
-				//no-op
-			}
-			
-		});
-	}
+        @Override
+        public void remove() {
+            original.remove();
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public <P> Optional<P> getProperty(String name, Class<P> type) {
-		if (properties.containsKey(name)){
-			try {
-				P p = type.cast(properties.get(name));
-				return Optional.of(p);
-			} catch (ClassCastException e){
-				return Optional.empty();
-			}
-		} else {
-			return Optional.empty();
-		}
 
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public <P> void setProperty(String name, P value) {
-		properties.put(name, value);
-	}
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<N> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
 
-	public void copyAttributes(AbstractNode<?> other) {
-		for(Map.Entry<String, Object> entry : properties.entrySet()){
-			other.setProperty(entry.getKey(), entry.getValue());
-		}
-	}
+    public <U extends N> List<U> getChildren(Class<U> type) {
+        return Collections.unmodifiableList(children.stream().filter( c -> type.isInstance(c)).map( c -> (U)c).collect(Collectors.toList()));
+    }
 
-	public void copyAttributes(Consumer<Entry<String, Object>> consumer) {
-		for(Map.Entry<String, Object> entry : properties.entrySet()){
-			consumer.accept(entry);
-		}
-	}
+    public N getFirstChild() {
+        if (children.isEmpty()) {
+            return null;
+        }
+        return children.get(0);
+    }
+
+    public N getLastChild() {
+        if (children.isEmpty()) {
+            return null;
+        }
+        return children.get(children.size() - 1);
+    }
+
+    /**
+     * @param astNode
+     */
+    public final void add(N node) {
+        if (node != null){
+            children.add(prepareAttach(node));
+        }
+    }
+
+
+    protected N prepareAttach(N node){
+        if (children.isEmpty()){
+            this.setScanPosition(node.getScanPosition());
+        }
+
+        node.setParent((N)this);
+        return node;
+    }
+    /**
+     * @param astNode
+     */
+    public void addFirst(N node) {
+        if (node != null){
+            node.setParent((N)this);
+
+            List<N> newList = new ArrayList<>(children.size() + 1);
+            newList.add(node);
+            newList.addAll(children);
+            this.children = newList;
+        }
+    }
+
+    public void addBefore(N reference, N toinclude) {
+        if (toinclude != null){
+            toinclude.setParent((N)this);
+
+            int pos = children.indexOf(reference);
+            if (pos <= 0){
+                this.addFirst(toinclude);
+            } else {
+                List<N> newList = new LinkedList<>(children);
+                newList.add(pos, toinclude);
+                this.children = newList;
+            }
+        }
+    }
+
+    public void addLast(N astNode) {
+        this.add(astNode);
+    }
+
+    /**
+     * @param astNode
+     */
+    public void remove(N node) {
+        if (children.remove(node)){
+            node.setParent(null);
+        }
+    }
+
+    public  void replace(N node, N newnode){
+
+        if (newnode == null){
+            throw new IllegalArgumentException("newnode is required");
+        }
+
+        for (ListIterator<N> it = children.listIterator(); it.hasNext();) {
+            N n = it.next();
+
+            if (n.equals(node)){
+                newnode.setParent((N)this);
+                it.remove();
+                it.add(newnode);
+            }
+
+        }
+
+        Stream.of(this.getClass().getDeclaredFields()).filter(f -> Modifier.isPrivate( f.getModifiers())).forEach(f -> {
+
+            Object value;
+            try {
+                f.setAccessible(true);
+                value = f.get(this);
+                if (value.equals(node)){
+                    newnode.setParent((N)this);
+                    f.set(this, newnode); 
+                }
+            } catch (Exception e) {
+                //no-op
+            }
+
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <P> Optional<P> getProperty(String name, Class<P> type) {
+        if (properties.containsKey(name)){
+            try {
+                P p = type.cast(properties.get(name));
+                return Optional.of(p);
+            } catch (ClassCastException e){
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <P> void setProperty(String name, P value) {
+        properties.put(name, value);
+    }
+
+    public void copyAttributes(AbstractNode<?> other) {
+        for(Map.Entry<String, Object> entry : properties.entrySet()){
+            other.setProperty(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void copyAttributes(Consumer<Entry<String, Object>> consumer) {
+        for(Map.Entry<String, Object> entry : properties.entrySet()){
+            consumer.accept(entry);
+        }
+    }
 
 }
