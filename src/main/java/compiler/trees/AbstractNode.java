@@ -207,6 +207,10 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
             throw new IllegalArgumentException("newnode is required");
         }
 
+        if (node == newnode) {
+        	return;
+        }
+        
         for (ListIterator<N> it = children.listIterator(); it.hasNext();) {
             N n = it.next();
 
@@ -261,7 +265,7 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
         properties.put(name, value);
     }
 
-    public void copyAttributes(AbstractNode<?> other) {
+    public void copyAttributesTo(AbstractNode<?> other) {
         for(Map.Entry<String, Object> entry : properties.entrySet()){
             other.setProperty(entry.getKey(), entry.getValue());
         }

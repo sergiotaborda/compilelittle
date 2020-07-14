@@ -20,7 +20,7 @@ public interface Node<N extends Node<N>> {
 	
 	public <P> void setProperty(String name, P value);
 	
-	public void copyAttributes(AbstractNode<?> other);
+	public void copyAttributesTo(AbstractNode<?> other);
 
 	public void add(N node);
 
