@@ -3,13 +3,11 @@
  */
 package compiler.bnf;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import compiler.CompiledUnit;
 import compiler.CompilerBackEnd;
+import compiler.filesystem.SourceFile;
 import compiler.syntax.AstNode;
 
 /**
@@ -18,9 +16,9 @@ import compiler.syntax.AstNode;
 public class ToFileBackEnd implements CompilerBackEnd {
 
 	
-	private File file;
+	private SourceFile file;
 
-	public ToFileBackEnd(File file){
+	public ToFileBackEnd(SourceFile file){
 		this.file = file;
 	}
 	
@@ -29,12 +27,8 @@ public class ToFileBackEnd implements CompilerBackEnd {
 	 */
 	@Override
 	public void use(CompiledUnit unit) {
-		try (PrintWriter writer = new PrintWriter(new FileWriter(file))){
-			
+		try (PrintWriter writer = new PrintWriter(file.writer())){
 			write(unit.getAstRootNode(), writer);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

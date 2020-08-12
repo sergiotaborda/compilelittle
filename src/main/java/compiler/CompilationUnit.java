@@ -5,7 +5,8 @@ package compiler;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Path;
+
+import compiler.filesystem.SourcePath;
 
 /**
  * 
@@ -20,6 +21,5 @@ public interface CompilationUnit {
 	 */
 	public String getName();
 	
-	public Path getOrigin();
-
+	public SourcePath getOrigin();
 }

@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.junit.Test;
 
 import compiler.AstCompiler;
-import compiler.FileCompilationUnit;
 import compiler.FirstFollowTable;
 import compiler.FirstFollowTableCalculator;
 import compiler.ListCompilationUnitSet;

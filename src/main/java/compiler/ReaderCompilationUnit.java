@@ -2,19 +2,20 @@ package compiler;
 
 import java.io.FileNotFoundException;
 import java.io.Reader;
-import java.nio.file.Path;
+
+import compiler.filesystem.SourcePath;
 
 public class ReaderCompilationUnit implements CompilationUnit{
 
 	
 	private Reader unit;
-	private Path origin;
+	private SourcePath origin;
 	
 	public ReaderCompilationUnit (Reader unit){
 		this( unit, null);
 	}
 	
-	public ReaderCompilationUnit (Reader unit,Path origin){
+	public ReaderCompilationUnit (Reader unit,SourcePath origin){
 		this.unit = unit;
 		this.origin = origin;
 	}
@@ -35,7 +36,7 @@ public class ReaderCompilationUnit implements CompilationUnit{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Path getOrigin() {
+	public SourcePath getOrigin() {
 		return origin;
 	}
 

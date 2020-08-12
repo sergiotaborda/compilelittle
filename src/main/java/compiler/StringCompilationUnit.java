@@ -3,19 +3,20 @@ package compiler;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.Path;
+
+import compiler.filesystem.SourcePath;
 
 public class StringCompilationUnit  implements CompilationUnit{
 
 	
 	private String unit;
-	private Path origin;
+	private SourcePath origin;
 	
 	public StringCompilationUnit (String unit){
 		this( unit, null);
 	}
 	
-	public StringCompilationUnit (String unit,Path origin){
+	public StringCompilationUnit (String unit,SourcePath origin){
 		this.unit = unit;
 		this.origin = origin;
 	}
@@ -37,7 +38,7 @@ public class StringCompilationUnit  implements CompilationUnit{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Path getOrigin() {
+	public SourcePath getOrigin() {
 		return origin;
 	}
 

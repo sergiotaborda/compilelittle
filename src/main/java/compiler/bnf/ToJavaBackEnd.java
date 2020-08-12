@@ -3,13 +3,11 @@
  */
 package compiler.bnf;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import compiler.CompiledUnit;
 import compiler.CompilerBackEnd;
+import compiler.filesystem.SourceFile;
 import compiler.syntax.AstNode;
 import compiler.trees.TreeTransverser;
 
@@ -19,11 +17,11 @@ import compiler.trees.TreeTransverser;
 public class ToJavaBackEnd implements CompilerBackEnd {
 
 
-	private File file;
+	private SourceFile file;
 	private String className;
 	private String packageName;
 
-	public ToJavaBackEnd(File file, String qualifiedClassName){
+	public ToJavaBackEnd(SourceFile file, String qualifiedClassName){
 		this.file = file;
 		String[] s = qualifiedClassName.split("\\.");
 		this.className = s[s.length -1];
@@ -42,7 +40,7 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 			return;
 		}
 
-		try (PrintWriter writer = new PrintWriter(new FileWriter(file))){
+		try (PrintWriter writer = new PrintWriter(file.writer())){
 
 			writer.println("package " +packageName + ";");
 
@@ -73,10 +71,6 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 			writer.println();
 			writer.println("}");
 
-			
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -209,45 +203,7 @@ public class ToJavaBackEnd implements CompilerBackEnd {
 		return name;
 	}
 
-	/**
-	 * @param rule
-	 * @return
-	 */
-//	private Optional<RuleRef> checkMultiple(Rule rule) {
-//		AstNode r = rule.getExpression();
-//		if (r instanceof RulesAlternative){
-//			RulesAlternative alt = (RulesAlternative)r;
-//			if (alt.getChildren().size() == 2){
-//				AstNode template = alt.getChildren().get(0);
-//				AstNode s = alt.getChildren().get(1);
-//				if (template instanceof RuleRef && s instanceof RulesSequence){
-//					RulesSequence seq = (RulesSequence)s;
-//					if (seq.getChildren().size() == 2){
-//						
-//						AstNode original = seq.getChildren().get(0);
-//						AstNode repeat = seq.getChildren().get(1);
-//						
-//						if (original instanceof RuleRef && repeat instanceof RuleRef){
-//							RuleRef ref = (RuleRef) original;
-//							RuleRef templateRef = (RuleRef) template;
-//							RuleRef repeatRef = (RuleRef) repeat;
-//							
-//							if (ref.getName().equals(rule.getName()) || repeatRef.getName().equals(repeatRef.getName())){
-//								
-//								return Optional.of(templateRef);
-//								
-//							}
-//						}
-//						
-//					}
-//				}
-//			}
-//		} 
-//		
-//		return Optional.empty();
-//		
-//	}
-
+	
 
 
 }

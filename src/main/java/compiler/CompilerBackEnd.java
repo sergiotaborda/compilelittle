@@ -10,8 +10,8 @@ package compiler;
 public interface CompilerBackEnd extends CompilationUnitConsumer{
 
 
-    default void beforeAll() {};
+	public default void beforeAll() {};
 
-    default void afterAll() {};
+	public default void afterAll() {};
 
 }

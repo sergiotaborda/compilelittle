@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -124,9 +125,13 @@ public abstract class AbstractNode<N extends AbstractNode<N>> implements Node<N>
     }
 
     public <U extends N> List<U> getChildren(Class<U> type) {
-        return Collections.unmodifiableList(children.stream().filter( c -> type.isInstance(c)).map( c -> (U)c).collect(Collectors.toList()));
+        return Collections.unmodifiableList(children.stream().filter( c -> type.isInstance(c)).map( c -> type.cast(c)).collect(Collectors.toList()));
     }
-
+    
+    public <U extends N> List<U> getChildren(Class<U> type, Predicate<U> predicate) {
+        return Collections.unmodifiableList(children.stream().filter( c -> type.isInstance(c)).map( c -> type.cast(c)).filter(predicate).collect(Collectors.toList()));
+    }
+    
     public N getFirstChild() {
         if (children.isEmpty()) {
             return null;

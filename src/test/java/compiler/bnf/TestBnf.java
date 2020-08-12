@@ -6,8 +6,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import compiler.AstCompiler;
-import compiler.FileCompilationUnit;
 import compiler.ListCompilationUnitSet;
+import compiler.SourceFileCompilationUnit;
+import compiler.filesystem.DiskSourceFileSystem;
+import compiler.filesystem.SourcePath;
 
 /**
  * 
@@ -21,12 +23,14 @@ public class TestBnf {
 	@Test @Ignore
 	public void test() throws IOException {
 
-		File file = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/test.bnf");
-		File fileOut = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/test_out.bnf");
-		//File javaOut = new File(new File(".").getAbsoluteFile().getParentFile(), "src/test/resources/AbstractJavaGrammar.java");
+		var fileSystem = DiskSourceFileSystem.instance().folder(new File(".").getAbsoluteFile().getParentFile());
+		
+		
+		var file =  fileSystem.file(SourcePath.of("src","test","resources","test.bnf")); 
+		var fileOut = fileSystem.file(SourcePath.of("src","test","resources","test_out.bnf"));  
 
 		ListCompilationUnitSet unitSet = new ListCompilationUnitSet();
-		unitSet.add(new FileCompilationUnit(file));
+		unitSet.add(new SourceFileCompilationUnit(file));
 
 
 		final AstCompiler compiler = new AstCompiler(new EBnfLanguage());
