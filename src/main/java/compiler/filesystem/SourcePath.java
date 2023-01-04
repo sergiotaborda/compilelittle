@@ -51,10 +51,12 @@ public class SourcePath {
 	}
 
 	public String toString() {
-		return (parent == null ? "" : parent.toString() + ">") +  name;
+		return toString(">");
 	}
 
-
+	public String toString(String separator) {
+		return (parent == null ? "" : parent.toString(separator) + separator) +  name;
+	}
 
 	public SourcePath relativize(SourcePath origin) {
 
